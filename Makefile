@@ -3,7 +3,7 @@
 # project subdirectory.
 #
 
-PROJECT_NAME := open62541_port
+PROJECT_NAME := open62541_esp32
 
 include $(IDF_PATH)/make/project.mk
 

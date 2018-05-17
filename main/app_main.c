@@ -27,28 +27,41 @@ UA_ServerConfig *config;
 
 static UA_Boolean running = true;
 
-void blink_task(void *pvParameter)
-{
-    gpio_pad_select_gpio(BLINK_GPIO);
-    gpio_set_direction(BLINK_GPIO, GPIO_MODE_OUTPUT);
-    while(1) {
-        gpio_set_level(BLINK_GPIO, 0);
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
-        gpio_set_level(BLINK_GPIO, 1);
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
-    }
-}
-
 void opcua_task(void *pvParameter) {
 
     ESP_LOGI(TAG, "Fire up OPC UA Server.");
     config = UA_ServerConfig_new_customBuffer(4840, NULL, 8192, 8192);
+
+    //Set the connection config
+    UA_ConnectionConfig connectionConfig;
+    connectionConfig.recvBufferSize = 32768;
+    connectionConfig.sendBufferSize = 32768;
+
     UA_ServerNetworkLayer nl = 
-    UA_ServerNetworkLayerTCP(UA_ConnectionConfig_default, 4840, NULL);
+    UA_ServerNetworkLayerTCP(connectionConfig, 4840, NULL);
     config->networkLayers = &nl;
     config->networkLayersSize = 1;
 
     UA_Server *server = UA_Server_new(config);
+
+    /* Add a variable node */
+    /* 1) Define the node attributes */
+    UA_VariableAttributes attr = UA_VariableAttributes_default;
+    attr.displayName = UA_LOCALIZEDTEXT("en-US", "the answer");
+    UA_Int32 myInteger = 42;
+    UA_Variant_setScalar(&attr.value, &myInteger, &UA_TYPES[UA_TYPES_INT32]);
+
+    /* 2) Define where the node shall be added with which browsename */
+    UA_NodeId newNodeId = UA_NODEID_STRING(1, "the.answer");
+    UA_NodeId parentNodeId = UA_NODEID_NUMERIC(0, UA_NS0ID_OBJECTSFOLDER);
+    UA_NodeId parentReferenceNodeId = UA_NODEID_NUMERIC(0, UA_NS0ID_ORGANIZES);
+    UA_NodeId variableType = UA_NODEID_NULL; /* take the default variable type */
+    UA_QualifiedName browseName = UA_QUALIFIEDNAME(1, "the answer");
+
+    /* 3) Add the node */
+    UA_Server_addVariableNode(server, newNodeId, parentNodeId, parentReferenceNodeId,
+                              browseName, variableType, attr, NULL, NULL);
+
 
     // server started, Code will be blocked here till running is set to false.
     UA_Server_run(server, &running); 
@@ -77,8 +90,7 @@ static esp_err_t event_handler(void *ctx, system_event_t *event)
                     ip4addr_ntoa(&event->event_info.got_ip.ip_info.ip));
             // TODO: Here I create task that start a OPC UA Server
 
-            xTaskCreate(&opcua_task, "opcua_task", 1024 * 70, NULL, 5, NULL);
-
+            xTaskCreate(&opcua_task, "opcua_task", 1024 * 8, NULL, 5, NULL);
 
             break;
         case SYSTEM_EVENT_STA_DISCONNECTED:
@@ -125,5 +137,5 @@ void app_main()
 
     wifi_scan();
 
-    xTaskCreate(&blink_task, "blink_task", configMINIMAL_STACK_SIZE, NULL, 5, NULL);
+    //xTaskCreate(&opcua_task, "opcua_task", configMINIMAL_STACK_SIZE, NULL, 5, NULL);
 }
