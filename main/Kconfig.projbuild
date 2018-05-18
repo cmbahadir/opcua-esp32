@@ -1,0 +1,16 @@
+menu "Connection Configuration"
+
+config WIFI_SSID
+	string "WiFi SSID"
+	default "OPCUATaskForce"
+	help
+		Network Name
+
+config WIFI_PASSWORD
+	string "WiFi Password"
+	default "OPCUApubsub"
+	help
+		WiFi Password (WPA or WPA2)
+
+endmenu
+
