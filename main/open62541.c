@@ -9497,7 +9497,7 @@ UA_calcSizeBinary(const void *p, const UA_DataType *type) {
 
 
 /* Boolean */
-static UA_DataTypeMember Boolean_members[1] = {
+static const UA_DataTypeMember Boolean_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_BOOLEAN, /* .memberTypeIndex */
@@ -9507,7 +9507,7 @@ static UA_DataTypeMember Boolean_members[1] = {
 }};
 
 /* SByte */
-static UA_DataTypeMember SByte_members[1] = {
+static const UA_DataTypeMember SByte_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_SBYTE, /* .memberTypeIndex */
@@ -9517,7 +9517,7 @@ static UA_DataTypeMember SByte_members[1] = {
 }};
 
 /* Byte */
-static UA_DataTypeMember Byte_members[1] = {
+static const UA_DataTypeMember Byte_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_BYTE, /* .memberTypeIndex */
@@ -9527,7 +9527,7 @@ static UA_DataTypeMember Byte_members[1] = {
 }};
 
 /* Int16 */
-static UA_DataTypeMember Int16_members[1] = {
+static const UA_DataTypeMember Int16_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_INT16, /* .memberTypeIndex */
@@ -9537,7 +9537,7 @@ static UA_DataTypeMember Int16_members[1] = {
 }};
 
 /* UInt16 */
-static UA_DataTypeMember UInt16_members[1] = {
+static const UA_DataTypeMember UInt16_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_UINT16, /* .memberTypeIndex */
@@ -9547,7 +9547,7 @@ static UA_DataTypeMember UInt16_members[1] = {
 }};
 
 /* Int32 */
-static UA_DataTypeMember Int32_members[1] = {
+static const UA_DataTypeMember Int32_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_INT32, /* .memberTypeIndex */
@@ -9557,7 +9557,7 @@ static UA_DataTypeMember Int32_members[1] = {
 }};
 
 /* UInt32 */
-static UA_DataTypeMember UInt32_members[1] = {
+static const UA_DataTypeMember UInt32_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_UINT32, /* .memberTypeIndex */
@@ -9567,7 +9567,7 @@ static UA_DataTypeMember UInt32_members[1] = {
 }};
 
 /* Int64 */
-static UA_DataTypeMember Int64_members[1] = {
+static const UA_DataTypeMember Int64_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_INT64, /* .memberTypeIndex */
@@ -9577,7 +9577,7 @@ static UA_DataTypeMember Int64_members[1] = {
 }};
 
 /* UInt64 */
-static UA_DataTypeMember UInt64_members[1] = {
+static const UA_DataTypeMember UInt64_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_UINT64, /* .memberTypeIndex */
@@ -9587,7 +9587,7 @@ static UA_DataTypeMember UInt64_members[1] = {
 }};
 
 /* Float */
-static UA_DataTypeMember Float_members[1] = {
+static const UA_DataTypeMember Float_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_FLOAT, /* .memberTypeIndex */
@@ -9597,7 +9597,7 @@ static UA_DataTypeMember Float_members[1] = {
 }};
 
 /* Double */
-static UA_DataTypeMember Double_members[1] = {
+static const UA_DataTypeMember Double_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_DOUBLE, /* .memberTypeIndex */
@@ -9607,7 +9607,7 @@ static UA_DataTypeMember Double_members[1] = {
 }};
 
 /* String */
-static UA_DataTypeMember String_members[1] = {
+static const UA_DataTypeMember String_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_BYTE, /* .memberTypeIndex */
@@ -9617,7 +9617,7 @@ static UA_DataTypeMember String_members[1] = {
 }};
 
 /* DateTime */
-static UA_DataTypeMember DateTime_members[1] = {
+static const UA_DataTypeMember DateTime_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_DATETIME, /* .memberTypeIndex */
@@ -9627,7 +9627,7 @@ static UA_DataTypeMember DateTime_members[1] = {
 }};
 
 /* Guid */
-static UA_DataTypeMember Guid_members[1] = {
+static const UA_DataTypeMember Guid_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_GUID, /* .memberTypeIndex */
@@ -9637,7 +9637,7 @@ static UA_DataTypeMember Guid_members[1] = {
 }};
 
 /* ByteString */
-static UA_DataTypeMember ByteString_members[1] = {
+static const UA_DataTypeMember ByteString_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_BYTE, /* .memberTypeIndex */
@@ -9647,7 +9647,7 @@ static UA_DataTypeMember ByteString_members[1] = {
 }};
 
 /* XmlElement */
-static UA_DataTypeMember XmlElement_members[1] = {
+static const UA_DataTypeMember XmlElement_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_BYTE, /* .memberTypeIndex */
@@ -9657,7 +9657,7 @@ static UA_DataTypeMember XmlElement_members[1] = {
 }};
 
 /* NodeId */
-static UA_DataTypeMember NodeId_members[1] = {
+static const UA_DataTypeMember NodeId_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_NODEID, /* .memberTypeIndex */
@@ -9667,7 +9667,7 @@ static UA_DataTypeMember NodeId_members[1] = {
 }};
 
 /* ExpandedNodeId */
-static UA_DataTypeMember ExpandedNodeId_members[1] = {
+static const UA_DataTypeMember ExpandedNodeId_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_EXPANDEDNODEID, /* .memberTypeIndex */
@@ -9677,7 +9677,7 @@ static UA_DataTypeMember ExpandedNodeId_members[1] = {
 }};
 
 /* StatusCode */
-static UA_DataTypeMember StatusCode_members[1] = {
+static const UA_DataTypeMember StatusCode_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_STATUSCODE, /* .memberTypeIndex */
@@ -9687,7 +9687,7 @@ static UA_DataTypeMember StatusCode_members[1] = {
 }};
 
 /* QualifiedName */
-static UA_DataTypeMember QualifiedName_members[2] = {
+static const UA_DataTypeMember QualifiedName_members[2] = {
 {
     UA_TYPENAME("namespaceIndex") /* .memberName */
     UA_TYPES_INT16, /* .memberTypeIndex */
@@ -9704,7 +9704,7 @@ static UA_DataTypeMember QualifiedName_members[2] = {
 }};
 
 /* LocalizedText */
-static UA_DataTypeMember LocalizedText_members[1] = {
+static const UA_DataTypeMember LocalizedText_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_LOCALIZEDTEXT, /* .memberTypeIndex */
@@ -9714,7 +9714,7 @@ static UA_DataTypeMember LocalizedText_members[1] = {
 }};
 
 /* ExtensionObject */
-static UA_DataTypeMember ExtensionObject_members[1] = {
+static const UA_DataTypeMember ExtensionObject_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_EXTENSIONOBJECT, /* .memberTypeIndex */
@@ -9724,7 +9724,7 @@ static UA_DataTypeMember ExtensionObject_members[1] = {
 }};
 
 /* DataValue */
-static UA_DataTypeMember DataValue_members[1] = {
+static const UA_DataTypeMember DataValue_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_DATAVALUE, /* .memberTypeIndex */
@@ -9734,7 +9734,7 @@ static UA_DataTypeMember DataValue_members[1] = {
 }};
 
 /* Variant */
-static UA_DataTypeMember Variant_members[1] = {
+static const UA_DataTypeMember Variant_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_VARIANT, /* .memberTypeIndex */
@@ -9744,7 +9744,7 @@ static UA_DataTypeMember Variant_members[1] = {
 }};
 
 /* DiagnosticInfo */
-static UA_DataTypeMember DiagnosticInfo_members[1] = {
+static const UA_DataTypeMember DiagnosticInfo_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_DIAGNOSTICINFO, /* .memberTypeIndex */
@@ -9754,7 +9754,7 @@ static UA_DataTypeMember DiagnosticInfo_members[1] = {
 }};
 
 /* SignedSoftwareCertificate */
-static UA_DataTypeMember SignedSoftwareCertificate_members[2] = {
+static const UA_DataTypeMember SignedSoftwareCertificate_members[2] = {
 {
     UA_TYPENAME("certificateData") /* .memberName */
     UA_TYPES_BYTESTRING, /* .memberTypeIndex */
@@ -9771,7 +9771,7 @@ static UA_DataTypeMember SignedSoftwareCertificate_members[2] = {
 }};
 
 /* DataSetFieldFlags */
-static UA_DataTypeMember DataSetFieldFlags_members[1] = {
+static const UA_DataTypeMember DataSetFieldFlags_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_INT32, /* .memberTypeIndex */
@@ -9781,7 +9781,7 @@ static UA_DataTypeMember DataSetFieldFlags_members[1] = {
 }};
 
 /* SemanticChangeStructureDataType */
-static UA_DataTypeMember SemanticChangeStructureDataType_members[2] = {
+static const UA_DataTypeMember SemanticChangeStructureDataType_members[2] = {
 {
     UA_TYPENAME("affected") /* .memberName */
     UA_TYPES_NODEID, /* .memberTypeIndex */
@@ -9798,7 +9798,7 @@ static UA_DataTypeMember SemanticChangeStructureDataType_members[2] = {
 }};
 
 /* StatusChangeNotification */
-static UA_DataTypeMember StatusChangeNotification_members[2] = {
+static const UA_DataTypeMember StatusChangeNotification_members[2] = {
 {
     UA_TYPENAME("status") /* .memberName */
     UA_TYPES_STATUSCODE, /* .memberTypeIndex */
@@ -9815,7 +9815,7 @@ static UA_DataTypeMember StatusChangeNotification_members[2] = {
 }};
 
 /* BrowsePathTarget */
-static UA_DataTypeMember BrowsePathTarget_members[2] = {
+static const UA_DataTypeMember BrowsePathTarget_members[2] = {
 {
     UA_TYPENAME("targetId") /* .memberName */
     UA_TYPES_EXPANDEDNODEID, /* .memberTypeIndex */
@@ -9832,7 +9832,7 @@ static UA_DataTypeMember BrowsePathTarget_members[2] = {
 }};
 
 /* ViewAttributes */
-static UA_DataTypeMember ViewAttributes_members[7] = {
+static const UA_DataTypeMember ViewAttributes_members[7] = {
 {
     UA_TYPENAME("specifiedAttributes") /* .memberName */
     UA_TYPES_UINT32, /* .memberTypeIndex */
@@ -9884,7 +9884,7 @@ static UA_DataTypeMember ViewAttributes_members[7] = {
 }};
 
 /* RequestHeader */
-static UA_DataTypeMember RequestHeader_members[7] = {
+static const UA_DataTypeMember RequestHeader_members[7] = {
 {
     UA_TYPENAME("authenticationToken") /* .memberName */
     UA_TYPES_NODEID, /* .memberTypeIndex */
@@ -9936,7 +9936,7 @@ static UA_DataTypeMember RequestHeader_members[7] = {
 }};
 
 /* MonitoredItemModifyResult */
-static UA_DataTypeMember MonitoredItemModifyResult_members[4] = {
+static const UA_DataTypeMember MonitoredItemModifyResult_members[4] = {
 {
     UA_TYPENAME("statusCode") /* .memberName */
     UA_TYPES_STATUSCODE, /* .memberTypeIndex */
@@ -9967,7 +9967,7 @@ static UA_DataTypeMember MonitoredItemModifyResult_members[4] = {
 }};
 
 /* ElementOperand */
-static UA_DataTypeMember ElementOperand_members[1] = {
+static const UA_DataTypeMember ElementOperand_members[1] = {
 {
     UA_TYPENAME("index") /* .memberName */
     UA_TYPES_UINT32, /* .memberTypeIndex */
@@ -9977,7 +9977,7 @@ static UA_DataTypeMember ElementOperand_members[1] = {
 }};
 
 /* CloseSecureChannelRequest */
-static UA_DataTypeMember CloseSecureChannelRequest_members[1] = {
+static const UA_DataTypeMember CloseSecureChannelRequest_members[1] = {
 {
     UA_TYPENAME("requestHeader") /* .memberName */
     UA_TYPES_REQUESTHEADER, /* .memberTypeIndex */
@@ -9987,7 +9987,7 @@ static UA_DataTypeMember CloseSecureChannelRequest_members[1] = {
 }};
 
 /* AddNodesResult */
-static UA_DataTypeMember AddNodesResult_members[2] = {
+static const UA_DataTypeMember AddNodesResult_members[2] = {
 {
     UA_TYPENAME("statusCode") /* .memberName */
     UA_TYPES_STATUSCODE, /* .memberTypeIndex */
@@ -10004,7 +10004,7 @@ static UA_DataTypeMember AddNodesResult_members[2] = {
 }};
 
 /* VariableAttributes */
-static UA_DataTypeMember VariableAttributes_members[13] = {
+static const UA_DataTypeMember VariableAttributes_members[13] = {
 {
     UA_TYPENAME("specifiedAttributes") /* .memberName */
     UA_TYPES_UINT32, /* .memberTypeIndex */
@@ -10098,7 +10098,7 @@ static UA_DataTypeMember VariableAttributes_members[13] = {
 }};
 
 /* NotificationMessage */
-static UA_DataTypeMember NotificationMessage_members[3] = {
+static const UA_DataTypeMember NotificationMessage_members[3] = {
 {
     UA_TYPENAME("sequenceNumber") /* .memberName */
     UA_TYPES_UINT32, /* .memberTypeIndex */
@@ -10122,7 +10122,7 @@ static UA_DataTypeMember NotificationMessage_members[3] = {
 }};
 
 /* FindServersOnNetworkRequest */
-static UA_DataTypeMember FindServersOnNetworkRequest_members[4] = {
+static const UA_DataTypeMember FindServersOnNetworkRequest_members[4] = {
 {
     UA_TYPENAME("requestHeader") /* .memberName */
     UA_TYPES_REQUESTHEADER, /* .memberTypeIndex */
@@ -10153,7 +10153,7 @@ static UA_DataTypeMember FindServersOnNetworkRequest_members[4] = {
 }};
 
 /* StructureField */
-static UA_DataTypeMember StructureField_members[7] = {
+static const UA_DataTypeMember StructureField_members[7] = {
 {
     UA_TYPENAME("name") /* .memberName */
     UA_TYPES_STRING, /* .memberTypeIndex */
@@ -10205,7 +10205,7 @@ static UA_DataTypeMember StructureField_members[7] = {
 }};
 
 /* EventFieldList */
-static UA_DataTypeMember EventFieldList_members[2] = {
+static const UA_DataTypeMember EventFieldList_members[2] = {
 {
     UA_TYPENAME("clientHandle") /* .memberName */
     UA_TYPES_UINT32, /* .memberTypeIndex */
@@ -10222,7 +10222,7 @@ static UA_DataTypeMember EventFieldList_members[2] = {
 }};
 
 /* MonitoringMode */
-static UA_DataTypeMember MonitoringMode_members[1] = {
+static const UA_DataTypeMember MonitoringMode_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_INT32, /* .memberTypeIndex */
@@ -10232,7 +10232,7 @@ static UA_DataTypeMember MonitoringMode_members[1] = {
 }};
 
 /* MdnsDiscoveryConfiguration */
-static UA_DataTypeMember MdnsDiscoveryConfiguration_members[2] = {
+static const UA_DataTypeMember MdnsDiscoveryConfiguration_members[2] = {
 {
     UA_TYPENAME("mdnsServerName") /* .memberName */
     UA_TYPES_STRING, /* .memberTypeIndex */
@@ -10249,7 +10249,7 @@ static UA_DataTypeMember MdnsDiscoveryConfiguration_members[2] = {
 }};
 
 /* CallMethodResult */
-static UA_DataTypeMember CallMethodResult_members[4] = {
+static const UA_DataTypeMember CallMethodResult_members[4] = {
 {
     UA_TYPENAME("statusCode") /* .memberName */
     UA_TYPES_STATUSCODE, /* .memberTypeIndex */
@@ -10280,7 +10280,7 @@ static UA_DataTypeMember CallMethodResult_members[4] = {
 }};
 
 /* ParsingResult */
-static UA_DataTypeMember ParsingResult_members[3] = {
+static const UA_DataTypeMember ParsingResult_members[3] = {
 {
     UA_TYPENAME("statusCode") /* .memberName */
     UA_TYPES_STATUSCODE, /* .memberTypeIndex */
@@ -10304,7 +10304,7 @@ static UA_DataTypeMember ParsingResult_members[3] = {
 }};
 
 /* RelativePathElement */
-static UA_DataTypeMember RelativePathElement_members[4] = {
+static const UA_DataTypeMember RelativePathElement_members[4] = {
 {
     UA_TYPENAME("referenceTypeId") /* .memberName */
     UA_TYPES_NODEID, /* .memberTypeIndex */
@@ -10335,7 +10335,7 @@ static UA_DataTypeMember RelativePathElement_members[4] = {
 }};
 
 /* BrowseDirection */
-static UA_DataTypeMember BrowseDirection_members[1] = {
+static const UA_DataTypeMember BrowseDirection_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_INT32, /* .memberTypeIndex */
@@ -10345,7 +10345,7 @@ static UA_DataTypeMember BrowseDirection_members[1] = {
 }};
 
 /* CallMethodRequest */
-static UA_DataTypeMember CallMethodRequest_members[3] = {
+static const UA_DataTypeMember CallMethodRequest_members[3] = {
 {
     UA_TYPENAME("objectId") /* .memberName */
     UA_TYPES_NODEID, /* .memberTypeIndex */
@@ -10369,7 +10369,7 @@ static UA_DataTypeMember CallMethodRequest_members[3] = {
 }};
 
 /* KeyValuePair */
-static UA_DataTypeMember KeyValuePair_members[2] = {
+static const UA_DataTypeMember KeyValuePair_members[2] = {
 {
     UA_TYPENAME("key") /* .memberName */
     UA_TYPES_QUALIFIEDNAME, /* .memberTypeIndex */
@@ -10386,7 +10386,7 @@ static UA_DataTypeMember KeyValuePair_members[2] = {
 }};
 
 /* ConfigurationVersionDataType */
-static UA_DataTypeMember ConfigurationVersionDataType_members[2] = {
+static const UA_DataTypeMember ConfigurationVersionDataType_members[2] = {
 {
     UA_TYPENAME("majorVersion") /* .memberName */
     UA_TYPES_UINT32, /* .memberTypeIndex */
@@ -10403,7 +10403,7 @@ static UA_DataTypeMember ConfigurationVersionDataType_members[2] = {
 }};
 
 /* RedundancySupport */
-static UA_DataTypeMember RedundancySupport_members[1] = {
+static const UA_DataTypeMember RedundancySupport_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_INT32, /* .memberTypeIndex */
@@ -10413,7 +10413,7 @@ static UA_DataTypeMember RedundancySupport_members[1] = {
 }};
 
 /* EventNotificationList */
-static UA_DataTypeMember EventNotificationList_members[1] = {
+static const UA_DataTypeMember EventNotificationList_members[1] = {
 {
     UA_TYPENAME("events") /* .memberName */
     UA_TYPES_EVENTFIELDLIST, /* .memberTypeIndex */
@@ -10423,7 +10423,7 @@ static UA_DataTypeMember EventNotificationList_members[1] = {
 }};
 
 /* UnregisterNodesRequest */
-static UA_DataTypeMember UnregisterNodesRequest_members[2] = {
+static const UA_DataTypeMember UnregisterNodesRequest_members[2] = {
 {
     UA_TYPENAME("requestHeader") /* .memberName */
     UA_TYPES_REQUESTHEADER, /* .memberTypeIndex */
@@ -10440,7 +10440,7 @@ static UA_DataTypeMember UnregisterNodesRequest_members[2] = {
 }};
 
 /* ContentFilterElementResult */
-static UA_DataTypeMember ContentFilterElementResult_members[3] = {
+static const UA_DataTypeMember ContentFilterElementResult_members[3] = {
 {
     UA_TYPENAME("statusCode") /* .memberName */
     UA_TYPES_STATUSCODE, /* .memberTypeIndex */
@@ -10464,7 +10464,7 @@ static UA_DataTypeMember ContentFilterElementResult_members[3] = {
 }};
 
 /* SimpleAttributeOperand */
-static UA_DataTypeMember SimpleAttributeOperand_members[4] = {
+static const UA_DataTypeMember SimpleAttributeOperand_members[4] = {
 {
     UA_TYPENAME("typeDefinitionId") /* .memberName */
     UA_TYPES_NODEID, /* .memberTypeIndex */
@@ -10495,7 +10495,7 @@ static UA_DataTypeMember SimpleAttributeOperand_members[4] = {
 }};
 
 /* LiteralOperand */
-static UA_DataTypeMember LiteralOperand_members[1] = {
+static const UA_DataTypeMember LiteralOperand_members[1] = {
 {
     UA_TYPENAME("value") /* .memberName */
     UA_TYPES_VARIANT, /* .memberTypeIndex */
@@ -10505,7 +10505,7 @@ static UA_DataTypeMember LiteralOperand_members[1] = {
 }};
 
 /* QueryDataSet */
-static UA_DataTypeMember QueryDataSet_members[3] = {
+static const UA_DataTypeMember QueryDataSet_members[3] = {
 {
     UA_TYPENAME("nodeId") /* .memberName */
     UA_TYPES_EXPANDEDNODEID, /* .memberTypeIndex */
@@ -10529,7 +10529,7 @@ static UA_DataTypeMember QueryDataSet_members[3] = {
 }};
 
 /* AnonymousIdentityToken */
-static UA_DataTypeMember AnonymousIdentityToken_members[1] = {
+static const UA_DataTypeMember AnonymousIdentityToken_members[1] = {
 {
     UA_TYPENAME("policyId") /* .memberName */
     UA_TYPES_STRING, /* .memberTypeIndex */
@@ -10539,7 +10539,7 @@ static UA_DataTypeMember AnonymousIdentityToken_members[1] = {
 }};
 
 /* SetPublishingModeRequest */
-static UA_DataTypeMember SetPublishingModeRequest_members[3] = {
+static const UA_DataTypeMember SetPublishingModeRequest_members[3] = {
 {
     UA_TYPENAME("requestHeader") /* .memberName */
     UA_TYPES_REQUESTHEADER, /* .memberTypeIndex */
@@ -10563,7 +10563,7 @@ static UA_DataTypeMember SetPublishingModeRequest_members[3] = {
 }};
 
 /* MonitoredItemCreateResult */
-static UA_DataTypeMember MonitoredItemCreateResult_members[5] = {
+static const UA_DataTypeMember MonitoredItemCreateResult_members[5] = {
 {
     UA_TYPENAME("statusCode") /* .memberName */
     UA_TYPES_STATUSCODE, /* .memberTypeIndex */
@@ -10601,7 +10601,7 @@ static UA_DataTypeMember MonitoredItemCreateResult_members[5] = {
 }};
 
 /* TimestampsToReturn */
-static UA_DataTypeMember TimestampsToReturn_members[1] = {
+static const UA_DataTypeMember TimestampsToReturn_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_INT32, /* .memberTypeIndex */
@@ -10611,7 +10611,7 @@ static UA_DataTypeMember TimestampsToReturn_members[1] = {
 }};
 
 /* CallRequest */
-static UA_DataTypeMember CallRequest_members[2] = {
+static const UA_DataTypeMember CallRequest_members[2] = {
 {
     UA_TYPENAME("requestHeader") /* .memberName */
     UA_TYPES_REQUESTHEADER, /* .memberTypeIndex */
@@ -10628,7 +10628,7 @@ static UA_DataTypeMember CallRequest_members[2] = {
 }};
 
 /* MethodAttributes */
-static UA_DataTypeMember MethodAttributes_members[7] = {
+static const UA_DataTypeMember MethodAttributes_members[7] = {
 {
     UA_TYPENAME("specifiedAttributes") /* .memberName */
     UA_TYPES_UINT32, /* .memberTypeIndex */
@@ -10680,7 +10680,7 @@ static UA_DataTypeMember MethodAttributes_members[7] = {
 }};
 
 /* DeleteReferencesItem */
-static UA_DataTypeMember DeleteReferencesItem_members[5] = {
+static const UA_DataTypeMember DeleteReferencesItem_members[5] = {
 {
     UA_TYPENAME("sourceNodeId") /* .memberName */
     UA_TYPES_NODEID, /* .memberTypeIndex */
@@ -10718,7 +10718,7 @@ static UA_DataTypeMember DeleteReferencesItem_members[5] = {
 }};
 
 /* WriteValue */
-static UA_DataTypeMember WriteValue_members[4] = {
+static const UA_DataTypeMember WriteValue_members[4] = {
 {
     UA_TYPENAME("nodeId") /* .memberName */
     UA_TYPES_NODEID, /* .memberTypeIndex */
@@ -10749,7 +10749,7 @@ static UA_DataTypeMember WriteValue_members[4] = {
 }};
 
 /* NodeAttributesMask */
-static UA_DataTypeMember NodeAttributesMask_members[1] = {
+static const UA_DataTypeMember NodeAttributesMask_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_INT32, /* .memberTypeIndex */
@@ -10759,7 +10759,7 @@ static UA_DataTypeMember NodeAttributesMask_members[1] = {
 }};
 
 /* MessageSecurityMode */
-static UA_DataTypeMember MessageSecurityMode_members[1] = {
+static const UA_DataTypeMember MessageSecurityMode_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_INT32, /* .memberTypeIndex */
@@ -10769,7 +10769,7 @@ static UA_DataTypeMember MessageSecurityMode_members[1] = {
 }};
 
 /* MonitoringParameters */
-static UA_DataTypeMember MonitoringParameters_members[5] = {
+static const UA_DataTypeMember MonitoringParameters_members[5] = {
 {
     UA_TYPENAME("clientHandle") /* .memberName */
     UA_TYPES_UINT32, /* .memberTypeIndex */
@@ -10807,7 +10807,7 @@ static UA_DataTypeMember MonitoringParameters_members[5] = {
 }};
 
 /* ReferenceNode */
-static UA_DataTypeMember ReferenceNode_members[3] = {
+static const UA_DataTypeMember ReferenceNode_members[3] = {
 {
     UA_TYPENAME("referenceTypeId") /* .memberName */
     UA_TYPES_NODEID, /* .memberTypeIndex */
@@ -10831,7 +10831,7 @@ static UA_DataTypeMember ReferenceNode_members[3] = {
 }};
 
 /* Argument */
-static UA_DataTypeMember Argument_members[5] = {
+static const UA_DataTypeMember Argument_members[5] = {
 {
     UA_TYPENAME("name") /* .memberName */
     UA_TYPES_STRING, /* .memberTypeIndex */
@@ -10869,7 +10869,7 @@ static UA_DataTypeMember Argument_members[5] = {
 }};
 
 /* UtcTime */
-static UA_DataTypeMember UtcTime_members[1] = {
+static const UA_DataTypeMember UtcTime_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_DATETIME, /* .memberTypeIndex */
@@ -10879,7 +10879,7 @@ static UA_DataTypeMember UtcTime_members[1] = {
 }};
 
 /* ChannelSecurityToken */
-static UA_DataTypeMember ChannelSecurityToken_members[4] = {
+static const UA_DataTypeMember ChannelSecurityToken_members[4] = {
 {
     UA_TYPENAME("channelId") /* .memberName */
     UA_TYPES_UINT32, /* .memberTypeIndex */
@@ -10910,7 +10910,7 @@ static UA_DataTypeMember ChannelSecurityToken_members[4] = {
 }};
 
 /* UserIdentityToken */
-static UA_DataTypeMember UserIdentityToken_members[1] = {
+static const UA_DataTypeMember UserIdentityToken_members[1] = {
 {
     UA_TYPENAME("policyId") /* .memberName */
     UA_TYPES_STRING, /* .memberTypeIndex */
@@ -10920,7 +10920,7 @@ static UA_DataTypeMember UserIdentityToken_members[1] = {
 }};
 
 /* SignatureData */
-static UA_DataTypeMember SignatureData_members[2] = {
+static const UA_DataTypeMember SignatureData_members[2] = {
 {
     UA_TYPENAME("algorithm") /* .memberName */
     UA_TYPES_STRING, /* .memberTypeIndex */
@@ -10937,7 +10937,7 @@ static UA_DataTypeMember SignatureData_members[2] = {
 }};
 
 /* ObjectTypeAttributes */
-static UA_DataTypeMember ObjectTypeAttributes_members[6] = {
+static const UA_DataTypeMember ObjectTypeAttributes_members[6] = {
 {
     UA_TYPENAME("specifiedAttributes") /* .memberName */
     UA_TYPES_UINT32, /* .memberTypeIndex */
@@ -10982,7 +10982,7 @@ static UA_DataTypeMember ObjectTypeAttributes_members[6] = {
 }};
 
 /* DeadbandType */
-static UA_DataTypeMember DeadbandType_members[1] = {
+static const UA_DataTypeMember DeadbandType_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_INT32, /* .memberTypeIndex */
@@ -10992,7 +10992,7 @@ static UA_DataTypeMember DeadbandType_members[1] = {
 }};
 
 /* SecurityTokenRequestType */
-static UA_DataTypeMember SecurityTokenRequestType_members[1] = {
+static const UA_DataTypeMember SecurityTokenRequestType_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_INT32, /* .memberTypeIndex */
@@ -11002,7 +11002,7 @@ static UA_DataTypeMember SecurityTokenRequestType_members[1] = {
 }};
 
 /* NodeAttributes */
-static UA_DataTypeMember NodeAttributes_members[5] = {
+static const UA_DataTypeMember NodeAttributes_members[5] = {
 {
     UA_TYPENAME("specifiedAttributes") /* .memberName */
     UA_TYPES_UINT32, /* .memberTypeIndex */
@@ -11040,7 +11040,7 @@ static UA_DataTypeMember NodeAttributes_members[5] = {
 }};
 
 /* DataChangeTrigger */
-static UA_DataTypeMember DataChangeTrigger_members[1] = {
+static const UA_DataTypeMember DataChangeTrigger_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_INT32, /* .memberTypeIndex */
@@ -11050,7 +11050,7 @@ static UA_DataTypeMember DataChangeTrigger_members[1] = {
 }};
 
 /* BuildInfo */
-static UA_DataTypeMember BuildInfo_members[6] = {
+static const UA_DataTypeMember BuildInfo_members[6] = {
 {
     UA_TYPENAME("productUri") /* .memberName */
     UA_TYPES_STRING, /* .memberTypeIndex */
@@ -11095,7 +11095,7 @@ static UA_DataTypeMember BuildInfo_members[6] = {
 }};
 
 /* NodeClass */
-static UA_DataTypeMember NodeClass_members[1] = {
+static const UA_DataTypeMember NodeClass_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_INT32, /* .memberTypeIndex */
@@ -11105,7 +11105,7 @@ static UA_DataTypeMember NodeClass_members[1] = {
 }};
 
 /* SubscriptionDiagnosticsDataType */
-static UA_DataTypeMember SubscriptionDiagnosticsDataType_members[31] = {
+static const UA_DataTypeMember SubscriptionDiagnosticsDataType_members[31] = {
 {
     UA_TYPENAME("sessionId") /* .memberName */
     UA_TYPES_NODEID, /* .memberTypeIndex */
@@ -11328,7 +11328,7 @@ static UA_DataTypeMember SubscriptionDiagnosticsDataType_members[31] = {
 #define FilterOperand_members NULL
 
 /* MonitoredItemNotification */
-static UA_DataTypeMember MonitoredItemNotification_members[2] = {
+static const UA_DataTypeMember MonitoredItemNotification_members[2] = {
 {
     UA_TYPENAME("clientHandle") /* .memberName */
     UA_TYPES_UINT32, /* .memberTypeIndex */
@@ -11345,7 +11345,7 @@ static UA_DataTypeMember MonitoredItemNotification_members[2] = {
 }};
 
 /* DeleteNodesItem */
-static UA_DataTypeMember DeleteNodesItem_members[2] = {
+static const UA_DataTypeMember DeleteNodesItem_members[2] = {
 {
     UA_TYPENAME("nodeId") /* .memberName */
     UA_TYPES_NODEID, /* .memberTypeIndex */
@@ -11362,7 +11362,7 @@ static UA_DataTypeMember DeleteNodesItem_members[2] = {
 }};
 
 /* DeleteSubscriptionsRequest */
-static UA_DataTypeMember DeleteSubscriptionsRequest_members[2] = {
+static const UA_DataTypeMember DeleteSubscriptionsRequest_members[2] = {
 {
     UA_TYPENAME("requestHeader") /* .memberName */
     UA_TYPES_REQUESTHEADER, /* .memberTypeIndex */
@@ -11379,7 +11379,7 @@ static UA_DataTypeMember DeleteSubscriptionsRequest_members[2] = {
 }};
 
 /* SubscriptionAcknowledgement */
-static UA_DataTypeMember SubscriptionAcknowledgement_members[2] = {
+static const UA_DataTypeMember SubscriptionAcknowledgement_members[2] = {
 {
     UA_TYPENAME("subscriptionId") /* .memberName */
     UA_TYPES_UINT32, /* .memberTypeIndex */
@@ -11396,7 +11396,7 @@ static UA_DataTypeMember SubscriptionAcknowledgement_members[2] = {
 }};
 
 /* StructureType */
-static UA_DataTypeMember StructureType_members[1] = {
+static const UA_DataTypeMember StructureType_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_INT32, /* .memberTypeIndex */
@@ -11406,7 +11406,7 @@ static UA_DataTypeMember StructureType_members[1] = {
 }};
 
 /* ReadValueId */
-static UA_DataTypeMember ReadValueId_members[4] = {
+static const UA_DataTypeMember ReadValueId_members[4] = {
 {
     UA_TYPENAME("nodeId") /* .memberName */
     UA_TYPES_NODEID, /* .memberTypeIndex */
@@ -11437,7 +11437,7 @@ static UA_DataTypeMember ReadValueId_members[4] = {
 }};
 
 /* DataTypeAttributes */
-static UA_DataTypeMember DataTypeAttributes_members[6] = {
+static const UA_DataTypeMember DataTypeAttributes_members[6] = {
 {
     UA_TYPENAME("specifiedAttributes") /* .memberName */
     UA_TYPES_UINT32, /* .memberTypeIndex */
@@ -11482,7 +11482,7 @@ static UA_DataTypeMember DataTypeAttributes_members[6] = {
 }};
 
 /* ResponseHeader */
-static UA_DataTypeMember ResponseHeader_members[6] = {
+static const UA_DataTypeMember ResponseHeader_members[6] = {
 {
     UA_TYPENAME("timestamp") /* .memberName */
     UA_TYPES_DATETIME, /* .memberTypeIndex */
@@ -11527,7 +11527,7 @@ static UA_DataTypeMember ResponseHeader_members[6] = {
 }};
 
 /* DeleteMonitoredItemsRequest */
-static UA_DataTypeMember DeleteMonitoredItemsRequest_members[3] = {
+static const UA_DataTypeMember DeleteMonitoredItemsRequest_members[3] = {
 {
     UA_TYPENAME("requestHeader") /* .memberName */
     UA_TYPES_REQUESTHEADER, /* .memberTypeIndex */
@@ -11551,7 +11551,7 @@ static UA_DataTypeMember DeleteMonitoredItemsRequest_members[3] = {
 }};
 
 /* ViewDescription */
-static UA_DataTypeMember ViewDescription_members[3] = {
+static const UA_DataTypeMember ViewDescription_members[3] = {
 {
     UA_TYPENAME("viewId") /* .memberName */
     UA_TYPES_NODEID, /* .memberTypeIndex */
@@ -11575,7 +11575,7 @@ static UA_DataTypeMember ViewDescription_members[3] = {
 }};
 
 /* ServerOnNetwork */
-static UA_DataTypeMember ServerOnNetwork_members[4] = {
+static const UA_DataTypeMember ServerOnNetwork_members[4] = {
 {
     UA_TYPENAME("recordId") /* .memberName */
     UA_TYPES_UINT32, /* .memberTypeIndex */
@@ -11606,7 +11606,7 @@ static UA_DataTypeMember ServerOnNetwork_members[4] = {
 }};
 
 /* DeleteMonitoredItemsResponse */
-static UA_DataTypeMember DeleteMonitoredItemsResponse_members[3] = {
+static const UA_DataTypeMember DeleteMonitoredItemsResponse_members[3] = {
 {
     UA_TYPENAME("responseHeader") /* .memberName */
     UA_TYPES_RESPONSEHEADER, /* .memberTypeIndex */
@@ -11630,7 +11630,7 @@ static UA_DataTypeMember DeleteMonitoredItemsResponse_members[3] = {
 }};
 
 /* FindServersOnNetworkResponse */
-static UA_DataTypeMember FindServersOnNetworkResponse_members[3] = {
+static const UA_DataTypeMember FindServersOnNetworkResponse_members[3] = {
 {
     UA_TYPENAME("responseHeader") /* .memberName */
     UA_TYPES_RESPONSEHEADER, /* .memberTypeIndex */
@@ -11654,7 +11654,7 @@ static UA_DataTypeMember FindServersOnNetworkResponse_members[3] = {
 }};
 
 /* RelativePath */
-static UA_DataTypeMember RelativePath_members[1] = {
+static const UA_DataTypeMember RelativePath_members[1] = {
 {
     UA_TYPENAME("elements") /* .memberName */
     UA_TYPES_RELATIVEPATHELEMENT, /* .memberTypeIndex */
@@ -11664,7 +11664,7 @@ static UA_DataTypeMember RelativePath_members[1] = {
 }};
 
 /* NetworkAddressUrlDataType */
-static UA_DataTypeMember NetworkAddressUrlDataType_members[2] = {
+static const UA_DataTypeMember NetworkAddressUrlDataType_members[2] = {
 {
     UA_TYPENAME("networkInterface") /* .memberName */
     UA_TYPES_STRING, /* .memberTypeIndex */
@@ -11681,7 +11681,7 @@ static UA_DataTypeMember NetworkAddressUrlDataType_members[2] = {
 }};
 
 /* RegisterNodesRequest */
-static UA_DataTypeMember RegisterNodesRequest_members[2] = {
+static const UA_DataTypeMember RegisterNodesRequest_members[2] = {
 {
     UA_TYPENAME("requestHeader") /* .memberName */
     UA_TYPES_REQUESTHEADER, /* .memberTypeIndex */
@@ -11698,7 +11698,7 @@ static UA_DataTypeMember RegisterNodesRequest_members[2] = {
 }};
 
 /* AggregateConfiguration */
-static UA_DataTypeMember AggregateConfiguration_members[5] = {
+static const UA_DataTypeMember AggregateConfiguration_members[5] = {
 {
     UA_TYPENAME("useServerCapabilitiesDefaults") /* .memberName */
     UA_TYPES_BOOLEAN, /* .memberTypeIndex */
@@ -11736,7 +11736,7 @@ static UA_DataTypeMember AggregateConfiguration_members[5] = {
 }};
 
 /* DeleteNodesRequest */
-static UA_DataTypeMember DeleteNodesRequest_members[2] = {
+static const UA_DataTypeMember DeleteNodesRequest_members[2] = {
 {
     UA_TYPENAME("requestHeader") /* .memberName */
     UA_TYPES_REQUESTHEADER, /* .memberTypeIndex */
@@ -11753,7 +11753,7 @@ static UA_DataTypeMember DeleteNodesRequest_members[2] = {
 }};
 
 /* StructureDefinition */
-static UA_DataTypeMember StructureDefinition_members[4] = {
+static const UA_DataTypeMember StructureDefinition_members[4] = {
 {
     UA_TYPENAME("defaultEncodingId") /* .memberName */
     UA_TYPES_NODEID, /* .memberTypeIndex */
@@ -11784,7 +11784,7 @@ static UA_DataTypeMember StructureDefinition_members[4] = {
 }};
 
 /* PublishResponse */
-static UA_DataTypeMember PublishResponse_members[7] = {
+static const UA_DataTypeMember PublishResponse_members[7] = {
 {
     UA_TYPENAME("responseHeader") /* .memberName */
     UA_TYPES_RESPONSEHEADER, /* .memberTypeIndex */
@@ -11836,7 +11836,7 @@ static UA_DataTypeMember PublishResponse_members[7] = {
 }};
 
 /* MonitoredItemModifyRequest */
-static UA_DataTypeMember MonitoredItemModifyRequest_members[2] = {
+static const UA_DataTypeMember MonitoredItemModifyRequest_members[2] = {
 {
     UA_TYPENAME("monitoredItemId") /* .memberName */
     UA_TYPES_UINT32, /* .memberTypeIndex */
@@ -11853,7 +11853,7 @@ static UA_DataTypeMember MonitoredItemModifyRequest_members[2] = {
 }};
 
 /* ServiceCounterDataType */
-static UA_DataTypeMember ServiceCounterDataType_members[2] = {
+static const UA_DataTypeMember ServiceCounterDataType_members[2] = {
 {
     UA_TYPENAME("totalCount") /* .memberName */
     UA_TYPES_UINT32, /* .memberTypeIndex */
@@ -11870,7 +11870,7 @@ static UA_DataTypeMember ServiceCounterDataType_members[2] = {
 }};
 
 /* ModelChangeStructureDataType */
-static UA_DataTypeMember ModelChangeStructureDataType_members[3] = {
+static const UA_DataTypeMember ModelChangeStructureDataType_members[3] = {
 {
     UA_TYPENAME("affected") /* .memberName */
     UA_TYPES_NODEID, /* .memberTypeIndex */
@@ -11894,7 +11894,7 @@ static UA_DataTypeMember ModelChangeStructureDataType_members[3] = {
 }};
 
 /* UserNameIdentityToken */
-static UA_DataTypeMember UserNameIdentityToken_members[4] = {
+static const UA_DataTypeMember UserNameIdentityToken_members[4] = {
 {
     UA_TYPENAME("policyId") /* .memberName */
     UA_TYPES_STRING, /* .memberTypeIndex */
@@ -11925,7 +11925,7 @@ static UA_DataTypeMember UserNameIdentityToken_members[4] = {
 }};
 
 /* IdType */
-static UA_DataTypeMember IdType_members[1] = {
+static const UA_DataTypeMember IdType_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_INT32, /* .memberTypeIndex */
@@ -11935,7 +11935,7 @@ static UA_DataTypeMember IdType_members[1] = {
 }};
 
 /* UserTokenType */
-static UA_DataTypeMember UserTokenType_members[1] = {
+static const UA_DataTypeMember UserTokenType_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_INT32, /* .memberTypeIndex */
@@ -11945,7 +11945,7 @@ static UA_DataTypeMember UserTokenType_members[1] = {
 }};
 
 /* SetTriggeringResponse */
-static UA_DataTypeMember SetTriggeringResponse_members[5] = {
+static const UA_DataTypeMember SetTriggeringResponse_members[5] = {
 {
     UA_TYPENAME("responseHeader") /* .memberName */
     UA_TYPES_RESPONSEHEADER, /* .memberTypeIndex */
@@ -11983,7 +11983,7 @@ static UA_DataTypeMember SetTriggeringResponse_members[5] = {
 }};
 
 /* TimeZoneDataType */
-static UA_DataTypeMember TimeZoneDataType_members[2] = {
+static const UA_DataTypeMember TimeZoneDataType_members[2] = {
 {
     UA_TYPENAME("offset") /* .memberName */
     UA_TYPES_INT16, /* .memberTypeIndex */
@@ -12000,7 +12000,7 @@ static UA_DataTypeMember TimeZoneDataType_members[2] = {
 }};
 
 /* ActivateSessionRequest */
-static UA_DataTypeMember ActivateSessionRequest_members[6] = {
+static const UA_DataTypeMember ActivateSessionRequest_members[6] = {
 {
     UA_TYPENAME("requestHeader") /* .memberName */
     UA_TYPES_REQUESTHEADER, /* .memberTypeIndex */
@@ -12045,7 +12045,7 @@ static UA_DataTypeMember ActivateSessionRequest_members[6] = {
 }};
 
 /* OpenSecureChannelResponse */
-static UA_DataTypeMember OpenSecureChannelResponse_members[4] = {
+static const UA_DataTypeMember OpenSecureChannelResponse_members[4] = {
 {
     UA_TYPENAME("responseHeader") /* .memberName */
     UA_TYPES_RESPONSEHEADER, /* .memberTypeIndex */
@@ -12076,7 +12076,7 @@ static UA_DataTypeMember OpenSecureChannelResponse_members[4] = {
 }};
 
 /* ApplicationType */
-static UA_DataTypeMember ApplicationType_members[1] = {
+static const UA_DataTypeMember ApplicationType_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_INT32, /* .memberTypeIndex */
@@ -12086,7 +12086,7 @@ static UA_DataTypeMember ApplicationType_members[1] = {
 }};
 
 /* ServerState */
-static UA_DataTypeMember ServerState_members[1] = {
+static const UA_DataTypeMember ServerState_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_INT32, /* .memberTypeIndex */
@@ -12096,7 +12096,7 @@ static UA_DataTypeMember ServerState_members[1] = {
 }};
 
 /* QueryNextResponse */
-static UA_DataTypeMember QueryNextResponse_members[3] = {
+static const UA_DataTypeMember QueryNextResponse_members[3] = {
 {
     UA_TYPENAME("responseHeader") /* .memberName */
     UA_TYPES_RESPONSEHEADER, /* .memberTypeIndex */
@@ -12120,7 +12120,7 @@ static UA_DataTypeMember QueryNextResponse_members[3] = {
 }};
 
 /* LocaleId */
-static UA_DataTypeMember LocaleId_members[1] = {
+static const UA_DataTypeMember LocaleId_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_STRING, /* .memberTypeIndex */
@@ -12133,7 +12133,7 @@ static UA_DataTypeMember LocaleId_members[1] = {
 #define DiscoveryConfiguration_members NULL
 
 /* ActivateSessionResponse */
-static UA_DataTypeMember ActivateSessionResponse_members[4] = {
+static const UA_DataTypeMember ActivateSessionResponse_members[4] = {
 {
     UA_TYPENAME("responseHeader") /* .memberName */
     UA_TYPES_RESPONSEHEADER, /* .memberTypeIndex */
@@ -12164,7 +12164,7 @@ static UA_DataTypeMember ActivateSessionResponse_members[4] = {
 }};
 
 /* EndpointUrlListDataType */
-static UA_DataTypeMember EndpointUrlListDataType_members[1] = {
+static const UA_DataTypeMember EndpointUrlListDataType_members[1] = {
 {
     UA_TYPENAME("endpointUrlList") /* .memberName */
     UA_TYPES_STRING, /* .memberTypeIndex */
@@ -12174,7 +12174,7 @@ static UA_DataTypeMember EndpointUrlListDataType_members[1] = {
 }};
 
 /* FilterOperator */
-static UA_DataTypeMember FilterOperator_members[1] = {
+static const UA_DataTypeMember FilterOperator_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_INT32, /* .memberTypeIndex */
@@ -12184,7 +12184,7 @@ static UA_DataTypeMember FilterOperator_members[1] = {
 }};
 
 /* QueryNextRequest */
-static UA_DataTypeMember QueryNextRequest_members[3] = {
+static const UA_DataTypeMember QueryNextRequest_members[3] = {
 {
     UA_TYPENAME("requestHeader") /* .memberName */
     UA_TYPES_REQUESTHEADER, /* .memberTypeIndex */
@@ -12208,7 +12208,7 @@ static UA_DataTypeMember QueryNextRequest_members[3] = {
 }};
 
 /* WriteResponse */
-static UA_DataTypeMember WriteResponse_members[3] = {
+static const UA_DataTypeMember WriteResponse_members[3] = {
 {
     UA_TYPENAME("responseHeader") /* .memberName */
     UA_TYPES_RESPONSEHEADER, /* .memberTypeIndex */
@@ -12232,7 +12232,7 @@ static UA_DataTypeMember WriteResponse_members[3] = {
 }};
 
 /* BrowseNextRequest */
-static UA_DataTypeMember BrowseNextRequest_members[3] = {
+static const UA_DataTypeMember BrowseNextRequest_members[3] = {
 {
     UA_TYPENAME("requestHeader") /* .memberName */
     UA_TYPES_REQUESTHEADER, /* .memberTypeIndex */
@@ -12256,7 +12256,7 @@ static UA_DataTypeMember BrowseNextRequest_members[3] = {
 }};
 
 /* CreateSubscriptionRequest */
-static UA_DataTypeMember CreateSubscriptionRequest_members[7] = {
+static const UA_DataTypeMember CreateSubscriptionRequest_members[7] = {
 {
     UA_TYPENAME("requestHeader") /* .memberName */
     UA_TYPES_REQUESTHEADER, /* .memberTypeIndex */
@@ -12308,7 +12308,7 @@ static UA_DataTypeMember CreateSubscriptionRequest_members[7] = {
 }};
 
 /* EnumField */
-static UA_DataTypeMember EnumField_members[4] = {
+static const UA_DataTypeMember EnumField_members[4] = {
 {
     UA_TYPENAME("value") /* .memberName */
     UA_TYPES_INT64, /* .memberTypeIndex */
@@ -12339,7 +12339,7 @@ static UA_DataTypeMember EnumField_members[4] = {
 }};
 
 /* VariableTypeAttributes */
-static UA_DataTypeMember VariableTypeAttributes_members[10] = {
+static const UA_DataTypeMember VariableTypeAttributes_members[10] = {
 {
     UA_TYPENAME("specifiedAttributes") /* .memberName */
     UA_TYPES_UINT32, /* .memberTypeIndex */
@@ -12412,7 +12412,7 @@ static UA_DataTypeMember VariableTypeAttributes_members[10] = {
 }};
 
 /* BrowsePathResult */
-static UA_DataTypeMember BrowsePathResult_members[2] = {
+static const UA_DataTypeMember BrowsePathResult_members[2] = {
 {
     UA_TYPENAME("statusCode") /* .memberName */
     UA_TYPES_STATUSCODE, /* .memberTypeIndex */
@@ -12429,7 +12429,7 @@ static UA_DataTypeMember BrowsePathResult_members[2] = {
 }};
 
 /* ModifySubscriptionResponse */
-static UA_DataTypeMember ModifySubscriptionResponse_members[4] = {
+static const UA_DataTypeMember ModifySubscriptionResponse_members[4] = {
 {
     UA_TYPENAME("responseHeader") /* .memberName */
     UA_TYPES_RESPONSEHEADER, /* .memberTypeIndex */
@@ -12460,7 +12460,7 @@ static UA_DataTypeMember ModifySubscriptionResponse_members[4] = {
 }};
 
 /* RedundantServerDataType */
-static UA_DataTypeMember RedundantServerDataType_members[3] = {
+static const UA_DataTypeMember RedundantServerDataType_members[3] = {
 {
     UA_TYPENAME("serverId") /* .memberName */
     UA_TYPES_STRING, /* .memberTypeIndex */
@@ -12484,7 +12484,7 @@ static UA_DataTypeMember RedundantServerDataType_members[3] = {
 }};
 
 /* PublishedVariableDataType */
-static UA_DataTypeMember PublishedVariableDataType_members[8] = {
+static const UA_DataTypeMember PublishedVariableDataType_members[8] = {
 {
     UA_TYPENAME("publishedVariable") /* .memberName */
     UA_TYPES_NODEID, /* .memberTypeIndex */
@@ -12543,7 +12543,7 @@ static UA_DataTypeMember PublishedVariableDataType_members[8] = {
 }};
 
 /* RegisterNodesResponse */
-static UA_DataTypeMember RegisterNodesResponse_members[2] = {
+static const UA_DataTypeMember RegisterNodesResponse_members[2] = {
 {
     UA_TYPENAME("responseHeader") /* .memberName */
     UA_TYPES_RESPONSEHEADER, /* .memberTypeIndex */
@@ -12560,7 +12560,7 @@ static UA_DataTypeMember RegisterNodesResponse_members[2] = {
 }};
 
 /* CloseSessionRequest */
-static UA_DataTypeMember CloseSessionRequest_members[2] = {
+static const UA_DataTypeMember CloseSessionRequest_members[2] = {
 {
     UA_TYPENAME("requestHeader") /* .memberName */
     UA_TYPES_REQUESTHEADER, /* .memberTypeIndex */
@@ -12577,7 +12577,7 @@ static UA_DataTypeMember CloseSessionRequest_members[2] = {
 }};
 
 /* ModifyMonitoredItemsResponse */
-static UA_DataTypeMember ModifyMonitoredItemsResponse_members[3] = {
+static const UA_DataTypeMember ModifyMonitoredItemsResponse_members[3] = {
 {
     UA_TYPENAME("responseHeader") /* .memberName */
     UA_TYPES_RESPONSEHEADER, /* .memberTypeIndex */
@@ -12601,7 +12601,7 @@ static UA_DataTypeMember ModifyMonitoredItemsResponse_members[3] = {
 }};
 
 /* ModifySubscriptionRequest */
-static UA_DataTypeMember ModifySubscriptionRequest_members[7] = {
+static const UA_DataTypeMember ModifySubscriptionRequest_members[7] = {
 {
     UA_TYPENAME("requestHeader") /* .memberName */
     UA_TYPES_REQUESTHEADER, /* .memberTypeIndex */
@@ -12653,7 +12653,7 @@ static UA_DataTypeMember ModifySubscriptionRequest_members[7] = {
 }};
 
 /* ServerDiagnosticsSummaryDataType */
-static UA_DataTypeMember ServerDiagnosticsSummaryDataType_members[12] = {
+static const UA_DataTypeMember ServerDiagnosticsSummaryDataType_members[12] = {
 {
     UA_TYPENAME("serverViewCount") /* .memberName */
     UA_TYPES_UINT32, /* .memberTypeIndex */
@@ -12740,7 +12740,7 @@ static UA_DataTypeMember ServerDiagnosticsSummaryDataType_members[12] = {
 }};
 
 /* UserTokenPolicy */
-static UA_DataTypeMember UserTokenPolicy_members[5] = {
+static const UA_DataTypeMember UserTokenPolicy_members[5] = {
 {
     UA_TYPENAME("policyId") /* .memberName */
     UA_TYPES_STRING, /* .memberTypeIndex */
@@ -12778,7 +12778,7 @@ static UA_DataTypeMember UserTokenPolicy_members[5] = {
 }};
 
 /* ReferenceTypeAttributes */
-static UA_DataTypeMember ReferenceTypeAttributes_members[8] = {
+static const UA_DataTypeMember ReferenceTypeAttributes_members[8] = {
 {
     UA_TYPENAME("specifiedAttributes") /* .memberName */
     UA_TYPES_UINT32, /* .memberTypeIndex */
@@ -12837,7 +12837,7 @@ static UA_DataTypeMember ReferenceTypeAttributes_members[8] = {
 }};
 
 /* BrowsePath */
-static UA_DataTypeMember BrowsePath_members[2] = {
+static const UA_DataTypeMember BrowsePath_members[2] = {
 {
     UA_TYPENAME("startingNode") /* .memberName */
     UA_TYPES_NODEID, /* .memberTypeIndex */
@@ -12854,7 +12854,7 @@ static UA_DataTypeMember BrowsePath_members[2] = {
 }};
 
 /* SetMonitoringModeRequest */
-static UA_DataTypeMember SetMonitoringModeRequest_members[4] = {
+static const UA_DataTypeMember SetMonitoringModeRequest_members[4] = {
 {
     UA_TYPENAME("requestHeader") /* .memberName */
     UA_TYPES_REQUESTHEADER, /* .memberTypeIndex */
@@ -12885,7 +12885,7 @@ static UA_DataTypeMember SetMonitoringModeRequest_members[4] = {
 }};
 
 /* UnregisterNodesResponse */
-static UA_DataTypeMember UnregisterNodesResponse_members[1] = {
+static const UA_DataTypeMember UnregisterNodesResponse_members[1] = {
 {
     UA_TYPENAME("responseHeader") /* .memberName */
     UA_TYPES_RESPONSEHEADER, /* .memberTypeIndex */
@@ -12895,7 +12895,7 @@ static UA_DataTypeMember UnregisterNodesResponse_members[1] = {
 }};
 
 /* WriteRequest */
-static UA_DataTypeMember WriteRequest_members[2] = {
+static const UA_DataTypeMember WriteRequest_members[2] = {
 {
     UA_TYPENAME("requestHeader") /* .memberName */
     UA_TYPES_REQUESTHEADER, /* .memberTypeIndex */
@@ -12912,7 +12912,7 @@ static UA_DataTypeMember WriteRequest_members[2] = {
 }};
 
 /* ObjectAttributes */
-static UA_DataTypeMember ObjectAttributes_members[6] = {
+static const UA_DataTypeMember ObjectAttributes_members[6] = {
 {
     UA_TYPENAME("specifiedAttributes") /* .memberName */
     UA_TYPES_UINT32, /* .memberTypeIndex */
@@ -12957,7 +12957,7 @@ static UA_DataTypeMember ObjectAttributes_members[6] = {
 }};
 
 /* BrowseResultMask */
-static UA_DataTypeMember BrowseResultMask_members[1] = {
+static const UA_DataTypeMember BrowseResultMask_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_INT32, /* .memberTypeIndex */
@@ -12967,7 +12967,7 @@ static UA_DataTypeMember BrowseResultMask_members[1] = {
 }};
 
 /* BrowseDescription */
-static UA_DataTypeMember BrowseDescription_members[6] = {
+static const UA_DataTypeMember BrowseDescription_members[6] = {
 {
     UA_TYPENAME("nodeId") /* .memberName */
     UA_TYPES_NODEID, /* .memberTypeIndex */
@@ -13012,7 +13012,7 @@ static UA_DataTypeMember BrowseDescription_members[6] = {
 }};
 
 /* Duration */
-static UA_DataTypeMember Duration_members[1] = {
+static const UA_DataTypeMember Duration_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_DOUBLE, /* .memberTypeIndex */
@@ -13022,7 +13022,7 @@ static UA_DataTypeMember Duration_members[1] = {
 }};
 
 /* SetTriggeringRequest */
-static UA_DataTypeMember SetTriggeringRequest_members[5] = {
+static const UA_DataTypeMember SetTriggeringRequest_members[5] = {
 {
     UA_TYPENAME("requestHeader") /* .memberName */
     UA_TYPES_REQUESTHEADER, /* .memberTypeIndex */
@@ -13060,7 +13060,7 @@ static UA_DataTypeMember SetTriggeringRequest_members[5] = {
 }};
 
 /* SessionSecurityDiagnosticsDataType */
-static UA_DataTypeMember SessionSecurityDiagnosticsDataType_members[9] = {
+static const UA_DataTypeMember SessionSecurityDiagnosticsDataType_members[9] = {
 {
     UA_TYPENAME("sessionId") /* .memberName */
     UA_TYPES_NODEID, /* .memberTypeIndex */
@@ -13126,7 +13126,7 @@ static UA_DataTypeMember SessionSecurityDiagnosticsDataType_members[9] = {
 }};
 
 /* RepublishRequest */
-static UA_DataTypeMember RepublishRequest_members[3] = {
+static const UA_DataTypeMember RepublishRequest_members[3] = {
 {
     UA_TYPENAME("requestHeader") /* .memberName */
     UA_TYPES_REQUESTHEADER, /* .memberTypeIndex */
@@ -13150,7 +13150,7 @@ static UA_DataTypeMember RepublishRequest_members[3] = {
 }};
 
 /* GetEndpointsRequest */
-static UA_DataTypeMember GetEndpointsRequest_members[4] = {
+static const UA_DataTypeMember GetEndpointsRequest_members[4] = {
 {
     UA_TYPENAME("requestHeader") /* .memberName */
     UA_TYPES_REQUESTHEADER, /* .memberTypeIndex */
@@ -13181,7 +13181,7 @@ static UA_DataTypeMember GetEndpointsRequest_members[4] = {
 }};
 
 /* PublishRequest */
-static UA_DataTypeMember PublishRequest_members[2] = {
+static const UA_DataTypeMember PublishRequest_members[2] = {
 {
     UA_TYPENAME("requestHeader") /* .memberName */
     UA_TYPES_REQUESTHEADER, /* .memberTypeIndex */
@@ -13198,7 +13198,7 @@ static UA_DataTypeMember PublishRequest_members[2] = {
 }};
 
 /* DeleteSubscriptionsResponse */
-static UA_DataTypeMember DeleteSubscriptionsResponse_members[3] = {
+static const UA_DataTypeMember DeleteSubscriptionsResponse_members[3] = {
 {
     UA_TYPENAME("responseHeader") /* .memberName */
     UA_TYPES_RESPONSEHEADER, /* .memberTypeIndex */
@@ -13222,7 +13222,7 @@ static UA_DataTypeMember DeleteSubscriptionsResponse_members[3] = {
 }};
 
 /* AddNodesResponse */
-static UA_DataTypeMember AddNodesResponse_members[3] = {
+static const UA_DataTypeMember AddNodesResponse_members[3] = {
 {
     UA_TYPENAME("responseHeader") /* .memberName */
     UA_TYPES_RESPONSEHEADER, /* .memberTypeIndex */
@@ -13246,7 +13246,7 @@ static UA_DataTypeMember AddNodesResponse_members[3] = {
 }};
 
 /* DataChangeNotification */
-static UA_DataTypeMember DataChangeNotification_members[2] = {
+static const UA_DataTypeMember DataChangeNotification_members[2] = {
 {
     UA_TYPENAME("monitoredItems") /* .memberName */
     UA_TYPES_MONITOREDITEMNOTIFICATION, /* .memberTypeIndex */
@@ -13263,7 +13263,7 @@ static UA_DataTypeMember DataChangeNotification_members[2] = {
 }};
 
 /* CloseSecureChannelResponse */
-static UA_DataTypeMember CloseSecureChannelResponse_members[1] = {
+static const UA_DataTypeMember CloseSecureChannelResponse_members[1] = {
 {
     UA_TYPENAME("responseHeader") /* .memberName */
     UA_TYPES_RESPONSEHEADER, /* .memberTypeIndex */
@@ -13273,7 +13273,7 @@ static UA_DataTypeMember CloseSecureChannelResponse_members[1] = {
 }};
 
 /* ModifyMonitoredItemsRequest */
-static UA_DataTypeMember ModifyMonitoredItemsRequest_members[4] = {
+static const UA_DataTypeMember ModifyMonitoredItemsRequest_members[4] = {
 {
     UA_TYPENAME("requestHeader") /* .memberName */
     UA_TYPES_REQUESTHEADER, /* .memberTypeIndex */
@@ -13304,7 +13304,7 @@ static UA_DataTypeMember ModifyMonitoredItemsRequest_members[4] = {
 }};
 
 /* SetMonitoringModeResponse */
-static UA_DataTypeMember SetMonitoringModeResponse_members[3] = {
+static const UA_DataTypeMember SetMonitoringModeResponse_members[3] = {
 {
     UA_TYPENAME("responseHeader") /* .memberName */
     UA_TYPES_RESPONSEHEADER, /* .memberTypeIndex */
@@ -13328,7 +13328,7 @@ static UA_DataTypeMember SetMonitoringModeResponse_members[3] = {
 }};
 
 /* FindServersRequest */
-static UA_DataTypeMember FindServersRequest_members[4] = {
+static const UA_DataTypeMember FindServersRequest_members[4] = {
 {
     UA_TYPENAME("requestHeader") /* .memberName */
     UA_TYPES_REQUESTHEADER, /* .memberTypeIndex */
@@ -13359,7 +13359,7 @@ static UA_DataTypeMember FindServersRequest_members[4] = {
 }};
 
 /* FieldMetaData */
-static UA_DataTypeMember FieldMetaData_members[10] = {
+static const UA_DataTypeMember FieldMetaData_members[10] = {
 {
     UA_TYPENAME("name") /* .memberName */
     UA_TYPES_STRING, /* .memberTypeIndex */
@@ -13432,7 +13432,7 @@ static UA_DataTypeMember FieldMetaData_members[10] = {
 }};
 
 /* ReferenceDescription */
-static UA_DataTypeMember ReferenceDescription_members[7] = {
+static const UA_DataTypeMember ReferenceDescription_members[7] = {
 {
     UA_TYPENAME("referenceTypeId") /* .memberName */
     UA_TYPES_NODEID, /* .memberTypeIndex */
@@ -13484,7 +13484,7 @@ static UA_DataTypeMember ReferenceDescription_members[7] = {
 }};
 
 /* SetPublishingModeResponse */
-static UA_DataTypeMember SetPublishingModeResponse_members[3] = {
+static const UA_DataTypeMember SetPublishingModeResponse_members[3] = {
 {
     UA_TYPENAME("responseHeader") /* .memberName */
     UA_TYPES_RESPONSEHEADER, /* .memberTypeIndex */
@@ -13508,7 +13508,7 @@ static UA_DataTypeMember SetPublishingModeResponse_members[3] = {
 }};
 
 /* ContentFilterResult */
-static UA_DataTypeMember ContentFilterResult_members[2] = {
+static const UA_DataTypeMember ContentFilterResult_members[2] = {
 {
     UA_TYPENAME("elementResults") /* .memberName */
     UA_TYPES_CONTENTFILTERELEMENTRESULT, /* .memberTypeIndex */
@@ -13525,7 +13525,7 @@ static UA_DataTypeMember ContentFilterResult_members[2] = {
 }};
 
 /* RegisterServerResponse */
-static UA_DataTypeMember RegisterServerResponse_members[1] = {
+static const UA_DataTypeMember RegisterServerResponse_members[1] = {
 {
     UA_TYPENAME("responseHeader") /* .memberName */
     UA_TYPES_RESPONSEHEADER, /* .memberTypeIndex */
@@ -13535,7 +13535,7 @@ static UA_DataTypeMember RegisterServerResponse_members[1] = {
 }};
 
 /* AddReferencesItem */
-static UA_DataTypeMember AddReferencesItem_members[6] = {
+static const UA_DataTypeMember AddReferencesItem_members[6] = {
 {
     UA_TYPENAME("sourceNodeId") /* .memberName */
     UA_TYPES_NODEID, /* .memberTypeIndex */
@@ -13580,7 +13580,7 @@ static UA_DataTypeMember AddReferencesItem_members[6] = {
 }};
 
 /* QueryDataDescription */
-static UA_DataTypeMember QueryDataDescription_members[3] = {
+static const UA_DataTypeMember QueryDataDescription_members[3] = {
 {
     UA_TYPENAME("relativePath") /* .memberName */
     UA_TYPES_RELATIVEPATH, /* .memberTypeIndex */
@@ -13604,7 +13604,7 @@ static UA_DataTypeMember QueryDataDescription_members[3] = {
 }};
 
 /* CreateSubscriptionResponse */
-static UA_DataTypeMember CreateSubscriptionResponse_members[5] = {
+static const UA_DataTypeMember CreateSubscriptionResponse_members[5] = {
 {
     UA_TYPENAME("responseHeader") /* .memberName */
     UA_TYPES_RESPONSEHEADER, /* .memberTypeIndex */
@@ -13642,7 +13642,7 @@ static UA_DataTypeMember CreateSubscriptionResponse_members[5] = {
 }};
 
 /* StructureDescription */
-static UA_DataTypeMember StructureDescription_members[3] = {
+static const UA_DataTypeMember StructureDescription_members[3] = {
 {
     UA_TYPENAME("dataTypeId") /* .memberName */
     UA_TYPES_NODEID, /* .memberTypeIndex */
@@ -13666,7 +13666,7 @@ static UA_DataTypeMember StructureDescription_members[3] = {
 }};
 
 /* NetworkGroupDataType */
-static UA_DataTypeMember NetworkGroupDataType_members[2] = {
+static const UA_DataTypeMember NetworkGroupDataType_members[2] = {
 {
     UA_TYPENAME("serverUri") /* .memberName */
     UA_TYPES_STRING, /* .memberTypeIndex */
@@ -13683,7 +13683,7 @@ static UA_DataTypeMember NetworkGroupDataType_members[2] = {
 }};
 
 /* EnumDefinition */
-static UA_DataTypeMember EnumDefinition_members[1] = {
+static const UA_DataTypeMember EnumDefinition_members[1] = {
 {
     UA_TYPENAME("fields") /* .memberName */
     UA_TYPES_ENUMFIELD, /* .memberTypeIndex */
@@ -13693,7 +13693,7 @@ static UA_DataTypeMember EnumDefinition_members[1] = {
 }};
 
 /* DeleteReferencesResponse */
-static UA_DataTypeMember DeleteReferencesResponse_members[3] = {
+static const UA_DataTypeMember DeleteReferencesResponse_members[3] = {
 {
     UA_TYPENAME("responseHeader") /* .memberName */
     UA_TYPES_RESPONSEHEADER, /* .memberTypeIndex */
@@ -13717,7 +13717,7 @@ static UA_DataTypeMember DeleteReferencesResponse_members[3] = {
 }};
 
 /* CreateMonitoredItemsResponse */
-static UA_DataTypeMember CreateMonitoredItemsResponse_members[3] = {
+static const UA_DataTypeMember CreateMonitoredItemsResponse_members[3] = {
 {
     UA_TYPENAME("responseHeader") /* .memberName */
     UA_TYPES_RESPONSEHEADER, /* .memberTypeIndex */
@@ -13741,7 +13741,7 @@ static UA_DataTypeMember CreateMonitoredItemsResponse_members[3] = {
 }};
 
 /* CallResponse */
-static UA_DataTypeMember CallResponse_members[3] = {
+static const UA_DataTypeMember CallResponse_members[3] = {
 {
     UA_TYPENAME("responseHeader") /* .memberName */
     UA_TYPES_RESPONSEHEADER, /* .memberTypeIndex */
@@ -13765,7 +13765,7 @@ static UA_DataTypeMember CallResponse_members[3] = {
 }};
 
 /* DeleteNodesResponse */
-static UA_DataTypeMember DeleteNodesResponse_members[3] = {
+static const UA_DataTypeMember DeleteNodesResponse_members[3] = {
 {
     UA_TYPENAME("responseHeader") /* .memberName */
     UA_TYPES_RESPONSEHEADER, /* .memberTypeIndex */
@@ -13789,7 +13789,7 @@ static UA_DataTypeMember DeleteNodesResponse_members[3] = {
 }};
 
 /* RepublishResponse */
-static UA_DataTypeMember RepublishResponse_members[2] = {
+static const UA_DataTypeMember RepublishResponse_members[2] = {
 {
     UA_TYPENAME("responseHeader") /* .memberName */
     UA_TYPES_RESPONSEHEADER, /* .memberTypeIndex */
@@ -13806,7 +13806,7 @@ static UA_DataTypeMember RepublishResponse_members[2] = {
 }};
 
 /* MonitoredItemCreateRequest */
-static UA_DataTypeMember MonitoredItemCreateRequest_members[3] = {
+static const UA_DataTypeMember MonitoredItemCreateRequest_members[3] = {
 {
     UA_TYPENAME("itemToMonitor") /* .memberName */
     UA_TYPES_READVALUEID, /* .memberTypeIndex */
@@ -13830,7 +13830,7 @@ static UA_DataTypeMember MonitoredItemCreateRequest_members[3] = {
 }};
 
 /* DeleteReferencesRequest */
-static UA_DataTypeMember DeleteReferencesRequest_members[2] = {
+static const UA_DataTypeMember DeleteReferencesRequest_members[2] = {
 {
     UA_TYPENAME("requestHeader") /* .memberName */
     UA_TYPES_REQUESTHEADER, /* .memberTypeIndex */
@@ -13847,7 +13847,7 @@ static UA_DataTypeMember DeleteReferencesRequest_members[2] = {
 }};
 
 /* ReadResponse */
-static UA_DataTypeMember ReadResponse_members[3] = {
+static const UA_DataTypeMember ReadResponse_members[3] = {
 {
     UA_TYPENAME("responseHeader") /* .memberName */
     UA_TYPES_RESPONSEHEADER, /* .memberTypeIndex */
@@ -13871,7 +13871,7 @@ static UA_DataTypeMember ReadResponse_members[3] = {
 }};
 
 /* AddReferencesRequest */
-static UA_DataTypeMember AddReferencesRequest_members[2] = {
+static const UA_DataTypeMember AddReferencesRequest_members[2] = {
 {
     UA_TYPENAME("requestHeader") /* .memberName */
     UA_TYPES_REQUESTHEADER, /* .memberTypeIndex */
@@ -13888,7 +13888,7 @@ static UA_DataTypeMember AddReferencesRequest_members[2] = {
 }};
 
 /* ReadRequest */
-static UA_DataTypeMember ReadRequest_members[4] = {
+static const UA_DataTypeMember ReadRequest_members[4] = {
 {
     UA_TYPENAME("requestHeader") /* .memberName */
     UA_TYPES_REQUESTHEADER, /* .memberTypeIndex */
@@ -13919,7 +13919,7 @@ static UA_DataTypeMember ReadRequest_members[4] = {
 }};
 
 /* OpenSecureChannelRequest */
-static UA_DataTypeMember OpenSecureChannelRequest_members[6] = {
+static const UA_DataTypeMember OpenSecureChannelRequest_members[6] = {
 {
     UA_TYPENAME("requestHeader") /* .memberName */
     UA_TYPES_REQUESTHEADER, /* .memberTypeIndex */
@@ -13964,7 +13964,7 @@ static UA_DataTypeMember OpenSecureChannelRequest_members[6] = {
 }};
 
 /* RegisterServer2Response */
-static UA_DataTypeMember RegisterServer2Response_members[3] = {
+static const UA_DataTypeMember RegisterServer2Response_members[3] = {
 {
     UA_TYPENAME("responseHeader") /* .memberName */
     UA_TYPES_RESPONSEHEADER, /* .memberTypeIndex */
@@ -13988,7 +13988,7 @@ static UA_DataTypeMember RegisterServer2Response_members[3] = {
 }};
 
 /* AddNodesItem */
-static UA_DataTypeMember AddNodesItem_members[7] = {
+static const UA_DataTypeMember AddNodesItem_members[7] = {
 {
     UA_TYPENAME("parentNodeId") /* .memberName */
     UA_TYPES_EXPANDEDNODEID, /* .memberTypeIndex */
@@ -14040,7 +14040,7 @@ static UA_DataTypeMember AddNodesItem_members[7] = {
 }};
 
 /* NodeTypeDescription */
-static UA_DataTypeMember NodeTypeDescription_members[3] = {
+static const UA_DataTypeMember NodeTypeDescription_members[3] = {
 {
     UA_TYPENAME("typeDefinitionNode") /* .memberName */
     UA_TYPES_EXPANDEDNODEID, /* .memberTypeIndex */
@@ -14064,7 +14064,7 @@ static UA_DataTypeMember NodeTypeDescription_members[3] = {
 }};
 
 /* ServerStatusDataType */
-static UA_DataTypeMember ServerStatusDataType_members[6] = {
+static const UA_DataTypeMember ServerStatusDataType_members[6] = {
 {
     UA_TYPENAME("startTime") /* .memberName */
     UA_TYPES_DATETIME, /* .memberTypeIndex */
@@ -14109,7 +14109,7 @@ static UA_DataTypeMember ServerStatusDataType_members[6] = {
 }};
 
 /* AttributeOperand */
-static UA_DataTypeMember AttributeOperand_members[5] = {
+static const UA_DataTypeMember AttributeOperand_members[5] = {
 {
     UA_TYPENAME("nodeId") /* .memberName */
     UA_TYPES_NODEID, /* .memberTypeIndex */
@@ -14147,7 +14147,7 @@ static UA_DataTypeMember AttributeOperand_members[5] = {
 }};
 
 /* AddReferencesResponse */
-static UA_DataTypeMember AddReferencesResponse_members[3] = {
+static const UA_DataTypeMember AddReferencesResponse_members[3] = {
 {
     UA_TYPENAME("responseHeader") /* .memberName */
     UA_TYPES_RESPONSEHEADER, /* .memberTypeIndex */
@@ -14171,7 +14171,7 @@ static UA_DataTypeMember AddReferencesResponse_members[3] = {
 }};
 
 /* EventFilterResult */
-static UA_DataTypeMember EventFilterResult_members[3] = {
+static const UA_DataTypeMember EventFilterResult_members[3] = {
 {
     UA_TYPENAME("selectClauseResults") /* .memberName */
     UA_TYPES_STATUSCODE, /* .memberTypeIndex */
@@ -14195,7 +14195,7 @@ static UA_DataTypeMember EventFilterResult_members[3] = {
 }};
 
 /* TranslateBrowsePathsToNodeIdsResponse */
-static UA_DataTypeMember TranslateBrowsePathsToNodeIdsResponse_members[3] = {
+static const UA_DataTypeMember TranslateBrowsePathsToNodeIdsResponse_members[3] = {
 {
     UA_TYPENAME("responseHeader") /* .memberName */
     UA_TYPES_RESPONSEHEADER, /* .memberTypeIndex */
@@ -14219,7 +14219,7 @@ static UA_DataTypeMember TranslateBrowsePathsToNodeIdsResponse_members[3] = {
 }};
 
 /* DataChangeFilter */
-static UA_DataTypeMember DataChangeFilter_members[3] = {
+static const UA_DataTypeMember DataChangeFilter_members[3] = {
 {
     UA_TYPENAME("trigger") /* .memberName */
     UA_TYPES_DATACHANGETRIGGER, /* .memberTypeIndex */
@@ -14243,7 +14243,7 @@ static UA_DataTypeMember DataChangeFilter_members[3] = {
 }};
 
 /* ContentFilterElement */
-static UA_DataTypeMember ContentFilterElement_members[2] = {
+static const UA_DataTypeMember ContentFilterElement_members[2] = {
 {
     UA_TYPENAME("filterOperator") /* .memberName */
     UA_TYPES_FILTEROPERATOR, /* .memberTypeIndex */
@@ -14260,7 +14260,7 @@ static UA_DataTypeMember ContentFilterElement_members[2] = {
 }};
 
 /* TranslateBrowsePathsToNodeIdsRequest */
-static UA_DataTypeMember TranslateBrowsePathsToNodeIdsRequest_members[2] = {
+static const UA_DataTypeMember TranslateBrowsePathsToNodeIdsRequest_members[2] = {
 {
     UA_TYPENAME("requestHeader") /* .memberName */
     UA_TYPES_REQUESTHEADER, /* .memberTypeIndex */
@@ -14277,7 +14277,7 @@ static UA_DataTypeMember TranslateBrowsePathsToNodeIdsRequest_members[2] = {
 }};
 
 /* CloseSessionResponse */
-static UA_DataTypeMember CloseSessionResponse_members[1] = {
+static const UA_DataTypeMember CloseSessionResponse_members[1] = {
 {
     UA_TYPENAME("responseHeader") /* .memberName */
     UA_TYPES_RESPONSEHEADER, /* .memberTypeIndex */
@@ -14287,7 +14287,7 @@ static UA_DataTypeMember CloseSessionResponse_members[1] = {
 }};
 
 /* ApplicationDescription */
-static UA_DataTypeMember ApplicationDescription_members[7] = {
+static const UA_DataTypeMember ApplicationDescription_members[7] = {
 {
     UA_TYPENAME("applicationUri") /* .memberName */
     UA_TYPES_STRING, /* .memberTypeIndex */
@@ -14339,7 +14339,7 @@ static UA_DataTypeMember ApplicationDescription_members[7] = {
 }};
 
 /* SessionDiagnosticsDataType */
-static UA_DataTypeMember SessionDiagnosticsDataType_members[43] = {
+static const UA_DataTypeMember SessionDiagnosticsDataType_members[43] = {
 {
     UA_TYPENAME("sessionId") /* .memberName */
     UA_TYPES_NODEID, /* .memberTypeIndex */
@@ -14643,7 +14643,7 @@ static UA_DataTypeMember SessionDiagnosticsDataType_members[43] = {
 }};
 
 /* ServiceFault */
-static UA_DataTypeMember ServiceFault_members[1] = {
+static const UA_DataTypeMember ServiceFault_members[1] = {
 {
     UA_TYPENAME("responseHeader") /* .memberName */
     UA_TYPES_RESPONSEHEADER, /* .memberTypeIndex */
@@ -14653,7 +14653,7 @@ static UA_DataTypeMember ServiceFault_members[1] = {
 }};
 
 /* RegisteredServer */
-static UA_DataTypeMember RegisteredServer_members[8] = {
+static const UA_DataTypeMember RegisteredServer_members[8] = {
 {
     UA_TYPENAME("serverUri") /* .memberName */
     UA_TYPES_STRING, /* .memberTypeIndex */
@@ -14712,7 +14712,7 @@ static UA_DataTypeMember RegisteredServer_members[8] = {
 }};
 
 /* AggregateFilter */
-static UA_DataTypeMember AggregateFilter_members[4] = {
+static const UA_DataTypeMember AggregateFilter_members[4] = {
 {
     UA_TYPENAME("startTime") /* .memberName */
     UA_TYPES_DATETIME, /* .memberTypeIndex */
@@ -14743,7 +14743,7 @@ static UA_DataTypeMember AggregateFilter_members[4] = {
 }};
 
 /* RegisterServerRequest */
-static UA_DataTypeMember RegisterServerRequest_members[2] = {
+static const UA_DataTypeMember RegisterServerRequest_members[2] = {
 {
     UA_TYPENAME("requestHeader") /* .memberName */
     UA_TYPES_REQUESTHEADER, /* .memberTypeIndex */
@@ -14760,7 +14760,7 @@ static UA_DataTypeMember RegisterServerRequest_members[2] = {
 }};
 
 /* EndpointDescription */
-static UA_DataTypeMember EndpointDescription_members[8] = {
+static const UA_DataTypeMember EndpointDescription_members[8] = {
 {
     UA_TYPENAME("endpointUrl") /* .memberName */
     UA_TYPES_STRING, /* .memberTypeIndex */
@@ -14819,7 +14819,7 @@ static UA_DataTypeMember EndpointDescription_members[8] = {
 }};
 
 /* CreateMonitoredItemsRequest */
-static UA_DataTypeMember CreateMonitoredItemsRequest_members[4] = {
+static const UA_DataTypeMember CreateMonitoredItemsRequest_members[4] = {
 {
     UA_TYPENAME("requestHeader") /* .memberName */
     UA_TYPES_REQUESTHEADER, /* .memberTypeIndex */
@@ -14850,7 +14850,7 @@ static UA_DataTypeMember CreateMonitoredItemsRequest_members[4] = {
 }};
 
 /* ContentFilter */
-static UA_DataTypeMember ContentFilter_members[1] = {
+static const UA_DataTypeMember ContentFilter_members[1] = {
 {
     UA_TYPENAME("elements") /* .memberName */
     UA_TYPES_CONTENTFILTERELEMENT, /* .memberTypeIndex */
@@ -14860,7 +14860,7 @@ static UA_DataTypeMember ContentFilter_members[1] = {
 }};
 
 /* QueryFirstResponse */
-static UA_DataTypeMember QueryFirstResponse_members[6] = {
+static const UA_DataTypeMember QueryFirstResponse_members[6] = {
 {
     UA_TYPENAME("responseHeader") /* .memberName */
     UA_TYPES_RESPONSEHEADER, /* .memberTypeIndex */
@@ -14905,7 +14905,7 @@ static UA_DataTypeMember QueryFirstResponse_members[6] = {
 }};
 
 /* AddNodesRequest */
-static UA_DataTypeMember AddNodesRequest_members[2] = {
+static const UA_DataTypeMember AddNodesRequest_members[2] = {
 {
     UA_TYPENAME("requestHeader") /* .memberName */
     UA_TYPES_REQUESTHEADER, /* .memberTypeIndex */
@@ -14922,7 +14922,7 @@ static UA_DataTypeMember AddNodesRequest_members[2] = {
 }};
 
 /* BrowseRequest */
-static UA_DataTypeMember BrowseRequest_members[4] = {
+static const UA_DataTypeMember BrowseRequest_members[4] = {
 {
     UA_TYPENAME("requestHeader") /* .memberName */
     UA_TYPES_REQUESTHEADER, /* .memberTypeIndex */
@@ -14953,7 +14953,7 @@ static UA_DataTypeMember BrowseRequest_members[4] = {
 }};
 
 /* BrowseResult */
-static UA_DataTypeMember BrowseResult_members[3] = {
+static const UA_DataTypeMember BrowseResult_members[3] = {
 {
     UA_TYPENAME("statusCode") /* .memberName */
     UA_TYPES_STATUSCODE, /* .memberTypeIndex */
@@ -14977,7 +14977,7 @@ static UA_DataTypeMember BrowseResult_members[3] = {
 }};
 
 /* EnumDescription */
-static UA_DataTypeMember EnumDescription_members[3] = {
+static const UA_DataTypeMember EnumDescription_members[3] = {
 {
     UA_TYPENAME("dataTypeId") /* .memberName */
     UA_TYPES_NODEID, /* .memberTypeIndex */
@@ -15001,7 +15001,7 @@ static UA_DataTypeMember EnumDescription_members[3] = {
 }};
 
 /* RegisterServer2Request */
-static UA_DataTypeMember RegisterServer2Request_members[3] = {
+static const UA_DataTypeMember RegisterServer2Request_members[3] = {
 {
     UA_TYPENAME("requestHeader") /* .memberName */
     UA_TYPES_REQUESTHEADER, /* .memberTypeIndex */
@@ -15025,7 +15025,7 @@ static UA_DataTypeMember RegisterServer2Request_members[3] = {
 }};
 
 /* CreateSessionRequest */
-static UA_DataTypeMember CreateSessionRequest_members[9] = {
+static const UA_DataTypeMember CreateSessionRequest_members[9] = {
 {
     UA_TYPENAME("requestHeader") /* .memberName */
     UA_TYPES_REQUESTHEADER, /* .memberTypeIndex */
@@ -15091,7 +15091,7 @@ static UA_DataTypeMember CreateSessionRequest_members[9] = {
 }};
 
 /* EventFilter */
-static UA_DataTypeMember EventFilter_members[2] = {
+static const UA_DataTypeMember EventFilter_members[2] = {
 {
     UA_TYPENAME("selectClauses") /* .memberName */
     UA_TYPES_SIMPLEATTRIBUTEOPERAND, /* .memberTypeIndex */
@@ -15108,7 +15108,7 @@ static UA_DataTypeMember EventFilter_members[2] = {
 }};
 
 /* DataSetMetaDataType */
-static UA_DataTypeMember DataSetMetaDataType_members[8] = {
+static const UA_DataTypeMember DataSetMetaDataType_members[8] = {
 {
     UA_TYPENAME("name") /* .memberName */
     UA_TYPES_STRING, /* .memberTypeIndex */
@@ -15167,7 +15167,7 @@ static UA_DataTypeMember DataSetMetaDataType_members[8] = {
 }};
 
 /* GetEndpointsResponse */
-static UA_DataTypeMember GetEndpointsResponse_members[2] = {
+static const UA_DataTypeMember GetEndpointsResponse_members[2] = {
 {
     UA_TYPENAME("responseHeader") /* .memberName */
     UA_TYPES_RESPONSEHEADER, /* .memberTypeIndex */
@@ -15184,7 +15184,7 @@ static UA_DataTypeMember GetEndpointsResponse_members[2] = {
 }};
 
 /* FindServersResponse */
-static UA_DataTypeMember FindServersResponse_members[2] = {
+static const UA_DataTypeMember FindServersResponse_members[2] = {
 {
     UA_TYPENAME("responseHeader") /* .memberName */
     UA_TYPES_RESPONSEHEADER, /* .memberTypeIndex */
@@ -15201,7 +15201,7 @@ static UA_DataTypeMember FindServersResponse_members[2] = {
 }};
 
 /* BrowseNextResponse */
-static UA_DataTypeMember BrowseNextResponse_members[3] = {
+static const UA_DataTypeMember BrowseNextResponse_members[3] = {
 {
     UA_TYPENAME("responseHeader") /* .memberName */
     UA_TYPES_RESPONSEHEADER, /* .memberTypeIndex */
@@ -15225,7 +15225,7 @@ static UA_DataTypeMember BrowseNextResponse_members[3] = {
 }};
 
 /* BrowseResponse */
-static UA_DataTypeMember BrowseResponse_members[3] = {
+static const UA_DataTypeMember BrowseResponse_members[3] = {
 {
     UA_TYPENAME("responseHeader") /* .memberName */
     UA_TYPES_RESPONSEHEADER, /* .memberTypeIndex */
@@ -15249,7 +15249,7 @@ static UA_DataTypeMember BrowseResponse_members[3] = {
 }};
 
 /* CreateSessionResponse */
-static UA_DataTypeMember CreateSessionResponse_members[10] = {
+static const UA_DataTypeMember CreateSessionResponse_members[10] = {
 {
     UA_TYPENAME("responseHeader") /* .memberName */
     UA_TYPES_RESPONSEHEADER, /* .memberTypeIndex */
@@ -15322,7 +15322,7 @@ static UA_DataTypeMember CreateSessionResponse_members[10] = {
 }};
 
 /* QueryFirstRequest */
-static UA_DataTypeMember QueryFirstRequest_members[6] = {
+static const UA_DataTypeMember QueryFirstRequest_members[6] = {
 {
     UA_TYPENAME("requestHeader") /* .memberName */
     UA_TYPES_REQUESTHEADER, /* .memberTypeIndex */
@@ -18184,7 +18184,7 @@ const UA_DataType UA_TYPES[UA_TYPES_COUNT] = {
 
 
 /* SecureConversationMessageAbortBody */
-static UA_DataTypeMember SecureConversationMessageAbortBody_members[2] = {
+static const UA_DataTypeMember SecureConversationMessageAbortBody_members[2] = {
 {
     UA_TYPENAME("error") /* .memberName */
     UA_TYPES_UINT32, /* .memberTypeIndex */
@@ -18201,7 +18201,7 @@ static UA_DataTypeMember SecureConversationMessageAbortBody_members[2] = {
 }};
 
 /* SecureConversationMessageFooter */
-static UA_DataTypeMember SecureConversationMessageFooter_members[2] = {
+static const UA_DataTypeMember SecureConversationMessageFooter_members[2] = {
 {
     UA_TYPENAME("padding") /* .memberName */
     UA_TYPES_BYTE, /* .memberTypeIndex */
@@ -18218,7 +18218,7 @@ static UA_DataTypeMember SecureConversationMessageFooter_members[2] = {
 }};
 
 /* TcpHelloMessage */
-static UA_DataTypeMember TcpHelloMessage_members[6] = {
+static const UA_DataTypeMember TcpHelloMessage_members[6] = {
 {
     UA_TYPENAME("protocolVersion") /* .memberName */
     UA_TYPES_UINT32, /* .memberTypeIndex */
@@ -18263,7 +18263,7 @@ static UA_DataTypeMember TcpHelloMessage_members[6] = {
 }};
 
 /* TcpErrorMessage */
-static UA_DataTypeMember TcpErrorMessage_members[2] = {
+static const UA_DataTypeMember TcpErrorMessage_members[2] = {
 {
     UA_TYPENAME("error") /* .memberName */
     UA_TYPES_UINT32, /* .memberTypeIndex */
@@ -18280,7 +18280,7 @@ static UA_DataTypeMember TcpErrorMessage_members[2] = {
 }};
 
 /* MessageType */
-static UA_DataTypeMember MessageType_members[1] = {
+static const UA_DataTypeMember MessageType_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_INT32, /* .memberTypeIndex */
@@ -18290,7 +18290,7 @@ static UA_DataTypeMember MessageType_members[1] = {
 }};
 
 /* AsymmetricAlgorithmSecurityHeader */
-static UA_DataTypeMember AsymmetricAlgorithmSecurityHeader_members[3] = {
+static const UA_DataTypeMember AsymmetricAlgorithmSecurityHeader_members[3] = {
 {
     UA_TYPENAME("securityPolicyUri") /* .memberName */
     UA_TYPES_BYTESTRING, /* .memberTypeIndex */
@@ -18314,7 +18314,7 @@ static UA_DataTypeMember AsymmetricAlgorithmSecurityHeader_members[3] = {
 }};
 
 /* TcpAcknowledgeMessage */
-static UA_DataTypeMember TcpAcknowledgeMessage_members[5] = {
+static const UA_DataTypeMember TcpAcknowledgeMessage_members[5] = {
 {
     UA_TYPENAME("protocolVersion") /* .memberName */
     UA_TYPES_UINT32, /* .memberTypeIndex */
@@ -18352,7 +18352,7 @@ static UA_DataTypeMember TcpAcknowledgeMessage_members[5] = {
 }};
 
 /* SequenceHeader */
-static UA_DataTypeMember SequenceHeader_members[2] = {
+static const UA_DataTypeMember SequenceHeader_members[2] = {
 {
     UA_TYPENAME("sequenceNumber") /* .memberName */
     UA_TYPES_UINT32, /* .memberTypeIndex */
@@ -18369,7 +18369,7 @@ static UA_DataTypeMember SequenceHeader_members[2] = {
 }};
 
 /* TcpMessageHeader */
-static UA_DataTypeMember TcpMessageHeader_members[2] = {
+static const UA_DataTypeMember TcpMessageHeader_members[2] = {
 {
     UA_TYPENAME("messageTypeAndChunkType") /* .memberName */
     UA_TYPES_UINT32, /* .memberTypeIndex */
@@ -18386,7 +18386,7 @@ static UA_DataTypeMember TcpMessageHeader_members[2] = {
 }};
 
 /* ChunkType */
-static UA_DataTypeMember ChunkType_members[1] = {
+static const UA_DataTypeMember ChunkType_members[1] = {
 {
     UA_TYPENAME("") /* .memberName */
     UA_TYPES_INT32, /* .memberTypeIndex */
@@ -18396,7 +18396,7 @@ static UA_DataTypeMember ChunkType_members[1] = {
 }};
 
 /* SymmetricAlgorithmSecurityHeader */
-static UA_DataTypeMember SymmetricAlgorithmSecurityHeader_members[1] = {
+static const UA_DataTypeMember SymmetricAlgorithmSecurityHeader_members[1] = {
 {
     UA_TYPENAME("tokenId") /* .memberName */
     UA_TYPES_UINT32, /* .memberTypeIndex */
@@ -18406,7 +18406,7 @@ static UA_DataTypeMember SymmetricAlgorithmSecurityHeader_members[1] = {
 }};
 
 /* SecureConversationMessageHeader */
-static UA_DataTypeMember SecureConversationMessageHeader_members[2] = {
+static const UA_DataTypeMember SecureConversationMessageHeader_members[2] = {
 {
     UA_TYPENAME("messageHeader") /* .memberName */
     UA_TRANSPORT_TCPMESSAGEHEADER, /* .memberTypeIndex */
