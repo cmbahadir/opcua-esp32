@@ -15,6 +15,7 @@
 #include <unistd.h>
 #include <lwip/sockets.h>
 #include "open62541.h"
+#include "simple.h"
 
 
 #define BLINK_GPIO CONFIG_BLINK_GPIO
@@ -44,27 +45,35 @@ void opcua_task(void *pvParameter) {
 
     UA_Server *server = UA_Server_new(config);
 
-    /* Add a variable node */
-    /* 1) Define the node attributes */
-    UA_VariableAttributes attr = UA_VariableAttributes_default;
-    attr.displayName = UA_LOCALIZEDTEXT("en-US", "the answer");
-    UA_Int32 myInteger = 42;
-    UA_Variant_setScalar(&attr.value, &myInteger, &UA_TYPES[UA_TYPES_INT32]);
-
-    /* 2) Define where the node shall be added with which browsename */
-    UA_NodeId newNodeId = UA_NODEID_STRING(1, "the.answer");
-    UA_NodeId parentNodeId = UA_NODEID_NUMERIC(0, UA_NS0ID_OBJECTSFOLDER);
-    UA_NodeId parentReferenceNodeId = UA_NODEID_NUMERIC(0, UA_NS0ID_ORGANIZES);
-    UA_NodeId variableType = UA_NODEID_NULL; /* take the default variable type */
-    UA_QualifiedName browseName = UA_QUALIFIEDNAME(1, "the answer");
-
-    /* 3) Add the node */
-    UA_Server_addVariableNode(server, newNodeId, parentNodeId, parentReferenceNodeId,
-                              browseName, variableType, attr, NULL, NULL);
+    UA_StatusCode retval;
+    /* create nodes from nodeset */
+    if (simple(server) != UA_STATUSCODE_GOOD) {
+        UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "Could not add the example nodeset. "
+            "Check previous output for any error.");
+        retval = UA_STATUSCODE_BADUNEXPECTEDERROR;
+    } else {
 
 
-    // server started, Code will be blocked here till running is set to false.
-    UA_Server_run(server, &running); 
+        UA_NodeId createdNodeId;
+        UA_ObjectAttributes object_attr = UA_ObjectAttributes_default;
+
+        object_attr.description = UA_LOCALIZEDTEXT("en-US", "A pump!");
+        object_attr.displayName = UA_LOCALIZEDTEXT("en-US", "Pump1");
+
+        // we assume that the myNS nodeset was added in namespace 2.
+        // You should always use UA_Server_addNamespace to check what the
+        // namespace index is for a given namespace URI. UA_Server_addNamespace
+        // will just return the index if it is already added.
+        UA_Server_addObjectNode(server, UA_NODEID_NUMERIC(1, 0),
+                                UA_NODEID_NUMERIC(0, UA_NS0ID_OBJECTSFOLDER),
+                                UA_NODEID_NUMERIC(0, UA_NS0ID_ORGANIZES),
+                                UA_QUALIFIEDNAME(1, "Pump1"),
+                                UA_NODEID_NUMERIC(2, 1002),
+                                object_attr, NULL, &createdNodeId);
+
+
+        retval = UA_Server_run(server, &running);
+    }
 
     ESP_LOGI(TAG, "Now going to stop the server.");
     // UA_StatusCode retval = UA_Server_run(server, &running);
@@ -87,7 +96,7 @@ static esp_err_t event_handler(void *ctx, system_event_t *event)
         case SYSTEM_EVENT_STA_GOT_IP:
             ESP_LOGI(TAG, "SYSTEM_EVENT_STA_GOT_IP");
             ESP_LOGI(TAG, "Got IP: %s\n",
-                    ip4addr_ntoa(&event->event_info.got_ip.ip_info.ip));
+            	ip4addr_ntoa(&event->event_info.got_ip.ip_info.ip));
             // TODO: Here I create task that start a OPC UA Server
 
             xTaskCreate(&opcua_task, "opcua_task", 1024 * 8, NULL, 5, NULL);
@@ -139,3 +148,4 @@ void app_main()
 
     //xTaskCreate(&opcua_task, "opcua_task", configMINIMAL_STACK_SIZE, NULL, 5, NULL);
 }
+

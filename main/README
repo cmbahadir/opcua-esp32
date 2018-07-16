@@ -1,0 +1,8 @@
+1 - main/.. pathine freertos ve lwip directoryleri IDF_PATH/components altindan kopyalandi
+2 - task.h onune freertos/task.h eklendi (open62541.c)
+3 - #define UA_ARCHITECTURE_FREERTOS tanimlandi (open62541.h)
+4 - #define UA_access comment out yapildi (open62541.h)
+	int UA_access(const char *pathname, int mode) { return 0; } eklendi (open62541.c)
+
+5 - (open62541.h) //# define UA_calloc pvPortCalloc
+	# define UA_calloc calloc
