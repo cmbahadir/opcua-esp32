@@ -23,10 +23,22 @@
 #define DEFAULT_PWD CONFIG_WIFI_PASSWORD
 
 #define TAG "APP_MAIN"
+#define BLINK_GPIO 2
 
 UA_ServerConfig *config;
 
 static UA_Boolean running = true;
+
+static UA_StatusCode
+ledProcessCallBack(UA_Server *server,
+                         const UA_NodeId *sessionId, void *sessionHandle,
+                         const UA_NodeId *methodId, void *methodContext,
+                         const UA_NodeId *objectId, void *objectContext,
+                         size_t inputSize, const UA_Variant *input,
+                         size_t outputSize, UA_Variant *output);
+
+static void
+addLEDMethod(UA_Server *server);
 
 void opcua_task(void *pvParameter) {
 
@@ -57,6 +69,7 @@ void opcua_task(void *pvParameter) {
 
         object_attr.description = UA_LOCALIZEDTEXT("en-US", "A pump!");
         object_attr.displayName = UA_LOCALIZEDTEXT("en-US", "Pump1");
+        addLEDMethod(server);
 
         // we assume that the myNS nodeset was added in namespace 2.
         // You should always use UA_Server_addNamespace to check what the
@@ -81,6 +94,66 @@ void opcua_task(void *pvParameter) {
     ESP_LOGI(TAG, "opcua_task going to return");
     // return 0;
     vTaskDelete(NULL);
+}
+
+static UA_StatusCode
+ledProcessCallBack(UA_Server *server,
+                         const UA_NodeId *sessionId, void *sessionHandle,
+                         const UA_NodeId *methodId, void *methodContext,
+                         const UA_NodeId *objectId, void *objectContext,
+                         size_t inputSize, const UA_Variant *input,
+                         size_t outputSize, UA_Variant *output) {
+    UA_String *inputStr = (UA_String*)input->data;
+    UA_String tmp = UA_STRING_ALLOC("Hello ");
+    if(inputStr->length > 0) {
+        tmp.data = (UA_Byte *)UA_realloc(tmp.data, tmp.length + inputStr->length);
+        memcpy(&tmp.data[tmp.length], inputStr->data, inputStr->length);
+        tmp.length += inputStr->length;
+
+        //ESP32 GPIO Control
+        gpio_pad_select_gpio(BLINK_GPIO);
+	    /* Set the GPIO as a push/pull output */
+	    gpio_set_direction(BLINK_GPIO, GPIO_MODE_OUTPUT);
+		/* Blink off (output low) */
+		gpio_set_level(BLINK_GPIO, 1);
+		vTaskDelay(1000 / portTICK_PERIOD_MS);
+		/* Blink on (output high) */
+		gpio_set_level(BLINK_GPIO, 0);
+		vTaskDelay(1000 / portTICK_PERIOD_MS);
+    }
+    UA_Variant_setScalarCopy(output, &tmp, &UA_TYPES[UA_TYPES_STRING]);
+    UA_String_deleteMembers(&tmp);
+    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "Hello World was called");
+    return UA_STATUSCODE_GOOD;
+}
+
+static void
+addLEDMethod(UA_Server *server) {
+    UA_Argument inputArgument;
+    UA_Argument_init(&inputArgument);
+    inputArgument.description = UA_LOCALIZEDTEXT("en-US", "A String");
+    inputArgument.name = UA_STRING("MyInput");
+    inputArgument.dataType = UA_TYPES[UA_TYPES_STRING].typeId;
+    inputArgument.valueRank = -1; /* scalar */
+
+    UA_Argument outputArgument;
+    UA_Argument_init(&outputArgument);
+    outputArgument.description = UA_LOCALIZEDTEXT("en-US", "A String");
+    outputArgument.name = UA_STRING("MyOutput");
+    outputArgument.dataType = UA_TYPES[UA_TYPES_STRING].typeId;
+    outputArgument.valueRank = -1; /* scalar */
+
+    UA_MethodAttributes helloAttr = UA_MethodAttributes_default;
+    helloAttr.description = UA_LOCALIZEDTEXT("en-US","Say `Hello World`");
+    helloAttr.displayName = UA_LOCALIZEDTEXT("en-US","Hello World");
+    helloAttr.executable = true;
+    helloAttr.userExecutable = true;
+    UA_Server_addMethodNode(server, UA_NODEID_NUMERIC(1,62541),
+                            UA_NODEID_NUMERIC(0, UA_NS0ID_OBJECTSFOLDER),
+                            UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
+                            UA_QUALIFIEDNAME(1, "hello world"),
+                            helloAttr, &ledProcessCallBack,
+                            1, &inputArgument, 1, &outputArgument, NULL, NULL);
 }
 
 static esp_err_t event_handler(void *ctx, system_event_t *event)
