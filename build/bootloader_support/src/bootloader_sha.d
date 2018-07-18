@@ -28,9 +28,9 @@ src/bootloader_sha.o: \
  /home/cmb/esp/esp-idf/components/newlib/include/sys/syslimits.h \
  /home/cmb/esp/esp-idf/components/newlib/include/machine/endian.h \
  /home/cmb/esp/esp-idf/components/newlib/include/machine/param.h \
- /home/cmb/esp/esp-idf/components/mbedtls/mbedtls/include/mbedtls/sha256.h \
- /home/cmb/esp/esp-idf/components/mbedtls/port/include/mbedtls/esp_config.h \
- /home/cmb/esp/esp-idf/components/mbedtls/mbedtls/include/mbedtls/check_config.h \
+ /home/cmb/esp/esp-idf/examples/open62541/components/mbedtls/mbedtls/include/mbedtls/sha256.h \
+ /home/cmb/esp/esp-idf/examples/open62541/components/mbedtls/port/include/mbedtls/esp_config.h \
+ /home/cmb/esp/esp-idf/examples/open62541/components/mbedtls/mbedtls/include/mbedtls/check_config.h \
  /home/cmb/esp/esp-idf/components/newlib/include/limits.h
 
 /home/cmb/esp/esp-idf/components/bootloader_support/include_priv/bootloader_sha.h:
@@ -89,11 +89,11 @@ src/bootloader_sha.o: \
 
 /home/cmb/esp/esp-idf/components/newlib/include/machine/param.h:
 
-/home/cmb/esp/esp-idf/components/mbedtls/mbedtls/include/mbedtls/sha256.h:
+/home/cmb/esp/esp-idf/examples/open62541/components/mbedtls/mbedtls/include/mbedtls/sha256.h:
 
-/home/cmb/esp/esp-idf/components/mbedtls/port/include/mbedtls/esp_config.h:
+/home/cmb/esp/esp-idf/examples/open62541/components/mbedtls/port/include/mbedtls/esp_config.h:
 
-/home/cmb/esp/esp-idf/components/mbedtls/mbedtls/include/mbedtls/check_config.h:
+/home/cmb/esp/esp-idf/examples/open62541/components/mbedtls/mbedtls/include/mbedtls/check_config.h:
 
 /home/cmb/esp/esp-idf/components/newlib/include/limits.h:
 /home/cmb/esp/esp-idf/components/bootloader_support/src/bootloader_sha.c:

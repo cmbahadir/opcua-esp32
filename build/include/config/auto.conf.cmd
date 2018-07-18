@@ -13,7 +13,7 @@ deps_config := \
 	/home/cmb/esp/esp-idf/components/libsodium/Kconfig \
 	/home/cmb/esp/esp-idf/components/log/Kconfig \
 	/home/cmb/esp/esp-idf/examples/open62541/components/lwip/Kconfig \
-	/home/cmb/esp/esp-idf/components/mbedtls/Kconfig \
+	/home/cmb/esp/esp-idf/examples/open62541/components/mbedtls/Kconfig \
 	/home/cmb/esp/esp-idf/components/mdns/Kconfig \
 	/home/cmb/esp/esp-idf/components/openssl/Kconfig \
 	/home/cmb/esp/esp-idf/components/pthread/Kconfig \

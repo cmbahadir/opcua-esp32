@@ -20,10 +20,10 @@ port/crypto_hash_mbedtls/crypto_hash_sha512_mbedtls.o: \
  /home/cmb/esp/esp-idf/components/newlib/include/machine/stdlib.h \
  /home/cmb/esp/esp-idf/components/newlib/include/alloca.h \
  /home/cmb/esp/esp-idf/components/libsodium/libsodium/src/libsodium/include/sodium/export.h \
- /home/cmb/esp/esp-idf/components/mbedtls/mbedtls/include/mbedtls/sha512.h \
- /home/cmb/esp/esp-idf/components/mbedtls/port/include/mbedtls/esp_config.h \
+ /home/cmb/esp/esp-idf/examples/open62541/components/mbedtls/mbedtls/include/mbedtls/sha512.h \
+ /home/cmb/esp/esp-idf/examples/open62541/components/mbedtls/port/include/mbedtls/esp_config.h \
  /home/cmb/esp/esp-idf/examples/open62541/build/include/sdkconfig.h \
- /home/cmb/esp/esp-idf/components/mbedtls/mbedtls/include/mbedtls/check_config.h \
+ /home/cmb/esp/esp-idf/examples/open62541/components/mbedtls/mbedtls/include/mbedtls/check_config.h \
  /home/cmb/esp/esp-idf/components/newlib/include/limits.h \
  /home/cmb/esp/esp-idf/components/newlib/include/string.h \
  /home/cmb/esp/esp-idf/components/newlib/include/sys/string.h
@@ -68,13 +68,13 @@ port/crypto_hash_mbedtls/crypto_hash_sha512_mbedtls.o: \
 
 /home/cmb/esp/esp-idf/components/libsodium/libsodium/src/libsodium/include/sodium/export.h:
 
-/home/cmb/esp/esp-idf/components/mbedtls/mbedtls/include/mbedtls/sha512.h:
+/home/cmb/esp/esp-idf/examples/open62541/components/mbedtls/mbedtls/include/mbedtls/sha512.h:
 
-/home/cmb/esp/esp-idf/components/mbedtls/port/include/mbedtls/esp_config.h:
+/home/cmb/esp/esp-idf/examples/open62541/components/mbedtls/port/include/mbedtls/esp_config.h:
 
 /home/cmb/esp/esp-idf/examples/open62541/build/include/sdkconfig.h:
 
-/home/cmb/esp/esp-idf/components/mbedtls/mbedtls/include/mbedtls/check_config.h:
+/home/cmb/esp/esp-idf/examples/open62541/components/mbedtls/mbedtls/include/mbedtls/check_config.h:
 
 /home/cmb/esp/esp-idf/components/newlib/include/limits.h:
 

@@ -45,12 +45,10 @@ void opcua_task(void *pvParameter) {
 
     UA_Server *server = UA_Server_new(config);
 
-    UA_StatusCode retval;
     /* create nodes from nodeset */
     if (simple(server) != UA_STATUSCODE_GOOD) {
         UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "Could not add the example nodeset. "
             "Check previous output for any error.");
-        retval = UA_STATUSCODE_BADUNEXPECTEDERROR;
     } else {
 
 
@@ -71,8 +69,7 @@ void opcua_task(void *pvParameter) {
                                 UA_NODEID_NUMERIC(2, 1002),
                                 object_attr, NULL, &createdNodeId);
 
-
-        retval = UA_Server_run(server, &running);
+        UA_Server_run(server, &running);
     }
 
     ESP_LOGI(TAG, "Now going to stop the server.");

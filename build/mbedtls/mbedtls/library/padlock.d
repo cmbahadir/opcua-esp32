@@ -1,17 +1,17 @@
 mbedtls/library/padlock.o: \
- /home/cmb/esp/esp-idf/components/mbedtls/mbedtls/library/padlock.c \
- /home/cmb/esp/esp-idf/components/mbedtls/port/include/mbedtls/esp_config.h \
+ /home/cmb/esp/esp-idf/examples/open62541/components/mbedtls/mbedtls/library/padlock.c \
+ /home/cmb/esp/esp-idf/examples/open62541/components/mbedtls/port/include/mbedtls/esp_config.h \
  /home/cmb/esp/esp-idf/examples/open62541/build/include/sdkconfig.h \
- /home/cmb/esp/esp-idf/components/mbedtls/mbedtls/include/mbedtls/check_config.h \
+ /home/cmb/esp/esp-idf/examples/open62541/components/mbedtls/mbedtls/include/mbedtls/check_config.h \
  /home/cmb/esp/esp-idf/components/newlib/include/limits.h \
  /home/cmb/esp/esp-idf/components/newlib/include/newlib.h \
- /home/cmb/esp/esp-idf/components/mbedtls/mbedtls/include/mbedtls/padlock.h \
- /home/cmb/esp/esp-idf/components/mbedtls/mbedtls/include/mbedtls/aes.h \
+ /home/cmb/esp/esp-idf/examples/open62541/components/mbedtls/mbedtls/include/mbedtls/padlock.h \
+ /home/cmb/esp/esp-idf/examples/open62541/components/mbedtls/mbedtls/include/mbedtls/aes.h \
  /home/cmb/esp/esp-idf/components/newlib/include/stdint.h \
  /home/cmb/esp/esp-idf/components/newlib/include/machine/_default_types.h \
  /home/cmb/esp/esp-idf/components/newlib/include/sys/features.h \
  /home/cmb/esp/esp-idf/components/newlib/include/sys/_intsup.h \
- /home/cmb/esp/esp-idf/components/mbedtls/port/include/aes_alt.h \
+ /home/cmb/esp/esp-idf/examples/open62541/components/mbedtls/port/include/aes_alt.h \
  /home/cmb/esp/esp-idf/components/esp32/include/hwcrypto/aes.h \
  /home/cmb/esp/esp-idf/components/esp32/include/esp_types.h \
  /home/cmb/esp/esp-idf/components/newlib/include/sys/cdefs.h \
@@ -28,19 +28,19 @@ mbedtls/library/padlock.o: \
  /home/cmb/esp/esp-idf/components/newlib/include/sys/lock.h \
  /home/cmb/esp/esp-idf/components/newlib/include/sys/string.h
 
-/home/cmb/esp/esp-idf/components/mbedtls/port/include/mbedtls/esp_config.h:
+/home/cmb/esp/esp-idf/examples/open62541/components/mbedtls/port/include/mbedtls/esp_config.h:
 
 /home/cmb/esp/esp-idf/examples/open62541/build/include/sdkconfig.h:
 
-/home/cmb/esp/esp-idf/components/mbedtls/mbedtls/include/mbedtls/check_config.h:
+/home/cmb/esp/esp-idf/examples/open62541/components/mbedtls/mbedtls/include/mbedtls/check_config.h:
 
 /home/cmb/esp/esp-idf/components/newlib/include/limits.h:
 
 /home/cmb/esp/esp-idf/components/newlib/include/newlib.h:
 
-/home/cmb/esp/esp-idf/components/mbedtls/mbedtls/include/mbedtls/padlock.h:
+/home/cmb/esp/esp-idf/examples/open62541/components/mbedtls/mbedtls/include/mbedtls/padlock.h:
 
-/home/cmb/esp/esp-idf/components/mbedtls/mbedtls/include/mbedtls/aes.h:
+/home/cmb/esp/esp-idf/examples/open62541/components/mbedtls/mbedtls/include/mbedtls/aes.h:
 
 /home/cmb/esp/esp-idf/components/newlib/include/stdint.h:
 
@@ -50,7 +50,7 @@ mbedtls/library/padlock.o: \
 
 /home/cmb/esp/esp-idf/components/newlib/include/sys/_intsup.h:
 
-/home/cmb/esp/esp-idf/components/mbedtls/port/include/aes_alt.h:
+/home/cmb/esp/esp-idf/examples/open62541/components/mbedtls/port/include/aes_alt.h:
 
 /home/cmb/esp/esp-idf/components/esp32/include/hwcrypto/aes.h:
 
@@ -81,4 +81,4 @@ mbedtls/library/padlock.o: \
 /home/cmb/esp/esp-idf/components/newlib/include/sys/lock.h:
 
 /home/cmb/esp/esp-idf/components/newlib/include/sys/string.h:
-/home/cmb/esp/esp-idf/components/mbedtls/mbedtls/library/padlock.c:
+/home/cmb/esp/esp-idf/examples/open62541/components/mbedtls/mbedtls/library/padlock.c:

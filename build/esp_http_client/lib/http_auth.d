@@ -120,7 +120,7 @@ lib/http_auth.o: \
  /home/cmb/esp/esp-idf/examples/open62541/components/lwip/include/lwip/lwip/err.h \
  /home/cmb/esp/esp-idf/examples/open62541/components/lwip/include/lwip/lwip/inet.h \
  /home/cmb/esp/esp-idf/components/esp32/include/rom/md5_hash.h \
- /home/cmb/esp/esp-idf/components/mbedtls/mbedtls/include/mbedtls/base64.h \
+ /home/cmb/esp/esp-idf/examples/open62541/components/mbedtls/mbedtls/include/mbedtls/base64.h \
  /home/cmb/esp/esp-idf/components/log/include/esp_log.h \
  /home/cmb/esp/esp-idf/components/log/include/esp_log_internal.h \
  /home/cmb/esp/esp-idf/components/esp_http_client/lib/include/http_utils.h \
@@ -366,7 +366,7 @@ lib/http_auth.o: \
 
 /home/cmb/esp/esp-idf/components/esp32/include/rom/md5_hash.h:
 
-/home/cmb/esp/esp-idf/components/mbedtls/mbedtls/include/mbedtls/base64.h:
+/home/cmb/esp/esp-idf/examples/open62541/components/mbedtls/mbedtls/include/mbedtls/base64.h:
 
 /home/cmb/esp/esp-idf/components/log/include/esp_log.h:
 

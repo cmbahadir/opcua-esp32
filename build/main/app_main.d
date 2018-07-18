@@ -144,7 +144,8 @@ app_main.o: /home/cmb/esp/esp-idf/examples/open62541/main/app_main.c \
  /home/cmb/esp/esp-idf/examples/open62541/components/lwip/include/lwip/lwip/priv/memp_priv.h \
  /home/cmb/esp/esp-idf/examples/open62541/components/lwip/include/lwip/lwip/netdb.h \
  /home/cmb/esp/esp-idf/examples/open62541/components/lwip/include/lwip/lwip/init.h \
- /home/cmb/esp/esp-idf/examples/open62541/components/nodeset/include/simple.h
+ /home/cmb/esp/esp-idf/examples/open62541/components/open62541lib/include/simple.h \
+ /home/cmb/esp/esp-idf/examples/open62541/components/open62541lib/include/open62541.h
 
 /home/cmb/esp/esp-idf/components/newlib/include/stdio.h:
 
@@ -436,5 +437,7 @@ app_main.o: /home/cmb/esp/esp-idf/examples/open62541/main/app_main.c \
 
 /home/cmb/esp/esp-idf/examples/open62541/components/lwip/include/lwip/lwip/init.h:
 
-/home/cmb/esp/esp-idf/examples/open62541/components/nodeset/include/simple.h:
+/home/cmb/esp/esp-idf/examples/open62541/components/open62541lib/include/simple.h:
+
+/home/cmb/esp/esp-idf/examples/open62541/components/open62541lib/include/open62541.h:
 /home/cmb/esp/esp-idf/examples/open62541/main/./app_main.c:

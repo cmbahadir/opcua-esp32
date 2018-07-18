@@ -31,9 +31,6 @@
 #ifdef UA_ARCHITECTURE_FREERTOSLWIP
 
 
-
-
-
 #endif /* UA_ARCHITECTURE_FREERTOSLWIP */
 
 /*********************************** amalgamated original file "/home/cmb/workspace/opcua/open62541/arch/freertosLWIP/../common/freeRTOS62541.h" ***********************************/
@@ -25429,6 +25426,16 @@ UA_ServerConfig_new_minimal(UA_UInt16 portNumber, const UA_ByteString *certifica
 
 #ifdef UA_ENABLE_ENCRYPTION
 
+UA_StatusCode
+UA_SecurityPolicy_Basic128Rsa15(UA_SecurityPolicy *policy, UA_CertificateVerification *certificateVerification,
+                                const UA_ByteString localCertificate, const UA_ByteString localPrivateKey,
+                                UA_Logger logger);
+
+UA_StatusCode
+UA_SecurityPolicy_Basic256Sha256(UA_SecurityPolicy *policy, UA_CertificateVerification *certificateVerification,
+                                 const UA_ByteString localCertificate, const UA_ByteString localPrivateKey,
+                                 UA_Logger logger);
+
 UA_EXPORT UA_ServerConfig *
 UA_ServerConfig_new_basic128rsa15(UA_UInt16 portNumber,
                                   const UA_ByteString *certificate,
@@ -25455,6 +25462,30 @@ UA_ServerConfig_new_allSecurityPolicies(UA_UInt16 portNumber,
                                         size_t trustListSize,
                                         const UA_ByteString *revocationList,
                                         size_t revocationListSize);
+
+
+
+#endif
+
+#define ENABLE_ENCODE
+#ifdef ENABLE_ENCODE
+
+typedef UA_StatusCode (*UA_exchangeEncodeBuffer)(void *handle, UA_Byte **bufPos,
+                                                 const UA_Byte **bufEnd);
+
+UA_StatusCode
+UA_encodeBinary(const void *src, const UA_DataType *type,
+                UA_Byte **bufPos, const UA_Byte **bufEnd,
+                UA_exchangeEncodeBuffer exchangeCallback,
+                void *exchangeHandle) UA_FUNC_ATTR_WARN_UNUSED_RESULT;
+
+UA_StatusCode
+UA_decodeBinary(const UA_ByteString *src, size_t *offset, void *dst,
+                const UA_DataType *type, size_t customTypesSize,
+                const UA_DataType *customTypes) UA_FUNC_ATTR_WARN_UNUSED_RESULT;
+
+const UA_DataType *
+UA_findDataTypeByBinary(const UA_NodeId *typeId);
 
 #endif
 
@@ -25512,67 +25543,6 @@ UA_SecurityPolicy_None(UA_SecurityPolicy *policy, UA_CertificateVerification *ce
 }
 #endif
 
-
-/*********************************** amalgamated original file "/home/cmb/workspace/opcua/open62541/plugins/ua_securitypolicy_basic128rsa15.h" ***********************************/
-
-/* This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
- *
- *    Copyright 2018 (c) Mark Giraud, Fraunhofer IOSB
- */
-
-#ifndef UA_SECURITYPOLICY_BASIC128RSA15_H_
-#define UA_SECURITYPOLICY_BASIC128RSA15_H_
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-
-UA_EXPORT UA_StatusCode
-UA_SecurityPolicy_Basic128Rsa15(UA_SecurityPolicy *policy,
-                                UA_CertificateVerification *certificateVerification,
-                                const UA_ByteString localCertificate,
-                                const UA_ByteString localPrivateKey,
-                                UA_Logger logger);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif // UA_SECURITYPOLICY_BASIC128RSA15_H_
-
-/*********************************** amalgamated original file "/home/cmb/workspace/opcua/open62541/plugins/ua_securitypolicy_basic256sha256.h" ***********************************/
-
-/* This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- *
- *    Copyright 2018 (c) Mark Giraud, Fraunhofer IOSB
- *    Copyright 2018 (c) Daniel Feist, Precitec GmbH & Co. KG
- */
-
-#ifndef UA_SECURITYPOLICY_BASIC256SHA256_H_
-#define UA_SECURITYPOLICY_BASIC256SHA256_H_
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-
-UA_EXPORT UA_StatusCode
-UA_SecurityPolicy_Basic256Sha256(UA_SecurityPolicy *policy,
-                                 UA_CertificateVerification *certificateVerification,
-                                 const UA_ByteString localCertificate,
-                                 const UA_ByteString localPrivateKey,
-                                 UA_Logger logger);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif // UA_SECURITYPOLICY_BASIC256SHA256_H_
 
 /*********************************** amalgamated original file "/home/cmb/workspace/opcua/open62541/arch/ua_network_tcp.h" ***********************************/
 

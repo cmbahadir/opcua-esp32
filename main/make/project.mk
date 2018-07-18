@@ -259,13 +259,14 @@ EXTRA_CPPFLAGS ?=
 CPPFLAGS := -DESP_PLATFORM -D IDF_VER=\"$(IDF_VER)\" -MMD -MP $(CPPFLAGS) $(EXTRA_CPPFLAGS)
 
 # Warnings-related flags relevant both for C and C++
-COMMON_WARNING_FLAGS = -Wall -Werror=all \
-	-Wno-error=unused-function \
-	-Wno-error=unused-but-set-variable \
-	-Wno-error=unused-variable \
-	-Wno-error=deprecated-declarations \
+# COMMON_WARNING_FLAGS = -Wall -Werror=all \
+COMMON_WARNING_FLAGS = -Wall \
+	#-Wno-error=unused-function \
+	#-Wno-error=unused-but-set-variable \
+	#-Wno-error=unused-variable \
+	#-Wno-error=deprecated-declarations \
 	-Wextra \
-	-Wno-unused-parameter -Wno-sign-compare
+	#-Wno-unused-parameter -Wno-sign-compare
 
 ifdef CONFIG_WARN_WRITE_STRINGS
 COMMON_WARNING_FLAGS += -Wwrite-strings

@@ -1,5 +1,5 @@
 port/esp_bignum.o: \
- /home/cmb/esp/esp-idf/components/mbedtls/port/esp_bignum.c \
+ /home/cmb/esp/esp-idf/examples/open62541/components/mbedtls/port/esp_bignum.c \
  /home/cmb/esp/esp-idf/components/newlib/include/stdio.h \
  /home/cmb/esp/esp-idf/components/newlib/include/_ansi.h \
  /home/cmb/esp/esp-idf/components/newlib/include/newlib.h \
@@ -29,10 +29,10 @@ port/esp_bignum.o: \
  /home/cmb/esp/esp-idf/components/newlib/include/machine/stdlib.h \
  /home/cmb/esp/esp-idf/components/newlib/include/alloca.h \
  /home/cmb/esp/esp-idf/components/newlib/include/assert.h \
- /home/cmb/esp/esp-idf/components/mbedtls/port/include/mbedtls/bignum.h \
- /home/cmb/esp/esp-idf/components/mbedtls/mbedtls/include/mbedtls/bignum.h \
- /home/cmb/esp/esp-idf/components/mbedtls/port/include/mbedtls/esp_config.h \
- /home/cmb/esp/esp-idf/components/mbedtls/mbedtls/include/mbedtls/check_config.h \
+ /home/cmb/esp/esp-idf/examples/open62541/components/mbedtls/port/include/mbedtls/bignum.h \
+ /home/cmb/esp/esp-idf/examples/open62541/components/mbedtls/mbedtls/include/mbedtls/bignum.h \
+ /home/cmb/esp/esp-idf/examples/open62541/components/mbedtls/port/include/mbedtls/esp_config.h \
+ /home/cmb/esp/esp-idf/examples/open62541/components/mbedtls/mbedtls/include/mbedtls/check_config.h \
  /home/cmb/esp/esp-idf/components/newlib/include/stdint.h \
  /home/cmb/esp/esp-idf/components/newlib/include/sys/_intsup.h \
  /home/cmb/esp/esp-idf/components/esp32/include/rom/bigint.h \
@@ -156,13 +156,13 @@ port/esp_bignum.o: \
 
 /home/cmb/esp/esp-idf/components/newlib/include/assert.h:
 
-/home/cmb/esp/esp-idf/components/mbedtls/port/include/mbedtls/bignum.h:
+/home/cmb/esp/esp-idf/examples/open62541/components/mbedtls/port/include/mbedtls/bignum.h:
 
-/home/cmb/esp/esp-idf/components/mbedtls/mbedtls/include/mbedtls/bignum.h:
+/home/cmb/esp/esp-idf/examples/open62541/components/mbedtls/mbedtls/include/mbedtls/bignum.h:
 
-/home/cmb/esp/esp-idf/components/mbedtls/port/include/mbedtls/esp_config.h:
+/home/cmb/esp/esp-idf/examples/open62541/components/mbedtls/port/include/mbedtls/esp_config.h:
 
-/home/cmb/esp/esp-idf/components/mbedtls/mbedtls/include/mbedtls/check_config.h:
+/home/cmb/esp/esp-idf/examples/open62541/components/mbedtls/mbedtls/include/mbedtls/check_config.h:
 
 /home/cmb/esp/esp-idf/components/newlib/include/stdint.h:
 
@@ -291,4 +291,4 @@ port/esp_bignum.o: \
 /home/cmb/esp/esp-idf/examples/open62541/components/freertos/include/freertos/semphr.h:
 
 /home/cmb/esp/esp-idf/examples/open62541/components/freertos/include/freertos/queue.h:
-/home/cmb/esp/esp-idf/components/mbedtls/port/esp_bignum.c:
+/home/cmb/esp/esp-idf/examples/open62541/components/mbedtls/port/esp_bignum.c:
