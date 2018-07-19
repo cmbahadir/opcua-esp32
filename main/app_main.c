@@ -39,6 +39,7 @@ ledProcessCallBack(UA_Server *server,
 static void
 addLEDMethod(UA_Server *server);
 
+
 void opcua_task(void *pvParameter) {
 
     ESP_LOGI(TAG, "Fire up OPC UA Server.");
@@ -56,7 +57,7 @@ void opcua_task(void *pvParameter) {
 
     UA_Server *server = UA_Server_new(config);
 
-    /* create nodes from nodeset */
+    /* create nodes from nodeset 
     if (simple(server) != UA_STATUSCODE_GOOD) {
         UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "Could not add the example nodeset. "
             "Check previous output for any error.");
@@ -80,14 +81,15 @@ void opcua_task(void *pvParameter) {
                                 UA_QUALIFIEDNAME(1, "Pump1"),
                                 UA_NODEID_NUMERIC(2, 1002),
                                 object_attr, NULL, &createdNodeId);
-
         UA_Server_run(server, &running);
     }
-
+	*/
+    addLEDMethod(server);
+    UA_Server_run(server, &running);
     ESP_LOGI(TAG, "Now going to stop the server.");
     // UA_StatusCode retval = UA_Server_run(server, &running);
     UA_Server_delete(server);
-    // UA_ServerConfig_delete(config);
+    UA_ServerConfig_delete(config);
     // return (int)retval;
     nl.deleteMembers(&nl);
     ESP_LOGI(TAG, "opcua_task going to return");
@@ -102,23 +104,23 @@ ledProcessCallBack(UA_Server *server,
                          const UA_NodeId *objectId, void *objectContext,
                          size_t inputSize, const UA_Variant *input,
                          size_t outputSize, UA_Variant *output) {
-    UA_String *inputStr = (UA_String*)input->data;
-    UA_String tmp = UA_STRING_ALLOC("Hello ");
-    if(inputStr->length > 0) {
-        tmp.data = (UA_Byte *)UA_realloc(tmp.data, tmp.length + inputStr->length);
-        memcpy(&tmp.data[tmp.length], inputStr->data, inputStr->length);
-        tmp.length += inputStr->length;
-
-        //ESP32 GPIO Control
-        gpio_pad_select_gpio(BLINK_GPIO);
-	    /* Set the GPIO as a push/pull output */
-	    gpio_set_direction(BLINK_GPIO, GPIO_MODE_OUTPUT);
-		/* Blink off (output low) */
-		gpio_set_level(BLINK_GPIO, 1);
-		vTaskDelay(1000 / portTICK_PERIOD_MS);
-		/* Blink on (output high) */
-		gpio_set_level(BLINK_GPIO, 0);
-		vTaskDelay(1000 / portTICK_PERIOD_MS);
+    UA_Int32 *inputVal = (UA_Int32*)input->data;
+    UA_String tmp = UA_STRING_ALLOC("Data Received ");
+    if(*inputVal > 0) {
+        tmp.data = (UA_Byte *)UA_realloc(tmp.data, tmp.length);
+    	if (*inputVal == 1)
+    	{
+    		//ESP32 GPIO Control
+			gpio_pad_select_gpio(BLINK_GPIO);
+			/* Set the GPIO as a push/pull output */
+			gpio_set_direction(BLINK_GPIO, GPIO_MODE_OUTPUT);
+			/* Blink off (output low) */
+			gpio_set_level(BLINK_GPIO, 1);
+			vTaskDelay(1000 / portTICK_PERIOD_MS);
+			/* Blink on (output high) */
+			gpio_set_level(BLINK_GPIO, 0);
+			vTaskDelay(1000 / portTICK_PERIOD_MS);
+    	}
     }
     UA_Variant_setScalarCopy(output, &tmp, &UA_TYPES[UA_TYPES_STRING]);
     UA_String_deleteMembers(&tmp);
@@ -132,7 +134,7 @@ addLEDMethod(UA_Server *server) {
     UA_Argument_init(&inputArgument);
     inputArgument.description = UA_LOCALIZEDTEXT("en-US", "A String");
     inputArgument.name = UA_STRING("MyInput");
-    inputArgument.dataType = UA_TYPES[UA_TYPES_STRING].typeId;
+    inputArgument.dataType = UA_TYPES[UA_TYPES_INT32].typeId;
     inputArgument.valueRank = -1; /* scalar */
 
     UA_Argument outputArgument;
