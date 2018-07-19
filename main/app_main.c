@@ -18,7 +18,6 @@
 #include "simple.h"
 
 
-#define BLINK_GPIO CONFIG_BLINK_GPIO
 #define DEFAULT_SSID CONFIG_WIFI_SSID
 #define DEFAULT_PWD CONFIG_WIFI_PASSWORD
 
@@ -144,14 +143,14 @@ addLEDMethod(UA_Server *server) {
     outputArgument.valueRank = -1; /* scalar */
 
     UA_MethodAttributes helloAttr = UA_MethodAttributes_default;
-    helloAttr.description = UA_LOCALIZEDTEXT("en-US","Say `Hello World`");
+    helloAttr.description = UA_LOCALIZEDTEXT("en-US","Say Hello and turn on the lights!");
     helloAttr.displayName = UA_LOCALIZEDTEXT("en-US","Hello World");
     helloAttr.executable = true;
     helloAttr.userExecutable = true;
     UA_Server_addMethodNode(server, UA_NODEID_NUMERIC(1,62541),
                             UA_NODEID_NUMERIC(0, UA_NS0ID_OBJECTSFOLDER),
                             UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
-                            UA_QUALIFIEDNAME(1, "hello world"),
+                            UA_QUALIFIEDNAME(1, "hello"),
                             helloAttr, &ledProcessCallBack,
                             1, &inputArgument, 1, &outputArgument, NULL, NULL);
 }
