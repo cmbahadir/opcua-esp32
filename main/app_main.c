@@ -104,23 +104,25 @@ ledProcessCallBack(UA_Server *server,
                          const UA_NodeId *objectId, void *objectContext,
                          size_t inputSize, const UA_Variant *input,
                          size_t outputSize, UA_Variant *output) {
+	UA_Int32 i = 0;
     UA_Int32 *inputVal = (UA_Int32*)input->data;
     UA_String tmp = UA_STRING_ALLOC("Data Received ");
     if(*inputVal > 0) {
         tmp.data = (UA_Byte *)UA_realloc(tmp.data, tmp.length);
-    	if (*inputVal == 1)
-    	{
-    		//ESP32 GPIO Control
+		while(i<*inputVal +1)
+		{
+			//ESP32 GPIO Control
 			gpio_pad_select_gpio(BLINK_GPIO);
 			/* Set the GPIO as a push/pull output */
 			gpio_set_direction(BLINK_GPIO, GPIO_MODE_OUTPUT);
 			/* Blink off (output low) */
 			gpio_set_level(BLINK_GPIO, 1);
-			vTaskDelay(1000 / portTICK_PERIOD_MS);
+			vTaskDelay(500 / portTICK_PERIOD_MS);
 			/* Blink on (output high) */
 			gpio_set_level(BLINK_GPIO, 0);
-			vTaskDelay(1000 / portTICK_PERIOD_MS);
-    	}
+			vTaskDelay(500 / portTICK_PERIOD_MS);
+			i++;
+		}
     }
     UA_Variant_setScalarCopy(output, &tmp, &UA_TYPES[UA_TYPES_STRING]);
     UA_String_deleteMembers(&tmp);
