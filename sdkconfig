@@ -79,8 +79,8 @@ CONFIG_MONITOR_BAUD=115200
 #
 # Connection Configuration
 #
-CONFIG_WIFI_SSID="CMB"
-CONFIG_WIFI_PASSWORD="mete12345"
+CONFIG_WIFI_SSID="TurkTelekom_T21E7"
+CONFIG_WIFI_PASSWORD="vM240kgv"
 
 #
 # Partition Table

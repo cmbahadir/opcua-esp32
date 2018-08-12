@@ -126,7 +126,7 @@ ledProcessCallBack(UA_Server *server,
     }
     UA_Variant_setScalarCopy(output, &tmp, &UA_TYPES[UA_TYPES_STRING]);
     UA_String_deleteMembers(&tmp);
-    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "Hello World was called");
+    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "Led bink called.");
     return UA_STATUSCODE_GOOD;
 }
 
@@ -134,8 +134,8 @@ static void
 addLEDMethod(UA_Server *server) {
     UA_Argument inputArgument;
     UA_Argument_init(&inputArgument);
-    inputArgument.description = UA_LOCALIZEDTEXT("en-US", "A String");
-    inputArgument.name = UA_STRING("MyInput");
+    inputArgument.description = UA_LOCALIZEDTEXT("en-US", "An Integer");
+    inputArgument.name = UA_STRING("Blink Count");
     inputArgument.dataType = UA_TYPES[UA_TYPES_INT32].typeId;
     inputArgument.valueRank = -1; /* scalar */
 
@@ -147,8 +147,8 @@ addLEDMethod(UA_Server *server) {
     outputArgument.valueRank = -1; /* scalar */
 
     UA_MethodAttributes helloAttr = UA_MethodAttributes_default;
-    helloAttr.description = UA_LOCALIZEDTEXT("en-US","Say Hello and turn on the lights!");
-    helloAttr.displayName = UA_LOCALIZEDTEXT("en-US","Hello World");
+    helloAttr.description = UA_LOCALIZEDTEXT("en-US","Enter the number of times you want LED to blin!");
+    helloAttr.displayName = UA_LOCALIZEDTEXT("en-US","Blink");
     helloAttr.executable = true;
     helloAttr.userExecutable = true;
     UA_Server_addMethodNode(server, UA_NODEID_NUMERIC(1,62541),
@@ -169,11 +169,11 @@ static esp_err_t event_handler(void *ctx, system_event_t *event)
         case SYSTEM_EVENT_STA_GOT_IP:
             ESP_LOGI(TAG, "SYSTEM_EVENT_STA_GOT_IP");
             ESP_LOGI(TAG, "Got IP: %s\n",
-            	ip4addr_ntoa(&event->event_info.got_ip.ip_info.ip));
+            ip4addr_ntoa(&event->event_info.got_ip.ip_info.ip));
             // TODO: Here I create task that start a OPC UA Server
 
             xTaskCreate(&opcua_task, "opcua_task", 1024 * 8, NULL, 5, NULL);
-
+            ESP_LOGI(TAG, "RAM left %d", esp_get_free_heap_size());
             break;
         case SYSTEM_EVENT_STA_DISCONNECTED:
             ESP_LOGI(TAG, "SYSTEM_EVENT_STA_DISCONNECTED");
