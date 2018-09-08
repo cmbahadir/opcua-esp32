@@ -1,0 +1,29 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/home/cmb/esp/esp-idf/components",
+                "/home/cmb/esp/esp-idf/examples/open62541/components",
+                "/home/cmb/esp/esp-idf/components/driver/include",
+                "/home/cmb/esp/esp-idf/components/esp32/include",
+                "/home/cmb/esp/esp-idf/components/tcpip_adapter/include",
+                "/home/cmb/esp/esp-idf/components/fatfs/test_fatfs_host/stubs/log/include",
+                "/home/cmb/esp/esp-idf/components/nvs_flash/include",
+                "/home/cmb/esp/esp-idf/components/newlib/include",
+                "/home/cmb/esp/esp-idf/components/soc/esp32/include",
+                "/home/cmb/esp/esp-idf/components/heap/include",
+                "/home/cmb/esp/esp-idf/components/soc/include",
+                "/home/cmb/esp/esp-idf/components/vfs/include",
+                "/home/cmb/esp/esp-idf/components/newlib/platform_include"
+            ],
+            "defines": [],
+            "compilerPath": "/home/cmb/esp/xtensa-esp32-elf/bin/xtensa-esp32-elf-gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "clang-x64"
+        }
+    ],
+    "version": 4
+}

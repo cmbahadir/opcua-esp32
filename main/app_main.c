@@ -57,34 +57,8 @@ void opcua_task(void *pvParameter) {
 
     UA_Server *server = UA_Server_new(config);
 
-    /* create nodes from nodeset 
-    if (simple(server) != UA_STATUSCODE_GOOD) {
-        UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "Could not add the example nodeset. "
-            "Check previous output for any error.");
-    } else {
-
-
-        UA_NodeId createdNodeId;
-        UA_ObjectAttributes object_attr = UA_ObjectAttributes_default;
-
-        object_attr.description = UA_LOCALIZEDTEXT("en-US", "A pump!");
-        object_attr.displayName = UA_LOCALIZEDTEXT("en-US", "Pump1");
-        addLEDMethod(server);
-
-        // we assume that the myNS nodeset was added in namespace 2.
-        // You should always use UA_Server_addNamespace to check what the
-        // namespace index is for a given namespace URI. UA_Server_addNamespace
-        // will just return the index if it is already added.
-        UA_Server_addObjectNode(server, UA_NODEID_NUMERIC(1, 0),
-                                UA_NODEID_NUMERIC(0, UA_NS0ID_OBJECTSFOLDER),
-                                UA_NODEID_NUMERIC(0, UA_NS0ID_ORGANIZES),
-                                UA_QUALIFIEDNAME(1, "Pump1"),
-                                UA_NODEID_NUMERIC(2, 1002),
-                                object_attr, NULL, &createdNodeId);
-        UA_Server_run(server, &running);
-    }
-	*/
     addLEDMethod(server);
+    
     UA_Server_run(server, &running);
     ESP_LOGI(TAG, "Now going to stop the server.");
     // UA_StatusCode retval = UA_Server_run(server, &running);
@@ -132,31 +106,54 @@ ledProcessCallBack(UA_Server *server,
 
 static void
 addLEDMethod(UA_Server *server) {
-    UA_Argument inputArgument;
-    UA_Argument_init(&inputArgument);
-    inputArgument.description = UA_LOCALIZEDTEXT("en-US", "An Integer");
-    inputArgument.name = UA_STRING("Blink Count");
-    inputArgument.dataType = UA_TYPES[UA_TYPES_INT32].typeId;
-    inputArgument.valueRank = -1; /* scalar */
+    if (simple(server) != UA_STATUSCODE_GOOD) {
+        UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "Could not add the example nodeset. "
+            "Check previous output for any error.");
+    } else {
+        UA_NodeId createdNodeId;
+        UA_ObjectAttributes object_attr = UA_ObjectAttributes_default;
 
-    UA_Argument outputArgument;
-    UA_Argument_init(&outputArgument);
-    outputArgument.description = UA_LOCALIZEDTEXT("en-US", "A String");
-    outputArgument.name = UA_STRING("MyOutput");
-    outputArgument.dataType = UA_TYPES[UA_TYPES_STRING].typeId;
-    outputArgument.valueRank = -1; /* scalar */
+        object_attr.description = UA_LOCALIZEDTEXT("en-US", "A pump!");
+        object_attr.displayName = UA_LOCALIZEDTEXT("en-US", "Pump1");
 
-    UA_MethodAttributes helloAttr = UA_MethodAttributes_default;
-    helloAttr.description = UA_LOCALIZEDTEXT("en-US","Enter the number of times you want LED to blin!");
-    helloAttr.displayName = UA_LOCALIZEDTEXT("en-US","Blink");
-    helloAttr.executable = true;
-    helloAttr.userExecutable = true;
-    UA_Server_addMethodNode(server, UA_NODEID_NUMERIC(1,62541),
-                            UA_NODEID_NUMERIC(0, UA_NS0ID_OBJECTSFOLDER),
-                            UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
-                            UA_QUALIFIEDNAME(1, "hello"),
-                            helloAttr, &ledProcessCallBack,
-                            1, &inputArgument, 1, &outputArgument, NULL, NULL);
+        // we assume that the myNS nodeset was added in namespace 2.
+        // You should always use UA_Server_addNamespace to check what the
+        // namespace index is for a given namespace URI. UA_Server_addNamespace
+        // will just return the index if it is already added.
+        UA_Server_addObjectNode(server, UA_NODEID_NUMERIC(1, 0),
+                                UA_NODEID_NUMERIC(0, UA_NS0ID_OBJECTSFOLDER),
+                                UA_NODEID_NUMERIC(0, UA_NS0ID_ORGANIZES),
+                                UA_QUALIFIEDNAME(1, "Pump1"),
+                                UA_NODEID_NUMERIC(2, 1002),
+                                object_attr, NULL, &createdNodeId);
+
+        UA_Argument inputArgument;
+        UA_Argument_init(&inputArgument);
+        inputArgument.description = UA_LOCALIZEDTEXT("en-US", "An Integer");
+        inputArgument.name = UA_STRING("Blink Count");
+        inputArgument.dataType = UA_TYPES[UA_TYPES_INT32].typeId;
+        inputArgument.valueRank = -1; /* scalar */
+
+        UA_Argument outputArgument;
+        UA_Argument_init(&outputArgument);
+        outputArgument.description = UA_LOCALIZEDTEXT("en-US", "A String");
+        outputArgument.name = UA_STRING("MyOutput");
+        outputArgument.dataType = UA_TYPES[UA_TYPES_STRING].typeId;
+        outputArgument.valueRank = -1; /* scalar */
+
+
+        UA_MethodAttributes helloAttr = UA_MethodAttributes_default;
+        helloAttr.description = UA_LOCALIZEDTEXT("en-US","Enter the number of times you want LED to blin!");
+        helloAttr.displayName = UA_LOCALIZEDTEXT("en-US","Blink");
+        helloAttr.executable = true;
+        helloAttr.userExecutable = true;
+        UA_Server_addMethodNode(server, UA_NODEID_NUMERIC(1,62541),
+                                UA_NODEID_NUMERIC(0, UA_NS0ID_OBJECTSFOLDER),
+                                UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
+                                UA_QUALIFIEDNAME(1, "hello"),
+                                helloAttr, &ledProcessCallBack,
+                                1, &inputArgument, 1, &outputArgument, NULL, &createdNodeId);
+    }
 }
 
 static esp_err_t event_handler(void *ctx, system_event_t *event)

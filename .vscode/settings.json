@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "open62541.h": "c",
+        "simple.h": "c"
+    }
+}
