@@ -141,7 +141,6 @@ addLEDMethod(UA_Server *server) {
         outputArgument.dataType = UA_TYPES[UA_TYPES_STRING].typeId;
         outputArgument.valueRank = -1; /* scalar */
 
-
         UA_MethodAttributes helloAttr = UA_MethodAttributes_default;
         helloAttr.description = UA_LOCALIZEDTEXT("en-US","Enter the number of times you want LED to blin!");
         helloAttr.displayName = UA_LOCALIZEDTEXT("en-US","Blink");
@@ -150,7 +149,7 @@ addLEDMethod(UA_Server *server) {
         UA_Server_addMethodNode(server, UA_NODEID_NUMERIC(1,62541),
                                 UA_NODEID_NUMERIC(0, UA_NS0ID_OBJECTSFOLDER),
                                 UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
-                                UA_QUALIFIEDNAME(1, "hello"),
+                                UA_QUALIFIEDNAME(1, "Blink"),
                                 helloAttr, &ledProcessCallBack,
                                 1, &inputArgument, 1, &outputArgument, NULL, &createdNodeId);
     }
