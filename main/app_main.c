@@ -15,7 +15,8 @@
 #include <unistd.h>
 #include <lwip/sockets.h>
 #include "open62541.h"
-#include "simple.h"
+#include "myNodeSet.h"
+//#include "simple.h"
 
 
 #define DEFAULT_SSID CONFIG_WIFI_SSID
@@ -106,7 +107,8 @@ ledProcessCallBack(UA_Server *server,
 
 static void
 addLEDMethod(UA_Server *server) {
-    if (simple(server) != UA_STATUSCODE_GOOD) {
+    //if (simple(server) != UA_STATUSCODE_GOOD) {
+    if (myNodeSet(server) != UA_STATUSCODE_GOOD) {
         UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "Could not add the example nodeset. "
             "Check previous output for any error.");
     } else {
