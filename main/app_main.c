@@ -56,6 +56,9 @@ void opcua_task(void *pvParameter) {
     config->networkLayers = &nl;
     config->networkLayersSize = 1;
 
+    //Set Discovery URL
+    UA_String esp32url = UA_String_fromChars("opc.tcp://192.168.0.101:4840");
+    config->applicationDescription.discoveryUrls = &esp32url;
     UA_Server *server = UA_Server_new(config);
 
     addLEDMethod(server);

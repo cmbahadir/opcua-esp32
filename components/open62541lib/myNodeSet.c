@@ -6,6 +6,7 @@
 
 /* providesInputTo - ns=1;i=4001 */
 
+
 static UA_StatusCode function_myNodeSet_0_begin(UA_Server *server, UA_UInt16 *ns)
 {
   UA_StatusCode retVal = UA_STATUSCODE_GOOD;

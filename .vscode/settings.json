@@ -1,6 +1,8 @@
 {
     "files.associations": {
         "open62541.h": "c",
-        "simple.h": "c"
-    }
+        "simple.h": "c",
+        "array": "c"
+    },
+    "C_Cpp.errorSquiggles": "Disabled"
 }
