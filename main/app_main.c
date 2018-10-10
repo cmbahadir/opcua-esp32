@@ -16,6 +16,7 @@
 #include <lwip/sockets.h>
 #include "open62541.h"
 #include "myNodeSet.h"
+#include "DHT22.h"
 //#include "simple.h"
 
 
@@ -40,6 +41,9 @@ ledProcessCallBack(UA_Server *server,
 static void
 addLEDMethod(UA_Server *server);
 
+static void
+addTemperatureNode(UA_Server *server);
+
 
 void opcua_task(void *pvParameter) {
 
@@ -62,16 +66,14 @@ void opcua_task(void *pvParameter) {
     UA_Server *server = UA_Server_new(config);
 
     addLEDMethod(server);
+    addTemperatureNode(server);
     
     UA_Server_run(server, &running);
     ESP_LOGI(TAG, "Now going to stop the server.");
-    // UA_StatusCode retval = UA_Server_run(server, &running);
     UA_Server_delete(server);
     UA_ServerConfig_delete(config);
-    // return (int)retval;
     nl.deleteMembers(&nl);
     ESP_LOGI(TAG, "opcua_task going to return");
-    // return 0;
     vTaskDelete(NULL);
 }
 
@@ -84,19 +86,15 @@ ledProcessCallBack(UA_Server *server,
                          size_t outputSize, UA_Variant *output) {
 	UA_Int32 i = 0;
     UA_Int32 *inputVal = (UA_Int32*)input->data;
-    UA_String tmp = UA_STRING_ALLOC("Data Received ");
+    UA_String tmp = UA_STRING_ALLOC("Data Received");
     if(*inputVal > 0) {
         tmp.data = (UA_Byte *)UA_realloc(tmp.data, tmp.length);
 		while(i<*inputVal +1)
 		{
-			//ESP32 GPIO Control
 			gpio_pad_select_gpio(BLINK_GPIO);
-			/* Set the GPIO as a push/pull output */
 			gpio_set_direction(BLINK_GPIO, GPIO_MODE_OUTPUT);
-			/* Blink off (output low) */
 			gpio_set_level(BLINK_GPIO, 1);
 			vTaskDelay(500 / portTICK_PERIOD_MS);
-			/* Blink on (output high) */
 			gpio_set_level(BLINK_GPIO, 0);
 			vTaskDelay(500 / portTICK_PERIOD_MS);
 			i++;
@@ -109,12 +107,33 @@ ledProcessCallBack(UA_Server *server,
 }
 
 static void
+addTemperatureNode(UA_Server *server) {
+    UA_VariableAttributes attr = UA_VariableAttributes_default;
+    UA_Int32 ambientTemperature = ReadTemperature(4); //TODO: Temperature value should be read with a cycle and parsed into variable attr value.
+    UA_Variant_setScalar(&attr.value, &ambientTemperature, &UA_TYPES[UA_TYPES_INT32]);
+
+    attr.description = UA_LOCALIZEDTEXT("en-US", "Ambient Temperature in C");
+    attr.displayName = UA_LOCALIZEDTEXT("en-US", "Ambient Temperature in C");
+    attr.dataType = UA_TYPES[UA_TYPES_INT32].typeId;
+    attr.accessLevel = UA_ACCESSLEVELMASK_READ;
+
+    UA_NodeId temperatureNodeId = UA_NODEID_STRING(1,"Temperature");
+    UA_QualifiedName temperatureNodeName = UA_QUALIFIEDNAME(1,"Temperature Value");
+    UA_NodeId parentNodeId = UA_NODEID_NUMERIC(0, UA_NS0ID_OBJECTSFOLDER);
+    UA_NodeId parentReferenceNodeId = UA_NODEID_NUMERIC(0, UA_NS0ID_ORGANIZES);
+
+    UA_Server_addVariableNode(server, temperatureNodeId, parentNodeId,
+                              parentReferenceNodeId, temperatureNodeName,
+                              UA_NODEID_NUMERIC(0, UA_NS0ID_BASEDATAVARIABLETYPE), attr, NULL, NULL);
+}
+
+static void
 addLEDMethod(UA_Server *server) {
     //if (simple(server) != UA_STATUSCODE_GOOD) {
-    if (myNodeSet(server) != UA_STATUSCODE_GOOD) {
-        UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "Could not add the example nodeset. "
-            "Check previous output for any error.");
-    } else {
+    // if (myNodeSet(server) != UA_STATUSCODE_GOOD) {
+    //     UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "Could not add the example nodeset. "
+    //         "Check previous output for any error.");
+    // } else {
         UA_NodeId createdNodeId;
         UA_ObjectAttributes object_attr = UA_ObjectAttributes_default;
 
@@ -157,7 +176,7 @@ addLEDMethod(UA_Server *server) {
                                 UA_QUALIFIEDNAME(1, "Blink"),
                                 helloAttr, &ledProcessCallBack,
                                 1, &inputArgument, 1, &outputArgument, NULL, &createdNodeId);
-    }
+    // }
 }
 
 static esp_err_t event_handler(void *ctx, system_event_t *event)

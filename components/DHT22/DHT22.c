@@ -230,20 +230,17 @@ uint8_t bitInx = 7;
 		return DHT_CHECKSUM_ERROR;
 }
 
-char* ReadTemperature(int sensor_gpio){
-    char buf[10];
-	char* error[20];
+//Read temperature and return it to be used on temperature variable node
+float ReadTemperature(int sensor_gpio){
 	float temperatureFromSensor;
     int ret_ReadDHT = readDHT();
     if (ret_ReadDHT != DHT_OK){
-		*error = "Sensor Error!";
-		return *error;
+		return 100;
 	}
     else {
 		setDHTgpio(4);
 		temperatureFromSensor = getTemperature();
-    	gcvt(temperatureFromSensor,4,buf);
-		return buf;
+		return temperatureFromSensor;
 	}
 }
 

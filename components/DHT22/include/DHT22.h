@@ -19,6 +19,6 @@ int 	readDHT();
 float 	getHumidity();
 float 	getTemperature();
 int 	getSignalLevel( int usTimeOut, bool state );
-char* ReadTemperature(int);
+float   ReadTemperature(int);
 
 #endif
