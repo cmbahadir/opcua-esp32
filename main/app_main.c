@@ -14,10 +14,10 @@
 #include <time.h>
 #include <unistd.h>
 #include <lwip/sockets.h>
+#include "tcpip_adapter.h"
 #include "open62541.h"
-#include "myNodeSet.h"
 #include "DHT22.h"
-//#include "simple.h"
+#include "myNodeSet.h"
 
 
 #define DEFAULT_SSID CONFIG_WIFI_SSID
@@ -27,6 +27,7 @@
 #define BLINK_GPIO 2
 
 UA_ServerConfig *config;
+float temperature;
 
 static UA_Boolean running = true;
 
@@ -44,36 +45,59 @@ addLEDMethod(UA_Server *server);
 static void
 addTemperatureNode(UA_Server *server);
 
+void sensor_task(void *pvParameter) {
+    //TODO: For now it only reads temperature once in parallel with opcua_task creation. Change this behaviour and make temperature dynamic.
+    temperature = ReadTemperature(4);
+    ESP_LOGI("Sensor_Task", "Temperature read from the sensor.");
+    vTaskDelete(NULL);
+}
 
 void opcua_task(void *pvParameter) {
-
     ESP_LOGI(TAG, "Fire up OPC UA Server.");
-    config = UA_ServerConfig_new_customBuffer(4840, NULL, 8192, 8192);
+    //config = UA_ServerConfig_new_customBuffer(4840, NULL, 8192, 8192);
+    config = UA_ServerConfig_new_default();
 
     //Set the connection config
     UA_ConnectionConfig connectionConfig;
     connectionConfig.recvBufferSize = 32768;
     connectionConfig.sendBufferSize = 32768;
 
-    UA_ServerNetworkLayer nl = 
-    UA_ServerNetworkLayerTCP(connectionConfig, 4840, NULL);
-    config->networkLayers = &nl;
-    config->networkLayersSize = 1;
+    UA_ServerNetworkLayer nl = UA_ServerNetworkLayerTCP(connectionConfig, 4840, NULL);
 
     //Set Discovery URL
-    UA_String esp32url = UA_String_fromChars("opc.tcp://192.168.0.101:4840");
+    UA_String esp32url = UA_String_fromChars("opc.tcp://192.168.0.100:4840/");
+    config->networkLayers = &nl;
+    config->networkLayersSize = 1;
+    config->networkLayers[0].discoveryUrl = UA_STRING("opc.tcp://espressif:4840");
+
     config->applicationDescription.discoveryUrls = &esp32url;
+    config->applicationDescription.discoveryUrlsSize = 2;
+    config->applicationDescription.applicationUri = UA_STRING("urn:SIMATIC.S7-1500.OPC-UA.Application:Mete");
+    config->applicationDescription.applicationName = UA_LOCALIZEDTEXT("en-US","ESP32Server");
+    config->applicationDescription.applicationType = UA_APPLICATIONTYPE_SERVER;
+    //config->applicationDescription.gatewayServerUri = UA_STRING("192.168.0.1");
+    UA_ServerConfig_set_customHostname(config, UA_STRING("espressif"));
     UA_Server *server = UA_Server_new(config);
 
     addLEDMethod(server);
     addTemperatureNode(server);
+    // UA_Server_run(serer, &running);
     
-    UA_Server_run(server, &running);
+    UA_Server_run_startup(server);
+    UA_Boolean waitInternal = false;
+    while(running){
+        UA_UInt16 timeout = UA_Server_run_iterate(server, waitInternal);
+        struct timeval tv;
+        tv.tv_sec = 0;
+        tv.tv_usec = timeout * 1000;
+        select(0,NULL,NULL,NULL,&tv);
+    }
+
     ESP_LOGI(TAG, "Now going to stop the server.");
     UA_Server_delete(server);
     UA_ServerConfig_delete(config);
     nl.deleteMembers(&nl);
-    ESP_LOGI(TAG, "opcua_task going to return");
+    ESP_LOGI("OPC_TASK", "opcua_task going to return");
     vTaskDelete(NULL);
 }
 
@@ -100,7 +124,9 @@ ledProcessCallBack(UA_Server *server,
 			i++;
 		}
     }
-    UA_Variant_setScalarCopy(output, &tmp, &UA_TYPES[UA_TYPES_STRING]);
+    //TODO: Fix here to read temperature.
+    temperature = ReadTemperature(4);
+    UA_Variant_setScalarCopy(output, &temperature, &UA_TYPES[UA_TYPES_FLOAT]);
     UA_String_deleteMembers(&tmp);
     UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "Led bink called.");
     return UA_STATUSCODE_GOOD;
@@ -109,7 +135,8 @@ ledProcessCallBack(UA_Server *server,
 static void
 addTemperatureNode(UA_Server *server) {
     UA_VariableAttributes attr = UA_VariableAttributes_default;
-    UA_Int32 ambientTemperature = ReadTemperature(4); //TODO: Temperature value should be read with a cycle and parsed into variable attr value.
+    //TODO: Temperature value should be read with a cycle and parsed into variable attr value.
+    UA_Int32 ambientTemperature = temperature;//ReadTemperature(4); 
     UA_Variant_setScalar(&attr.value, &ambientTemperature, &UA_TYPES[UA_TYPES_INT32]);
 
     attr.description = UA_LOCALIZEDTEXT("en-US", "Ambient Temperature in C");
@@ -153,16 +180,17 @@ addLEDMethod(UA_Server *server) {
 
         UA_Argument inputArgument;
         UA_Argument_init(&inputArgument);
-        inputArgument.description = UA_LOCALIZEDTEXT("en-US", "An Integer");
+        inputArgument.description = UA_LOCALIZEDTEXT("en-US", "Number of times to blink LED!");
         inputArgument.name = UA_STRING("Blink Count");
         inputArgument.dataType = UA_TYPES[UA_TYPES_INT32].typeId;
         inputArgument.valueRank = -1; /* scalar */
 
         UA_Argument outputArgument;
         UA_Argument_init(&outputArgument);
-        outputArgument.description = UA_LOCALIZEDTEXT("en-US", "A String");
+        outputArgument.description = UA_LOCALIZEDTEXT("en-US", "Temperature Read");
         outputArgument.name = UA_STRING("MyOutput");
-        outputArgument.dataType = UA_TYPES[UA_TYPES_STRING].typeId;
+        //outputArgument.dataType = UA_TYPES[UA_TYPES_STRING].typeId;
+        outputArgument.dataType = UA_TYPES[UA_TYPES_FLOAT].typeId;
         outputArgument.valueRank = -1; /* scalar */
 
         UA_MethodAttributes helloAttr = UA_MethodAttributes_default;
@@ -191,8 +219,9 @@ static esp_err_t event_handler(void *ctx, system_event_t *event)
             ESP_LOGI(TAG, "Got IP: %s\n",
             ip4addr_ntoa(&event->event_info.got_ip.ip_info.ip));
             // TODO: Here I create task that start a OPC UA Server
-
-            xTaskCreate(&opcua_task, "opcua_task", 1024 * 8, NULL, 5, NULL);
+            xTaskCreate(&sensor_task, "sensor_task", 1024 * 8, NULL, 1, NULL);
+            vTaskDelay(500 / portTICK_PERIOD_MS);
+            xTaskCreate(&opcua_task, "opcua_task", 1024 * 8, NULL, 1, NULL);
             ESP_LOGI(TAG, "RAM left %d", esp_get_free_heap_size());
             break;
         case SYSTEM_EVENT_STA_DISCONNECTED:
@@ -223,7 +252,7 @@ static void wifi_scan(void)
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
     ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config));
     ESP_ERROR_CHECK(esp_wifi_start());
-
+    tcpip_adapter_set_hostname(TCPIP_ADAPTER_IF_STA,"espressif");
 }
 
 void app_main()
@@ -236,9 +265,7 @@ void app_main()
         ret = nvs_flash_init();
     }
     ESP_ERROR_CHECK( ret );
-
     wifi_scan();
-
     //xTaskCreate(&opcua_task, "opcua_task", configMINIMAL_STACK_SIZE, NULL, 5, NULL);
 }
 

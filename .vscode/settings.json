@@ -2,7 +2,8 @@
     "files.associations": {
         "open62541.h": "c",
         "simple.h": "c",
-        "array": "c"
+        "array": "c",
+        "mynodeset.h": "c"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }

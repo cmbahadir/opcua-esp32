@@ -235,7 +235,7 @@ float ReadTemperature(int sensor_gpio){
 	float temperatureFromSensor;
     int ret_ReadDHT = readDHT();
     if (ret_ReadDHT != DHT_OK){
-		return 100;
+		return SENSOR_READ_ERROR; //Sensor ERROR CODE = 100
 	}
     else {
 		setDHTgpio(4);
