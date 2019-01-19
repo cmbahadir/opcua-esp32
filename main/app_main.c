@@ -59,8 +59,8 @@ void opcua_task(void *pvParameter) {
 
     //Set the connection config
     UA_ConnectionConfig connectionConfig;
-    connectionConfig.recvBufferSize = 32768;
-    connectionConfig.sendBufferSize = 32768;
+    connectionConfig.recvBufferSize = 16384;
+    connectionConfig.sendBufferSize = 16384;
 
     UA_ServerNetworkLayer nl = UA_ServerNetworkLayerTCP(connectionConfig, 4840, NULL);
 
