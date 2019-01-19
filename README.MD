@@ -35,7 +35,7 @@ It is aimed to run OPC UA server on ESP32 board (xtensa toolchain). There is a n
 
 It is required to have ESP-IDF (https://github.com/espressif/esp-idf) and this repo can be directly cloned under examples. Open62541 stack functionaliy is provided by open62541.c and open62541.h files. If you want to dive into OPC UA part, it is advised to check Open62541 project.
 
-Also, if you want to build open62541.c/.h/.lib from source, beware of the changes on https://github.com/cmbahadir/opcua-pubsub-esp32/blob/master/components/open62541lib/README.md in order to be xtensa-toolchain compatible.
+Also, if you want to build open62541.c/.h/.lib from source, beware of the changes on https://github.com/cmbahadir/opcua-esp32/blob/master/components/open62541lib/README.md in order to be xtensa-toolchain compatible.
 
 - I haven't analyzed the required modifications on open62541.c/.h  files, these are just a result of trial and error process, so an explanatory contribution would be great. :)
 
