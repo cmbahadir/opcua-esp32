@@ -61,11 +61,12 @@ void opcua_task(void *pvParameter) {
     UA_ConnectionConfig connectionConfig;
     connectionConfig.recvBufferSize = 16384;
     connectionConfig.sendBufferSize = 16384;
+    connectionConfig.maxMessageSize = 16384;
 
     UA_ServerNetworkLayer nl = UA_ServerNetworkLayerTCP(connectionConfig, 4840, NULL);
 
     //Set Discovery URL
-    UA_String esp32url = UA_String_fromChars("opc.tcp://192.168.0.100:4840/");
+    UA_String esp32url = UA_String_fromChars("opc.tcp://192.168.1.104:4840/");
     config->networkLayers = &nl;
     config->networkLayersSize = 1;
     config->networkLayers[0].discoveryUrl = UA_STRING("opc.tcp://espressif:4840");
