@@ -31,18 +31,27 @@ It is aimed to run OPC UA server on ESP32 board (xtensa toolchain). There is a n
         return UA_STATUSCODE_GOOD;
     }
 
-## Getting Started
+### Prerequisites
 
-It is required to have ESP-IDF (https://github.com/espressif/esp-idf) and this repo can be directly cloned under examples. Open62541 stack functionaliy is provided by open62541.c and open62541.h files. If you want to dive into OPC UA part, it is advised to check Open62541 project.
+- ESP-IDF : https://docs.espressif.com/projects/esp-idf/en/latest/get-started/
+- Open62541 (Optional) : https://github.com/open62541/open62541
+
+## Getting Started
+It is required to have ESP-IDF (https://github.com/espressif/esp-idf) and environment variables have to be set.
+
+    export IDF_PATH=<your-esp-idf-root-path>
+    export PATH=$PATH:<xtensa-toolchain-path>
+    cd <your-esp-idf-root-path>/examples/
+    git clone https://github.com/cmbahadir opcua-esp32
+    cd opcua-esp32
+    make flash
+    
+Open62541 stack functionaliy is provided by open62541.c and open62541.h files. If you want to dive into OPC UA part, it is advised to check Open62541 project.
 
 Also, if you want to build open62541.c/.h/.lib from source, beware of the changes on https://github.com/cmbahadir/opcua-esp32/blob/master/components/open62541lib/README.md in order to be xtensa-toolchain compatible.
 
 - I haven't analyzed the required modifications on open62541.c/.h  files, these are just a result of trial and error process, so an explanatory contribution would be great. :)
 
-### Prerequisites
-
-- ESP-IDF : https://docs.espressif.com/projects/esp-idf/en/latest/get-started/
-- Open62541 (Optional) : https://github.com/open62541/open62541
 
 ## License
 
