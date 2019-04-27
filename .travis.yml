@@ -8,6 +8,7 @@ compiler:
   - gcc
 
 before_install:
+  - cd ..
   - git clone --recurse-submodules https://github.com/espressif/esp-idf.git esp-idf
   - export IDF_PATH=./esp-idf
   - sudo apt-get install gcc git wget make libncurses-dev flex bison gperf python python-pip python-setuptools python-serial python-pyparsing
