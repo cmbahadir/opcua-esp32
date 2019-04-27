@@ -12,19 +12,10 @@ before_install:
   - export IDF_PATH=./esp-idf
   - sudo apt-get install gcc git wget make libncurses-dev flex bison gperf python python-pip python-setuptools python-serial python-pyparsing
   - python -m pip install --user -r $IDF_PATH/requirements.txt 
-  - sudo tar xf release-1.7.0.tar.gz
-  - cd googletest-release-1.7.0
-  - sudo cmake -DBUILD_SHARED_LIBS=ON . && sudo make
-  - sudo cp -a include/gtest /usr/include
-  - sudo cp -a libgtest_main.so libgtest.so /usr/lib/
-  - sudo pip install cpp-coveralls
-  - cd "${TRAVIS_BUILD_DIR}"
-  - git clone https://github.com/CopernicaMarketingSoftware/AMQP-CPP.git
-  - cd AMQP-CPP
-  - mkdir build && cd build
-  - cmake -DAMQP-CPP_BUILD_EXAMPLES=OFF -DAMQP-CPP_LINUX_TCP=ON -DAMQP-CPP_BUILD_SHARED=OFF -DCMAKE_BUILD_TYPE:STRING=RELEASE ..
-  - make && sudo make install
-
+  - mkdir esp && cd esp
+  - wget https://dl.espressif.com/dl/xtensa-esp32-elf-linux64-1.22.0-80-g6c4433a-5.2.0.tar.gz
+  - tar -xzf xtensa-esp32-elf-linux64-1.22.0-80-g6c4433a-5.2.0.tar.gz
+  - export PATH="./xtensa-esp32-elf/bin:$PATH" && cd .. 
 # Build steps
 script:
   - cd ../.. && mkdir build && cd build
