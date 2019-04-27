@@ -10,17 +10,16 @@ compiler:
 before_install:
   - cd ..
   - git clone --recurse-submodules https://github.com/espressif/esp-idf.git esp-idf
-  - export IDF_PATH=./esp-idf
+  - export IDF_PATH=/home/travis/build/cmbahadir/esp-idf
   - sudo apt-get install gcc git wget make libncurses-dev flex bison gperf python python-pip python-setuptools python-serial python-pyparsing
   - python -m pip install --user -r $IDF_PATH/requirements.txt 
   - mkdir esp && cd esp
   - wget https://dl.espressif.com/dl/xtensa-esp32-elf-linux64-1.22.0-80-g6c4433a-5.2.0.tar.gz
   - tar -xzf xtensa-esp32-elf-linux64-1.22.0-80-g6c4433a-5.2.0.tar.gz
-  - export PATH="./xtensa-esp32-elf/bin:$PATH" && cd .. 
+  - export PATH="/home/travis/build/cmbahadir/esp/xtensa-esp32-elf/bin:$PATH" && cd .. 
   - mv opcua-esp32 $IDF_PATH/examples
 
 # Build steps
 script:
   - cd $IDF_PATH/examples/opcua-esp32
-  - pwd && ls -ltr
   - make
