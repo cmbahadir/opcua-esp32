@@ -22,4 +22,4 @@ before_install:
 # Build steps
 script:
   - cd $IDF_PATH/examples/opcua-esp32
-  - make
+  - make --trace
