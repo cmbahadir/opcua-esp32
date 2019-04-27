@@ -1,0 +1,36 @@
+udo: required
+
+# Enable C++ support
+language: cpp
+
+# Compiler selection
+compiler:
+  - g++
+
+before_install:
+  - sudo apt-get install gcc git wget make libncurses-dev flex bison gperf python python-pip python-setuptools python-serial python-cryptography python-future python-pyparsing python-pyelftools
+  - sudo wget https://github.com/google/googletest/archive/release-1.7.0.tar.gz
+  - sudo tar xf release-1.7.0.tar.gz
+  - cd googletest-release-1.7.0
+  - sudo cmake -DBUILD_SHARED_LIBS=ON . && sudo make
+  - sudo cp -a include/gtest /usr/include
+  - sudo cp -a libgtest_main.so libgtest.so /usr/lib/
+  - sudo pip install cpp-coveralls
+  - cd "${TRAVIS_BUILD_DIR}"
+  - git clone https://github.com/CopernicaMarketingSoftware/AMQP-CPP.git
+  - cd AMQP-CPP
+  - mkdir build && cd build
+  - cmake -DAMQP-CPP_BUILD_EXAMPLES=OFF -DAMQP-CPP_LINUX_TCP=ON -DAMQP-CPP_BUILD_SHARED=OFF -DCMAKE_BUILD_TYPE:STRING=RELEASE ..
+  - make && sudo make install
+
+# Build steps
+script:
+  - cd ../.. && mkdir build && cd build
+  - cmake .. && make
+# Run Tests
+#  - ./PlaneSpotter_Test
+
+after_success:
+  - mv *.gc* ..
+  - coveralls --root .. -E ".*gtest.*" -E ".*Makefile.*"
+
