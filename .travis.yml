@@ -1,11 +1,11 @@
-udo: required
+sudo: required
 
 # Enable C++ support
-language: cpp
+language: c
 
 # Compiler selection
 compiler:
-  - g++
+  - gcc
 
 before_install:
   - git clone --recurse-submodules https://github.com/espressif/esp-idf.git esp-idf
@@ -16,14 +16,9 @@ before_install:
   - wget https://dl.espressif.com/dl/xtensa-esp32-elf-linux64-1.22.0-80-g6c4433a-5.2.0.tar.gz
   - tar -xzf xtensa-esp32-elf-linux64-1.22.0-80-g6c4433a-5.2.0.tar.gz
   - export PATH="./xtensa-esp32-elf/bin:$PATH" && cd .. 
+  - mv cmbahadir/opcua-esp32 $IDF_PATH/examples
+
 # Build steps
 script:
-  - cd ../.. && mkdir build && cd build
-  - cmake .. && make
-# Run Tests
-#  - ./PlaneSpotter_Test
-
-after_success:
-  - mv *.gc* ..
-  - coveralls --root .. -E ".*gtest.*" -E ".*Makefile.*"
-
+  - cd $IDF_PATH/examples/opcua-esp32
+  - make
