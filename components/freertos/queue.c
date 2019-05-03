@@ -79,7 +79,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "rom/ets_sys.h"
+#include "esp32/rom/ets_sys.h"
 
 /* Defining MPU_WRAPPERS_INCLUDED_FROM_API_FILE prevents task.h from redefining
 all the API functions to use the MPU wrappers.  That should only be done when
@@ -338,6 +338,7 @@ Queue_t * const pxQueue = ( Queue_t * ) xQueue;
 			the real queue and semaphore structures. */
 			volatile size_t xSize = sizeof( StaticQueue_t );
 			configASSERT( xSize == sizeof( Queue_t ) );
+			( void ) xSize; /* Keeps lint quiet when configASSERT() is not defined. */
 		}
 		#endif /* configASSERT_DEFINED */
 
@@ -723,6 +724,12 @@ Queue_t * const pxQueue = ( Queue_t * ) xQueue;
 		configASSERT( !( ( xTaskGetSchedulerState() == taskSCHEDULER_SUSPENDED ) && ( xTicksToWait != 0 ) ) );
 	}
 	#endif
+	#if ( configUSE_MUTEXES == 1 && configCHECK_MUTEX_GIVEN_BY_OWNER == 1)
+	{
+		configASSERT(pxQueue->uxQueueType != queueQUEUE_IS_MUTEX || pxQueue->pxMutexHolder == NULL || xTaskGetCurrentTaskHandle() == pxQueue->pxMutexHolder);
+	}
+	#endif
+
 
 
 	/* This function relaxes the coding standard somewhat to allow return
@@ -1326,7 +1333,7 @@ Queue_t * const pxQueue = ( Queue_t * ) xQueue;
 		space'. */
 		if( pxQueue->uxMessagesWaiting < pxQueue->uxLength )
 		{
-			traceQUEUE_SEND_FROM_ISR( pxQueue );
+			traceQUEUE_GIVE_FROM_ISR( pxQueue );
 
 			/* A task can only have an inherited priority if it is a mutex
 			holder - and if there is a mutex holder then the mutex cannot be
@@ -1420,7 +1427,7 @@ Queue_t * const pxQueue = ( Queue_t * ) xQueue;
 		}
 		else
 		{
-			traceQUEUE_SEND_FROM_ISR_FAILED( pxQueue );
+			traceQUEUE_GIVE_FROM_ISR_FAILED( pxQueue );
 			xReturn = errQUEUE_FULL;
 		}
 		taskEXIT_CRITICAL_ISR(&pxQueue->mux);
@@ -2458,8 +2465,7 @@ Queue_t * const pxQueue = ( Queue_t * ) xQueue;
 	{
 	BaseType_t xReturn;
 
-//ToDo: figure out locking
-//		taskENTER_CRITICAL(&pxQueue->mux);
+		taskENTER_CRITICAL(&(((Queue_t * )xQueueOrSemaphore)->mux));
 		{
 			if( ( ( Queue_t * ) xQueueOrSemaphore )->pxQueueSetContainer != NULL )
 			{
@@ -2478,7 +2484,7 @@ Queue_t * const pxQueue = ( Queue_t * ) xQueue;
 				xReturn = pdPASS;
 			}
 		}
-//		taskEXIT_CRITICAL(&pxQueue->mux);
+		taskEXIT_CRITICAL(&(((Queue_t * )xQueueOrSemaphore)->mux));
 
 		return xReturn;
 	}
@@ -2507,12 +2513,12 @@ Queue_t * const pxQueue = ( Queue_t * ) xQueue;
 		}
 		else
 		{
-//			taskENTER_CRITICAL(&pxQueue->mux);
+			taskENTER_CRITICAL(&(pxQueueOrSemaphore->mux));
 			{
 				/* The queue is no longer contained in the set. */
 				pxQueueOrSemaphore->pxQueueSetContainer = NULL;
 			}
-//			taskEXIT_CRITICAL(&pxQueue->mux);
+			taskEXIT_CRITICAL(&(pxQueueOrSemaphore->mux));
 			xReturn = pdPASS;
 		}
 
@@ -2555,9 +2561,15 @@ Queue_t * const pxQueue = ( Queue_t * ) xQueue;
 	Queue_t *pxQueueSetContainer = pxQueue->pxQueueSetContainer;
 	BaseType_t xReturn = pdFALSE;
 
-		/* This function must be called form a critical section. */
+		/*
+		 * This function is called with a Queue's / Semaphore's spinlock already
+		 * acquired. Acquiring the Queue set's spinlock is still necessary.
+		 */
 
 		configASSERT( pxQueueSetContainer );
+
+		//Acquire the Queue set's spinlock
+		portENTER_CRITICAL(&(pxQueueSetContainer->mux));
 		configASSERT( pxQueueSetContainer->uxMessagesWaiting < pxQueueSetContainer->uxLength );
 
 		if( pxQueueSetContainer->uxMessagesWaiting < pxQueueSetContainer->uxLength )
@@ -2587,6 +2599,9 @@ Queue_t * const pxQueue = ( Queue_t * ) xQueue;
 		{
 			mtCOVERAGE_TEST_MARKER();
 		}
+
+		//Release the Queue set's spinlock
+		portEXIT_CRITICAL(&(pxQueueSetContainer->mux));
 
 		return xReturn;
 	}

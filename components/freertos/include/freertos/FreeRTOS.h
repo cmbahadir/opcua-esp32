@@ -514,6 +514,14 @@ extern "C" {
 	#define traceTASK_CREATE( pxNewTCB )
 #endif
 
+#ifndef traceQUEUE_GIVE_FROM_ISR
+	#define traceQUEUE_GIVE_FROM_ISR( pxQueue )
+#endif
+
+#ifndef traceQUEUE_GIVE_FROM_ISR_FAILED
+	#define traceQUEUE_GIVE_FROM_ISR_FAILED( pxQueue )
+#endif
+
 #ifndef traceTASK_CREATE_FAILED
 	#define traceTASK_CREATE_FAILED()
 #endif
@@ -738,6 +746,10 @@ extern "C" {
 
 #ifndef configUSE_STATS_FORMATTING_FUNCTIONS
 	#define configUSE_STATS_FORMATTING_FUNCTIONS 0
+#endif
+
+#ifndef configTASKLIST_INCLUDE_COREID
+    #define configTASKLIST_INCLUDE_COREID   0
 #endif
 
 #ifndef portASSERT_IF_INTERRUPT_PRIORITY_INVALID

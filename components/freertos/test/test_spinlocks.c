@@ -4,7 +4,7 @@
 
 #include <esp_types.h>
 #include <stdio.h>
-#include "rom/ets_sys.h"
+#include "esp32/rom/ets_sys.h"
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -17,7 +17,7 @@
 #include "soc/io_mux_reg.h"
 #include "soc/cpu.h"
 
-#include "idf_performance.h"
+#include "test_utils.h"
 
 #define REPEAT_OPS 10000
 

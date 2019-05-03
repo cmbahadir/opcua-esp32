@@ -73,17 +73,24 @@ extern "C" {
 #ifndef __ASSEMBLER__
 
 #include <stdint.h>
+#include <stdlib.h>
+#include <stdbool.h>
 
 #include <xtensa/hal.h>
 #include <xtensa/config/core.h>
 #include <xtensa/config/system.h>	/* required for XSHAL_CLIB */
 #include <xtensa/xtruntime.h>
-#include "esp_crosscore_int.h"
+#include "esp_private/crosscore_int.h"
 #include "esp_timer.h"              /* required for FreeRTOS run time stats */
 
 
 #include <esp_heap_caps.h>
+
+#include "sdkconfig.h"
+
+#ifdef CONFIG_LEGACY_INCLUDE_COMMON_HEADERS
 #include "soc/soc_memory_layout.h"
+#endif
 
 //#include "xtensa_context.h"
 
@@ -197,7 +204,7 @@ This all assumes that interrupts are either entirely disabled or enabled. Interr
 will break this scheme.
 
 Remark: For the ESP32, portENTER_CRITICAL and portENTER_CRITICAL_ISR both alias vTaskEnterCritical, meaning
-that either function can be called both from ISR as well as task context. This is not standard FreeRTOS 
+that either function can be called both from ISR as well as task context. This is not standard FreeRTOS
 behaviour; please keep this in mind if you need any compatibility with other FreeRTOS implementations.
 */
 void vPortCPUInitializeMutex(portMUX_TYPE *mux);
@@ -258,16 +265,11 @@ static inline unsigned portENTER_CRITICAL_NESTED() {
 
 //Because the ROM routines don't necessarily handle a stack in external RAM correctly, we force
 //the stack memory to always be internal.
-#define pvPortMallocTcbMem(size) heap_caps_malloc(size, MALLOC_CAP_INTERNAL|MALLOC_CAP_8BIT)
-#define pvPortMallocStackMem(size)  heap_caps_malloc(size, MALLOC_CAP_INTERNAL|MALLOC_CAP_8BIT)
+#define portTcbMemoryCaps (MALLOC_CAP_INTERNAL|MALLOC_CAP_8BIT)
+#define portStackMemoryCaps (MALLOC_CAP_INTERNAL|MALLOC_CAP_8BIT)
 
-//xTaskCreateStatic uses these functions to check incoming memory.
-#define portVALID_TCB_MEM(ptr) (esp_ptr_internal(ptr) && esp_ptr_byte_accessible(ptr))
-#ifdef CONFIG_SPIRAM_ALLOW_STACK_EXTERNAL_MEMORY
-#define portVALID_STACK_MEM(ptr) esp_ptr_byte_accessible(ptr)
-#else
-#define portVALID_STACK_MEM(ptr) (esp_ptr_internal(ptr) && esp_ptr_byte_accessible(ptr))
-#endif
+#define pvPortMallocTcbMem(size) heap_caps_malloc(size, portTcbMemoryCaps)
+#define pvPortMallocStackMem(size)  heap_caps_malloc(size, portStackMemoryCaps)
 
 /*
  * Wrapper for the Xtensa compare-and-set instruction. This subroutine will atomically compare
@@ -365,10 +367,15 @@ typedef struct {
 #endif
 
 extern void esp_vApplicationIdleHook( void );
-extern void esp_vApplicationWaitiHook( void );
+extern void esp_vApplicationTickHook( void );
+
+#ifndef CONFIG_FREERTOS_LEGACY_HOOKS
+#define vApplicationIdleHook    esp_vApplicationIdleHook
+#define vApplicationTickHook    esp_vApplicationTickHook
+#endif /* !CONFIG_FREERTOS_LEGACY_HOOKS */
 
 void _xt_coproc_release(volatile void * coproc_sa_base);
-bool vApplicationSleep( TickType_t xExpectedIdleTime );
+void vApplicationSleep( TickType_t xExpectedIdleTime );
 
 #define portSUPPRESS_TICKS_AND_SLEEP( idleTime ) vApplicationSleep( idleTime )
 
