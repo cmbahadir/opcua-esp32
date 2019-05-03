@@ -1,36 +1,29 @@
-udo: required
+sudo: required
 
 # Enable C++ support
-language: cpp
+language: c
 
 # Compiler selection
 compiler:
-  - g++
+  - gcc
 
 before_install:
-  - sudo apt-get install gcc git wget make libncurses-dev flex bison gperf python python-pip python-setuptools python-serial python-cryptography python-future python-pyparsing python-pyelftools
-  - sudo wget https://github.com/google/googletest/archive/release-1.7.0.tar.gz
-  - sudo tar xf release-1.7.0.tar.gz
-  - cd googletest-release-1.7.0
-  - sudo cmake -DBUILD_SHARED_LIBS=ON . && sudo make
-  - sudo cp -a include/gtest /usr/include
-  - sudo cp -a libgtest_main.so libgtest.so /usr/lib/
-  - sudo pip install cpp-coveralls
-  - cd "${TRAVIS_BUILD_DIR}"
-  - git clone https://github.com/CopernicaMarketingSoftware/AMQP-CPP.git
-  - cd AMQP-CPP
-  - mkdir build && cd build
-  - cmake -DAMQP-CPP_BUILD_EXAMPLES=OFF -DAMQP-CPP_LINUX_TCP=ON -DAMQP-CPP_BUILD_SHARED=OFF -DCMAKE_BUILD_TYPE:STRING=RELEASE ..
-  - make && sudo make install
+  - cd ..
+  - git clone --recursive https://github.com/espressif/esp-idf.git esp-idf
+  - cd esp-idf && git checkout tags/v3.2
+  - git submodule update --init && cd ..
+  - export IDF_PATH=/home/travis/build/cmbahadir/esp-idf
+  - sudo apt-get install gcc git wget make libncurses-dev flex bison gperf python python-pip python-setuptools python-serial python-pyparsing
+  - python -m pip install --user -r $IDF_PATH/requirements.txt 
+  - mkdir esp && cd esp
+  - wget https://dl.espressif.com/dl/xtensa-esp32-elf-linux64-1.22.0-80-g6c4433a-5.2.0.tar.gz
+  - tar -xzf xtensa-esp32-elf-linux64-1.22.0-80-g6c4433a-5.2.0.tar.gz
+  - export PATH="/home/travis/build/cmbahadir/esp/xtensa-esp32-elf/bin:$PATH" && cd .. 
+  - mv opcua-esp32 $IDF_PATH/examples
 
 # Build steps
 script:
-  - cd ../.. && mkdir build && cd build
-  - cmake .. && make
-# Run Tests
-#  - ./PlaneSpotter_Test
-
-after_success:
-  - mv *.gc* ..
-  - coveralls --root .. -E ".*gtest.*" -E ".*Makefile.*"
-
+  - cd $IDF_PATH/examples/opcua-esp32
+  - rm -r components/tcpip_adapter components/lwip components/freertos
+  - cp -r $IDF_PATH/components/tcpip_adapter components/ && cp -r $IDF_PATH/components/lwip components/ && cp -r $IDF_PATH/components/freertos components/ 
+  - make

@@ -33,7 +33,7 @@ It is aimed to run OPC UA server on ESP32 board (xtensa toolchain). There is a n
 
 ### Prerequisites
 
-- ESP-IDF : https://docs.espressif.com/projects/esp-idf/en/latest/get-started/
+- ESP-IDF(v3.2) : https://docs.espressif.com/projects/esp-idf/en/latest/get-started/
 - Open62541 (Optional) : https://github.com/open62541/open62541
 
 ## Getting Started

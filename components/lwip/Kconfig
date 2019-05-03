@@ -128,6 +128,23 @@ config LWIP_ETHARP_TRUST_IP_MAC
         So the recommendation is to disable this option. 
         Here the LAN peer means the other side to which the ESP station or soft-AP is connected.
 
+config ESP_GRATUITOUS_ARP
+    bool "Send gratuitous ARP periodically"
+    default y
+    help 
+        Enable this option allows to send gratuitous ARP periodically.
+
+        This option solve the compatibility issues.If the ARP table of the AP is old, and the AP
+        doesn't send ARP request to update it's ARP table, this will lead to the STA sending IP packet fail.
+        Thus we send gratuitous ARP periodically to let AP update it's ARP table.
+
+config GARP_TMR_INTERVAL
+    int "GARP timer interval(seconds)"
+    default 60
+    depends on ESP_GRATUITOUS_ARP
+    help
+        Set the timer interval for gratuitous ARP. The default value is 60s
+
 config TCPIP_RECVMBOX_SIZE
     int "TCPIP task receive mail box size"
     default 32
@@ -142,6 +159,14 @@ config LWIP_DHCP_DOES_ARP_CHECK
     help
         Enabling this option performs a check (via ARP request) if the offered IP address
         is not already in use by another host on the network.
+
+config LWIP_DHCP_RESTORE_LAST_IP
+    bool "DHCP: Restore last IP obtained from DHCP server"
+    default n
+    help
+        When this option is enabled, DHCP client tries to re-obtain last valid IP address obtained from DHCP server.
+        Last valid DHCP configuration is stored in nvs and restored after reset/power-up. If IP is still available,
+        there is no need for sending discovery message to DHCP server and save some time.
 
 menu "DHCP server"
 
@@ -409,7 +434,7 @@ endmenu # UDP
 
 config TCPIP_TASK_STACK_SIZE
     int "TCP/IP Task Stack Size"
-    default 2048
+    default 3072
     # for high log levels, tcpip_adapter API calls can end up
     # a few calls deep and logging there can trigger a stack overflow
     range 2048 65536 if LOG_DEFAULT_LEVEL < 4
@@ -417,6 +442,31 @@ config TCPIP_TASK_STACK_SIZE
     help
        Configure TCP/IP task stack size, used by LWIP to process multi-threaded TCP/IP operations.
        Setting this stack too small will result in stack overflow crashes.
+
+choice TCPIP_TASK_AFFINITY
+    prompt "TCP/IP task affinity"
+    default TCPIP_TASK_AFFINITY_NO_AFFINITY
+    help
+        Allows setting LwIP tasks affinity, i.e. whether the task is pinned to
+        CPU0, pinned to CPU1, or allowed to run on any CPU.
+        Currently this applies to "TCP/IP" task and "Ping" task.
+
+config TCPIP_TASK_AFFINITY_NO_AFFINITY
+    bool "No affinity"
+config TCPIP_TASK_AFFINITY_CPU0
+    bool "CPU0"
+config TCPIP_TASK_AFFINITY_CPU1
+    bool "CPU1"
+    depends on !FREERTOS_UNICORE
+
+endchoice
+
+config TCPIP_TASK_AFFINITY
+    hex
+    default FREERTOS_NO_AFFINITY if TCPIP_TASK_AFFINITY_NO_AFFINITY
+    default 0x0 if TCPIP_TASK_AFFINITY_CPU0
+    default 0x1 if TCPIP_TASK_AFFINITY_CPU1
+
 
 menuconfig PPP_SUPPORT
     bool "Enable PPP support (new/experimental)"
