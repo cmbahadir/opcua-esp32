@@ -514,14 +514,6 @@ extern "C" {
 	#define traceTASK_CREATE( pxNewTCB )
 #endif
 
-#ifndef traceQUEUE_GIVE_FROM_ISR
-	#define traceQUEUE_GIVE_FROM_ISR( pxQueue )
-#endif
-
-#ifndef traceQUEUE_GIVE_FROM_ISR_FAILED
-	#define traceQUEUE_GIVE_FROM_ISR_FAILED( pxQueue )
-#endif
-
 #ifndef traceTASK_CREATE_FAILED
 	#define traceTASK_CREATE_FAILED()
 #endif

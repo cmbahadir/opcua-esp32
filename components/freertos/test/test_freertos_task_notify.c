@@ -13,7 +13,6 @@
 #include "driver/timer.h"
 #include "esp_ipc.h"
 #include "unity.h"
-#include "test_utils.h"
 
 #define NO_OF_NOTIFS    4
 #define NO_OF_TASKS     2       //Sender and receiver

@@ -5,15 +5,14 @@ COMPONENT_SUBMODULES += lwip
 
 COMPONENT_ADD_INCLUDEDIRS := \
 	include/apps \
-	include/apps/sntp \
 	lwip/src/include \
 	port/esp32/include \
-	port/esp32/include/arch
+	port/esp32/include/arch \
+	include_compat
 
 COMPONENT_SRCDIRS := \
 	apps/dhcpserver \
 	apps/ping \
-	apps/sntp \
 	lwip/src/api \
 	lwip/src/apps/sntp \
 	lwip/src/core \
@@ -35,5 +34,3 @@ ifeq ($(GCC_NOT_5_2_0), 1)
 lwip/src/netif/ppp/ppp.o: CFLAGS += -Wno-uninitialized
 lwip/src/netif/ppp/pppos.o: CFLAGS += -Wno-implicit-fallthrough
 endif
-
-COMPONENT_ADD_LDFRAGMENTS += linker.lf

@@ -97,15 +97,15 @@
 
 #include "xtensa_rtos.h"
 
-#include "esp32/rom/ets_sys.h"
+#include "rom/ets_sys.h"
 #include "soc/cpu.h"
 
 #include "FreeRTOS.h"
 #include "task.h"
 
-#include "esp_debug_helpers.h"
+#include "esp_panic.h"
 #include "esp_heap_caps.h"
-#include "esp_private/crosscore_int.h"
+#include "esp_crosscore_int.h"
 
 #include "esp_intr_alloc.h"
 #include "esp_log.h"
@@ -446,7 +446,7 @@ void uxPortCompareSetExtram(volatile uint32_t *addr, uint32_t compare, uint32_t 
 #ifdef CONFIG_FREERTOS_PORTMUX_DEBUG
 	vPortCPUAcquireMutexIntsDisabled(&extram_mux, portMUX_NO_TIMEOUT, __FUNCTION__, __LINE__);
 #else
-	vPortCPUAcquireMutexIntsDisabled(&extram_mux, portMUX_NO_TIMEOUT);
+	vPortCPUAcquireMutexIntsDisabled(&extram_mux, portMUX_NO_TIMEOUT); 
 #endif
 	prev=*addr;
 	if (prev==compare) {

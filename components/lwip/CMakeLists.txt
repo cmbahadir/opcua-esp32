@@ -1,15 +1,14 @@
 set(COMPONENT_ADD_INCLUDEDIRS
     include/apps
-    include/apps/sntp
     lwip/src/include
     port/esp32/include
     port/esp32/include/arch
+    include_compat
     )
 
 set(COMPONENT_SRCS "apps/dhcpserver/dhcpserver.c"
                    "apps/ping/esp_ping.c"
                    "apps/ping/ping.c"
-                   "apps/sntp/sntp.c"
                    "lwip/src/api/api_lib.c"
                    "lwip/src/api/api_msg.c"
                    "lwip/src/api/err.c"
@@ -85,7 +84,6 @@ set(COMPONENT_SRCS "apps/dhcpserver/dhcpserver.c"
                    "port/esp32/vfs_lwip.c"
                    "port/esp32/debug/lwip_debug.c"
                    "port/esp32/freertos/sys_arch.c"
-                   "port/esp32/netif/dhcp_state.c"
                    "port/esp32/netif/ethernetif.c"
                    "port/esp32/netif/wlanif.c")
 
@@ -122,10 +120,8 @@ if(CONFIG_PPP_SUPPORT)
                    "lwip/src/netif/ppp/polarssl/sha1.c")
 endif()
 
-set(COMPONENT_REQUIRES vfs esp_wifi)
-set(COMPONENT_PRIV_REQUIRES ethernet tcpip_adapter nvs_flash)
-
-set(COMPONENT_ADD_LDFRAGMENTS linker.lf)
+set(COMPONENT_REQUIRES vfs)
+set(COMPONENT_PRIV_REQUIRES ethernet tcpip_adapter)
 
 register_component()
 

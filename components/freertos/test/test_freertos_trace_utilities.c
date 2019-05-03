@@ -15,7 +15,6 @@
 #include "freertos/semphr.h"
 #include "freertos/event_groups.h"
 #include "unity.h"
-#include "test_utils.h"
 
 #ifdef CONFIG_FREERTOS_USE_TRACE_FACILITY
 #define TSK_PRIORITY    (UNITY_FREERTOS_PRIORITY + 1)

@@ -79,7 +79,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "esp32/rom/ets_sys.h"
+#include "rom/ets_sys.h"
 
 /* Defining MPU_WRAPPERS_INCLUDED_FROM_API_FILE prevents task.h from redefining
 all the API functions to use the MPU wrappers.  That should only be done when
@@ -724,12 +724,6 @@ Queue_t * const pxQueue = ( Queue_t * ) xQueue;
 		configASSERT( !( ( xTaskGetSchedulerState() == taskSCHEDULER_SUSPENDED ) && ( xTicksToWait != 0 ) ) );
 	}
 	#endif
-	#if ( configUSE_MUTEXES == 1 && configCHECK_MUTEX_GIVEN_BY_OWNER == 1)
-	{
-		configASSERT(pxQueue->uxQueueType != queueQUEUE_IS_MUTEX || pxQueue->pxMutexHolder == NULL || xTaskGetCurrentTaskHandle() == pxQueue->pxMutexHolder);
-	}
-	#endif
-
 
 
 	/* This function relaxes the coding standard somewhat to allow return
@@ -1333,7 +1327,7 @@ Queue_t * const pxQueue = ( Queue_t * ) xQueue;
 		space'. */
 		if( pxQueue->uxMessagesWaiting < pxQueue->uxLength )
 		{
-			traceQUEUE_GIVE_FROM_ISR( pxQueue );
+			traceQUEUE_SEND_FROM_ISR( pxQueue );
 
 			/* A task can only have an inherited priority if it is a mutex
 			holder - and if there is a mutex holder then the mutex cannot be
@@ -1427,7 +1421,7 @@ Queue_t * const pxQueue = ( Queue_t * ) xQueue;
 		}
 		else
 		{
-			traceQUEUE_GIVE_FROM_ISR_FAILED( pxQueue );
+			traceQUEUE_SEND_FROM_ISR_FAILED( pxQueue );
 			xReturn = errQUEUE_FULL;
 		}
 		taskEXIT_CRITICAL_ISR(&pxQueue->mux);

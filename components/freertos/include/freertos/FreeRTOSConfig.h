@@ -117,7 +117,7 @@ int xt_clock_freq(void) __attribute__((deprecated));
 /* configASSERT behaviour */
 #ifndef __ASSEMBLER__
 #include <stdlib.h> /* for abort() */
-#include "esp32/rom/ets_sys.h"
+#include "rom/ets_sys.h"
 
 #if defined(CONFIG_FREERTOS_ASSERT_DISABLE)
 #define configASSERT(a) /* assertions disabled */
@@ -300,24 +300,13 @@ extern void vPortCleanUpTCB ( void *pxTCB );
 #define configXT_BOARD                      1   /* Board mode */
 #define configXT_SIMULATOR					0
 
-#if CONFIG_ESP32_ENABLE_COREDUMP
-#define configENABLE_TASK_SNAPSHOT          1
-#endif
-#ifndef configENABLE_TASK_SNAPSHOT
-#define configENABLE_TASK_SNAPSHOT          1
-#endif
+#define configENABLE_TASK_SNAPSHOT			1
 
 #if CONFIG_SYSVIEW_ENABLE
 #ifndef __ASSEMBLER__
 #include "SEGGER_SYSVIEW_FreeRTOS.h"
 #undef INLINE // to avoid redefinition
 #endif /* def __ASSEMBLER__ */
-#endif
-
-#if CONFIG_FREERTOS_CHECK_MUTEX_GIVEN_BY_OWNER
-#define configCHECK_MUTEX_GIVEN_BY_OWNER    1
-#else
-#define configCHECK_MUTEX_GIVEN_BY_OWNER    0
 #endif
 
 #endif /* FREERTOS_CONFIG_H */
