@@ -79,7 +79,7 @@ void opcua_task(void *pvParameter) {
     config->applicationDescription.applicationName = UA_LOCALIZEDTEXT("en-US","ESP32Server");
     config->applicationDescription.applicationType = UA_APPLICATIONTYPE_SERVER;
     //config->applicationDescription.gatewayServerUri = UA_STRING("192.168.0.1");
-    //UA_ServerConfig_set_customHostname(config, UA_STRING("espressif"));
+    UA_ServerConfig_setCustomHostname(config, UA_STRING("espressif"));
 
     addLEDMethod(server);
     addTemperatureNode(server);
