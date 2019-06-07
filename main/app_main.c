@@ -17,7 +17,7 @@
 #include "tcpip_adapter.h"
 #include "open62541.h"
 #include "DHT22.h"
-#include "myNodeSet.h"
+//#include "myNodeSet.h"
 
 
 #define DEFAULT_SSID CONFIG_WIFI_SSID
@@ -55,13 +55,15 @@ void sensor_task(void *pvParameter) {
 void opcua_task(void *pvParameter) {
     ESP_LOGI(TAG, "Fire up OPC UA Server.");
     //config = UA_ServerConfig_new_customBuffer(4840, NULL, 8192, 8192);
-    config = UA_ServerConfig_new_default();
-
+    UA_Server *server = UA_Server_new();
+    UA_ServerConfig *config = UA_Server_getConfig(server);
+    UA_ServerConfig_setDefault(UA_Server_getConfig(server));
+    
     //Set the connection config
     UA_ConnectionConfig connectionConfig;
-    connectionConfig.recvBufferSize = 16384;
-    connectionConfig.sendBufferSize = 16384;
-    connectionConfig.maxMessageSize = 16384;
+    connectionConfig.recvBufferSize = 32768; //16384
+    connectionConfig.sendBufferSize = 32768; //16384
+    connectionConfig.maxMessageSize = 32768; //16384
 
     UA_ServerNetworkLayer nl = UA_ServerNetworkLayerTCP(connectionConfig, 4840, NULL);
 
@@ -77,8 +79,7 @@ void opcua_task(void *pvParameter) {
     config->applicationDescription.applicationName = UA_LOCALIZEDTEXT("en-US","ESP32Server");
     config->applicationDescription.applicationType = UA_APPLICATIONTYPE_SERVER;
     //config->applicationDescription.gatewayServerUri = UA_STRING("192.168.0.1");
-    UA_ServerConfig_set_customHostname(config, UA_STRING("espressif"));
-    UA_Server *server = UA_Server_new(config);
+    //UA_ServerConfig_set_customHostname(config, UA_STRING("espressif"));
 
     addLEDMethod(server);
     addTemperatureNode(server);
@@ -96,7 +97,6 @@ void opcua_task(void *pvParameter) {
 
     ESP_LOGI(TAG, "Now going to stop the server.");
     UA_Server_delete(server);
-    UA_ServerConfig_delete(config);
     nl.deleteMembers(&nl);
     ESP_LOGI("OPC_TASK", "opcua_task going to return");
     vTaskDelete(NULL);
@@ -221,9 +221,10 @@ static esp_err_t event_handler(void *ctx, system_event_t *event)
             ip4addr_ntoa(&event->event_info.got_ip.ip_info.ip));
             // TODO: Here I create task that start a OPC UA Server
             xTaskCreate(&sensor_task, "sensor_task", 1024 * 8, NULL, 1, NULL);
+            ESP_LOGI(TAG, "RAM left %d after sensor_task", esp_get_free_heap_size());
             vTaskDelay(500 / portTICK_PERIOD_MS);
             xTaskCreate(&opcua_task, "opcua_task", 1024 * 8, NULL, 1, NULL);
-            ESP_LOGI(TAG, "RAM left %d", esp_get_free_heap_size());
+            ESP_LOGI(TAG, "RAM left %d after opcua_task", esp_get_free_heap_size());
             break;
         case SYSTEM_EVENT_STA_DISCONNECTED:
             ESP_LOGI(TAG, "SYSTEM_EVENT_STA_DISCONNECTED");

@@ -16,7 +16,8 @@
                 "/home/cmb/esp/esp-idf/components/heap/include",
                 "/home/cmb/esp/esp-idf/components/soc/include",
                 "/home/cmb/esp/esp-idf/components/vfs/include",
-                "/home/cmb/esp/esp-idf/components/newlib/platform_include"
+                "/home/cmb/esp/esp-idf/components/newlib/platform_include",
+                "/home/cmb/workspace/open62541/include"
             ],
             "defines": [],
             "compilerPath": "/home/cmb/esp/xtensa-esp32-elf/bin/xtensa-esp32-elf-gcc",

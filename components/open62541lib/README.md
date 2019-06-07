@@ -37,14 +37,12 @@
 - UA_ENABLE_PUBSUB_INFORMATIONMODEL:BOOL=ON
 
 # Open62541.c
-
+ - Change task.h as freertos/task.h
  - int UA_access(const char *pathname, int mode) { return 0; } eklendi (open62541.c) (Optional)
  - Add freertos and lwip as component under components/.
  - Add #define UA_ARCHITECTURE_FREERTOSLWIP, this may be a bug (https://github.com/open62541/open62541/issues/2209)
 
 # Open62541.h
-
- - Change task.h as freertos/task.h
  - Comment out //#define UA_access (Optional)
  - Use calloc rather than pcPortCalloc so comment out  //# define UA_calloc pvPortCalloc ->  # define UA_calloc calloc (Optional)
  - Comment out //#define UA_IPV6 LWIP_IPV6 - probably esp-idf lwip does not support IPV6
