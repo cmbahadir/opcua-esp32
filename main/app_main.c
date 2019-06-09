@@ -77,6 +77,7 @@ void opcua_task(void *pvParameter)
     addLEDMethod(server);
 
     addCurrentTemperatureDataSourceVariable(server);
+    addRelay0ControlNode(server);
 
     UA_Server_run_startup(server);
     UA_Boolean waitInternal = false;
