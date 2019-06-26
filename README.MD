@@ -1,36 +1,16 @@
 # OPC UA Server on ESP32
 [![Build Status](https://travis-ci.org/cmbahadir/opcua-esp32.svg?branch=master)](https://travis-ci.org/cmbahadir/opcua-esp32)
 
-It is aimed to run OPC UA server on ESP32 board (xtensa toolchain). There is a node with below callback function, it blinks the on board led with given number of times.
+It is aimed to run OPC UA server on ESP32 board (xtensa toolchain). The information model is handled under models.c/h file. It contains a temperature sensor(DHT22) read port 4, a callback method to call ESP32-WROOM on board LED and 4 relays, whose values can be read/written.
 
-    static UA_StatusCode
-    ledProcessCallBack(UA_Server *server,
-                            const UA_NodeId *sessionId, void *sessionHandle,
-                            const UA_NodeId *methodId, void *methodContext,
-                            const UA_NodeId *objectId, void *objectContext,
-                            size_t inputSize, const UA_Variant *input,
-                            size_t outputSize, UA_Variant *output) {
-        UA_Int32 i = 0;
-        UA_Int32 *inputVal = (UA_Int32*)input->data;
-        UA_String tmp = UA_STRING_ALLOC("Data Received ");
-        if(*inputVal > 0) {
-            tmp.data = (UA_Byte *)UA_realloc(tmp.data, tmp.length);
-            while(i<*inputVal +1)
-            {
-                gpio_pad_select_gpio(BLINK_GPIO);
-                gpio_set_direction(BLINK_GPIO, GPIO_MODE_OUTPUT);
-                gpio_set_level(BLINK_GPIO, 1);
-                vTaskDelay(500 / portTICK_PERIOD_MS);
-                gpio_set_level(BLINK_GPIO, 0);
-                vTaskDelay(500 / portTICK_PERIOD_MS);
-                i++;
-            }
-        }
-        UA_Variant_setScalarCopy(output, &tmp, &UA_TYPES[UA_TYPES_STRING]);
-        UA_String_deleteMembers(&tmp);
-        UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "Led bink called.");
-        return UA_STATUSCODE_GOOD;
-    }
+    On Board LED : GPIO 2
+    DHT22 Sensor : GPIO 4
+    RELAY 0      : GPIO 5
+    RELAY 1      : GPIO 25
+    RELAY 2      : GPIO 26
+    RELAY 3      : GPIO 27
+
+It is tested by UAExpert and also Matrikon Mobile IOS OPC UA Client. So if you face any problems with other clients please let me know.
 
 ### Prerequisites
 
