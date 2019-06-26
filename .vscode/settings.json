@@ -3,7 +3,8 @@
         "open62541.h": "c",
         "simple.h": "c",
         "array": "c",
-        "mynodeset.h": "c"
+        "mynodeset.h": "c",
+        "model.h": "c"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }

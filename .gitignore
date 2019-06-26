@@ -3,6 +3,7 @@
 
 #Ignore sdkconfig if its not changed
 sdkconfig
+sdkconfig.old
 
 #vscode user settings
 /.vscode
