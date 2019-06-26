@@ -1,6 +1,19 @@
 #include "open62541.h"
 
-static UA_StatusCode
+/* Led Method */
+UA_StatusCode
+ledProcessCallBack(UA_Server *server,
+                   const UA_NodeId *sessionId, void *sessionHandle,
+                   const UA_NodeId *methodId, void *methodContext,
+                   const UA_NodeId *objectId, void *objectContext,
+                   size_t inputSize, const UA_Variant *input,
+                   size_t outputSize, UA_Variant *output);
+
+void
+addLEDMethod(UA_Server *server);
+
+/* Temperature */
+UA_StatusCode
 readCurrentTemperature(UA_Server *server,
                 const UA_NodeId *sessionId, void *sessionContext,
                 const UA_NodeId *nodeId, void *nodeContext,
@@ -10,14 +23,15 @@ readCurrentTemperature(UA_Server *server,
 void
 addCurrentTemperatureDataSourceVariable(UA_Server *server);
 
-static UA_StatusCode
+/* Relay 0 */
+UA_StatusCode
 readRelay0State(UA_Server *server,
                 const UA_NodeId *sessionId, void *sessionContext,
                 const UA_NodeId *nodeId, void *nodeContext,
                 UA_Boolean sourceTimeStamp, const UA_NumericRange *range,
                 UA_DataValue *dataValue);
 
-static UA_StatusCode
+UA_StatusCode
 setRelay0State(UA_Server *server,
                   const UA_NodeId *sessionId, void *sessionContext,
                   const UA_NodeId *nodeId, void *nodeContext,
@@ -25,3 +39,38 @@ setRelay0State(UA_Server *server,
 
 void
 addRelay0ControlNode(UA_Server *server);
+
+/* Relay 1 */
+UA_StatusCode
+readRelay1State(UA_Server *server,
+                const UA_NodeId *sessionId, void *sessionContext,
+                const UA_NodeId *nodeId, void *nodeContext,
+                UA_Boolean sourceTimeStamp, const UA_NumericRange *range,
+                UA_DataValue *dataValue);
+
+UA_StatusCode
+setRelay1State(UA_Server *server,
+                  const UA_NodeId *sessionId, void *sessionContext,
+                  const UA_NodeId *nodeId, void *nodeContext,
+                 const UA_NumericRange *range, const UA_DataValue *data);
+
+void
+addRelay1ControlNode(UA_Server *server);
+
+
+/* Relay 2 */
+UA_StatusCode
+readRelay2State(UA_Server *server,
+                const UA_NodeId *sessionId, void *sessionContext,
+                const UA_NodeId *nodeId, void *nodeContext,
+                UA_Boolean sourceTimeStamp, const UA_NumericRange *range,
+                UA_DataValue *dataValue);
+
+UA_StatusCode
+setRelay2State(UA_Server *server,
+                  const UA_NodeId *sessionId, void *sessionContext,
+                  const UA_NodeId *nodeId, void *nodeContext,
+                 const UA_NumericRange *range, const UA_DataValue *data);
+
+void
+addRelay2ControlNode(UA_Server *server);
