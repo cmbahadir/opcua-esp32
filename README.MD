@@ -37,6 +37,3 @@ Also, if you want to build open62541.c/.h/.lib from source, beware of the change
 ## License
 
 This project is licensed under the Mozilla Public License Version 2.0 which is inherited from Open62541 project - see the [LICENSE.md](LICENSE.md) file for details
-
-### Caution
-This code is written for experimental purposes.I do NOT suggest to use it on a real world application.Also ı do not claim any reponsibility for the consequences.
