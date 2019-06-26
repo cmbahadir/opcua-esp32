@@ -63,6 +63,7 @@ void opcua_task(void *pvParameter)
     addRelay0ControlNode(server);
     addRelay1ControlNode(server);
     addRelay2ControlNode(server);
+    addRelay3ControlNode(server);
 
     UA_Server_run_startup(server);
     UA_Boolean waitInternal = false;
