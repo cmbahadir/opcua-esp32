@@ -11,7 +11,7 @@ before_install:
   - cd ..
   - git clone --recursive https://github.com/open62541/open62541.git
   - cd open62541 && mkdir build && cd build
-  - cmake -DUA_ARCHITECTURE:STRING=freertosLWIP -DUA_ENABLE_PUBSUB:BOOL=ON - DUA_ENABLE_METHODCALLS:BOOL=ON -DUA_ENABLE_NODEMANAGEMENT:BOOL=ON -DUA_ENABLE_AMALGAMATION:STRING=ON -DUA_ENABLE_PUBSUB:BOOL=ON -DUA_LOGLEVEL:STRING=600 .. 
+  - cmake -DUA_ARCHITECTURE:STRING=freertosLWIP -DUA_ENABLE_PUBSUB:BOOL=OFF - DUA_ENABLE_METHODCALLS:BOOL=ON -DUA_ENABLE_NODEMANAGEMENT:BOOL=ON -DUA_ENABLE_AMALGAMATION:STRING=ON -DUA_ENABLE_PUBSUB:BOOL=ON -DUA_LOGLEVEL:STRING=600 .. 
   - make || true 
   - cd /home/travis/build/cmbahadir
   - git clone --recursive https://github.com/espressif/esp-idf.git esp-idf
