@@ -238,6 +238,7 @@ void UA_free(void* ptr); //de-allocate memory previously allocated with UA_mallo
 #include <lwip/netdb.h>
 #include <lwip/init.h>
 #include <lwip/sockets.h>
+#include <lwip/opt.h>
 
 #define OPTVAL_TYPE int
 
