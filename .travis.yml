@@ -33,4 +33,5 @@ script:
   - cp /home/travis/build/cmbahadir/open62541/build/open62541.h components/open62541lib/include
   - rm -r components/tcpip_adapter components/lwip components/freertos
   - cp -r $IDF_PATH/components/tcpip_adapter components/ && cp -r $IDF_PATH/components/lwip components/ && cp -r $IDF_PATH/components/freertos components/ 
+  - cp components/freertos/include/freertos/* components/freertos/include
   - make
