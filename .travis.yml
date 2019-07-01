@@ -11,7 +11,7 @@ before_install:
   - cd ..
   - git clone --recursive https://github.com/open62541/open62541.git
   - cd open62541 && mkdir build && cd build
-  - cmake -DUA_ARCHITECTURE:STRING=freertosLWIP -DUA_ENABLE_PUBSUB:BOOL=OFF - DUA_ENABLE_METHODCALLS:BOOL=ON -DUA_ENABLE_NODEMANAGEMENT:BOOL=ON -DUA_ENABLE_AMALGAMATION:STRING=ON -DUA_ENABLE_PUBSUB:BOOL=ON -DUA_LOGLEVEL:STRING=600 .. 
+  - cmake -DUA_ARCHITECTURE:STRING=freertosLWIP -DUA_ENABLE_PUBSUB:BOOL=ON - DUA_ENABLE_METHODCALLS:BOOL=ON -DUA_ENABLE_NODEMANAGEMENT:BOOL=ON -DUA_ENABLE_AMALGAMATION:STRING=ON -DUA_ENABLE_PUBSUB:BOOL=ON -DUA_LOGLEVEL:STRING=600 .. 
   - make || true 
   - cd /home/travis/build/cmbahadir
   - git clone --recursive https://github.com/espressif/esp-idf.git esp-idf
@@ -30,7 +30,7 @@ before_install:
 script:
   - cd $IDF_PATH/examples/opcua-esp32
   - cp /home/travis/build/cmbahadir/open62541/build/open62541.c components/open62541lib
-  - sed "s|#define UA_IPV6 LWIP_IPV6|//#define UA_IPV6 LWIP_IPV6|g" /home/travis/build/cmbahadir/open62541/open62541.h
+  - sed -i '/#define UA_IPV6 LWIP_IPV6/c\//#define UA_IPV6 LWIP_IPV6' /home/travis/build/cmbahadir/open62541/open62541.h
   - cp /home/travis/build/cmbahadir/open62541/build/open62541.h components/open62541lib/include
   - rm -r components/tcpip_adapter components/lwip components/freertos
   - cp -r $IDF_PATH/components/tcpip_adapter components/ && cp -r $IDF_PATH/components/lwip components/ && cp -r $IDF_PATH/components/freertos components/ 
