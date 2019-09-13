@@ -131,6 +131,13 @@ static void wifi_scan(void)
 
 void app_main()
 {
+    //Encryption improvement w.r.t: 
+    //Espressif security advisory concerning fault injection and secure boot (CVE-2019-15894)
+    if (esp_flash_encryption_enabled()) 
+    {
+        esp_flash_write_protect_crypt_cnt();
+    }
+    
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES)
     {
