@@ -11,8 +11,8 @@ compiler:
 before_install:
   - cd ..
   - git clone --recursive https://github.com/espressif/esp-idf.git esp-idf
-  - cd esp-idf && git checkout tags/v3.2
-  - git submodule update --init && cd ..
+  - cd esp-idf && git checkout --recurse-submodules tags/v3.2.3
+  - cd ..
   - export IDF_PATH=/home/travis/build/cmbahadir/esp-idf
   - sudo apt-get install gcc git wget make libncurses-dev flex bison gperf python python-pip python-setuptools python-serial python-pyparsing
   - python -m pip install --user -r $IDF_PATH/requirements.txt 
