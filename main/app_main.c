@@ -14,6 +14,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <lwip/sockets.h>
+#include <esp_flash_encrypt.h>
 #include "tcpip_adapter.h"
 #include "open62541.h"
 #include "DHT22.h"
