@@ -11,7 +11,10 @@ compiler:
 before_install:
   - cd ..
   - git clone --recursive https://github.com/espressif/esp-idf.git esp-idf
-  - cd esp-idf && git checkout --recurse-submodules tags/v3.2.3
+  #Checkout should not be done with --recurse-submodules option since it manipulates the submodules and does not recover the deleted ones.
+  - cd esp-idf && git checkout tags/v3.2.3
+  #submodule update should be done here to recover the submodules of the required tag.
+  - git submodule update --init --recursive
   - cd ..
   - export IDF_PATH=/home/travis/build/cmbahadir/esp-idf
   - sudo apt-get install gcc git wget make libncurses-dev flex bison gperf python python-pip python-setuptools python-serial python-pyparsing
