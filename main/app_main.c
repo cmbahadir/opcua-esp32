@@ -78,7 +78,7 @@ void opcua_task(void *pvParameter)
 
     ESP_LOGI(TAG, "Now going to stop the server.");
     UA_Server_delete(server);
-    nl.deleteMembers(&nl);
+    nl.clear(&nl);
     ESP_LOGI("OPC_TASK", "opcua_task going to return");
     vTaskDelete(NULL);
 }
