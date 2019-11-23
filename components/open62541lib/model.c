@@ -113,7 +113,7 @@ addCurrentTemperatureDataSourceVariable(UA_Server *server) {
     UA_VariableAttributes attr = UA_VariableAttributes_default;
     attr.displayName = UA_LOCALIZEDTEXT("en-US", "Temperature");
     attr.dataType = UA_TYPES[UA_TYPES_FLOAT].typeId;
-    attr.accessLevel = UA_ACCESSLEVELMASK_READ | UA_ACCESSLEVELMASK_WRITE;
+    attr.accessLevel = UA_ACCESSLEVELMASK_READ;
 
     UA_NodeId currentNodeId = UA_NODEID_STRING(1, "temperature");
     UA_QualifiedName currentName = UA_QUALIFIEDNAME(1, "Ambient Temperature");
