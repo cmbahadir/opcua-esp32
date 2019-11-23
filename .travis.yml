@@ -1,4 +1,3 @@
-
 sudo: required
 
 # Enable C++ support
@@ -9,24 +8,18 @@ compiler:
   - gcc
 
 before_install:
-  - cd ..
+  - cd /home/travis/build/cmbahadir
   - git clone --recursive https://github.com/espressif/esp-idf.git esp-idf
-  #Checkout should not be done with --recurse-submodules option since it manipulates the submodules and does not recover the deleted ones.
-  - cd esp-idf && git checkout tags/v3.2.3
-  #submodule update should be done here to recover the submodules of the required tag.
-  - git submodule update --init --recursive
-  - cd ..
   - export IDF_PATH=/home/travis/build/cmbahadir/esp-idf
   - sudo apt-get install gcc git wget make libncurses-dev flex bison gperf python python-pip python-setuptools python-serial python-pyparsing
   - python -m pip install --user -r $IDF_PATH/requirements.txt 
   - mkdir esp && cd esp
-  - wget https://dl.espressif.com/dl/xtensa-esp32-elf-linux64-1.22.0-80-g6c4433a-5.2.0.tar.gz
-  - tar -xzf xtensa-esp32-elf-linux64-1.22.0-80-g6c4433a-5.2.0.tar.gz
+  - wget https://dl.espressif.com/dl/xtensa-esp32-elf-gcc8_2_0-esp32-2019r1-linux-amd64.tar.gz
+  - tar -xzf xtensa-esp32-elf-gcc8_2_0-esp32-2019r1-linux-amd64.tar.gz
   - export PATH="/home/travis/build/cmbahadir/esp/xtensa-esp32-elf/bin:$PATH" && cd .. 
   - mv opcua-esp32 $IDF_PATH/examples
 
 # Build steps
 script:
   - cd $IDF_PATH/examples/opcua-esp32
-  - cp -r $IDF_PATH/components/tcpip_adapter components/ && cp -r $IDF_PATH/components/lwip components/ && cp -r $IDF_PATH/components/freertos components/ 
-  - make
+  - make -j4
