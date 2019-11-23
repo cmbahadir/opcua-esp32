@@ -18,11 +18,9 @@ It is tested by UAExpert and also Matrikon Mobile IOS OPC UA Client. So if you f
 - Open62541 (Optional) : https://github.com/open62541/open62541
 
 ## Getting Started
-It is required to have ESP-IDF tag/v3.2 (https://github.com/espressif/esp-idf) and environment variables have to be set.
+It is required to have ESP-IDF tag (https://github.com/espressif/esp-idf) and environment variables have to be set.
 
     git clone --recursive https://github.com/espressif/esp-idf.git <your-esp-idf-root-path>
-    git checkout tags/v3.2.3
-    git submodule update --init --recursive
     export IDF_PATH=<your-esp-idf-root-path>
     export PATH=$PATH:<xtensa-toolchain-path>
     cd <your-esp-idf-root-path>/examples/
