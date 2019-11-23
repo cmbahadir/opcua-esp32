@@ -3,9 +3,8 @@
 # project subdirectory.
 #
 
-PROJECT_NAME := open62541_esp32
-EXCLUDE_COMPONENTS := 	protocomm \
-		      	mqtt \
+PROJECT_NAME := opcua_esp32
+EXCLUDE_COMPONENTS := mqtt \
 			asio \
 			coap \
 			jsmn \
@@ -14,8 +13,6 @@ EXCLUDE_COMPONENTS := 	protocomm \
 			aws_iot \
 			expat \
 			freemodbus \
-			libsodium \
-			json \
-			mdns
+			libsodium 
 include $(IDF_PATH)/make/project.mk
 
