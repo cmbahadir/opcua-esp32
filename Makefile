@@ -3,7 +3,7 @@
 # project subdirectory.
 #
 
-PROJECT_NAME := open62541_esp32
+PROJECT_NAME := opcua_esp32
 EXCLUDE_COMPONENTS := 	protocomm \
 		      	mqtt \
 			asio \
