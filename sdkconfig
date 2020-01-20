@@ -115,8 +115,8 @@ CONFIG_PARTITION_TABLE_MD5=y
 #
 # Connection Configuration
 #
-CONFIG_WIFI_SSID="TurkTelekom_T5838"
-CONFIG_WIFI_PASSWORD="iCKhSTva"
+CONFIG_WIFI_SSID="CT_Siemens"
+CONFIG_WIFI_PASSWORD="Siemens160+ct"
 # end of Connection Configuration
 
 #

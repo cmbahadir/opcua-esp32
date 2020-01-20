@@ -19,22 +19,80 @@
 #include "open62541.h"
 #include "DHT22.h"
 #include "model.h"
+#include <esp_task_wdt.h>
 
-#define DEFAULT_SSID CONFIG_WIFI_SSID
-#define DEFAULT_PWD CONFIG_WIFI_PASSWORD
+#define EXAMPLE_ESP_WIFI_SSID      CONFIG_WIFI_SSID
+#define EXAMPLE_ESP_WIFI_PASS      CONFIG_WIFI_PASSWORD
+#define EXAMPLE_ESP_MAXIMUM_RETRY  10
 
-#define TAG "APP_MAIN"
+#define TAG "OPCUA_ESP32"
+#define ENABLE_MDNS
+
+#define WIFI_CONNECTED_BIT BIT0
+#define WIFI_FAIL_BIT      BIT1
 
 UA_ServerConfig *config;
 static UA_Boolean running = true;
+static EventGroupHandle_t s_wifi_event_group;
+static int s_retry_num = 0;
+
+static UA_StatusCode
+UA_ServerConfig_setUriName(UA_ServerConfig *uaServerConfig, const char *uri, const char *name) {
+    // delete pre-initialized values
+    UA_String_deleteMembers(&uaServerConfig->applicationDescription.applicationUri);
+    UA_LocalizedText_deleteMembers(&uaServerConfig->applicationDescription.applicationName);
+
+    uaServerConfig->applicationDescription.applicationUri = UA_String_fromChars(uri);
+    uaServerConfig->applicationDescription.applicationName.locale = UA_STRING_NULL;
+    uaServerConfig->applicationDescription.applicationName.text = UA_String_fromChars(name);
+
+    for (size_t i = 0; i < uaServerConfig->endpointsSize; i++) {
+        UA_String_deleteMembers(&uaServerConfig->endpoints[i].server.applicationUri);
+        UA_LocalizedText_deleteMembers(
+                &uaServerConfig->endpoints[i].server.applicationName);
+
+        UA_String_copy(&uaServerConfig->applicationDescription.applicationUri,
+                       &uaServerConfig->endpoints[i].server.applicationUri);
+
+        UA_LocalizedText_copy(&uaServerConfig->applicationDescription.applicationName,
+                              &uaServerConfig->endpoints[i].server.applicationName);
+    }
+
+    return UA_STATUSCODE_GOOD;
+}
 
 void opcua_task(void *pvParameter)
 {
+    ESP_ERROR_CHECK(esp_task_wdt_add(NULL));
+
     ESP_LOGI(TAG, "Fire up OPC UA Server.");
-    //config = UA_ServerConfig_new_customBuffer(4840, NULL, 8192, 8192);
     UA_Server *server = UA_Server_new();
     UA_ServerConfig *config = UA_Server_getConfig(server);
     UA_ServerConfig_setDefault(UA_Server_getConfig(server));
+
+    const char* appUri = "open62541.esp32.server";
+    #ifdef ENABLE_MDNS
+    config->discovery.mdnsEnable = true;
+    config->discovery.mdns.mdnsServerName = UA_String_fromChars(appUri);
+    config->discovery.mdns.serverCapabilitiesSize = 2;
+    UA_String *caps = (UA_String *) UA_Array_new(2, &UA_TYPES[UA_TYPES_STRING]);
+    caps[0] = UA_String_fromChars("LDS");
+    caps[1] = UA_String_fromChars("NA");
+    config->discovery.mdns.serverCapabilities = caps;
+
+    // We need to set the default IP address for mDNS since internally it's not able to detect it.
+    tcpip_adapter_ip_info_t default_ip;
+    esp_err_t ret = tcpip_adapter_get_ip_info(TCPIP_ADAPTER_IF_STA, &default_ip);
+    if ((ESP_OK == ret) && (default_ip.ip.addr != INADDR_ANY)) {
+        config->discovery.ipAddressListSize = 1;
+        config->discovery.ipAddressList = (uint32_t *)UA_malloc(sizeof(uint32_t)*config->discovery.ipAddressListSize);
+        memcpy(config->discovery.ipAddressList, &default_ip.ip.addr, sizeof(uint32_t));
+    } else {
+        ESP_LOGI(TAG, "Could not get default IP Address!");
+    }
+    #endif
+
+    UA_ServerConfig_setUriName(config, appUri, "OPC UA Server - ESP32");
 
     //Set the connection config
     UA_ConnectionConfig connectionConfig;
@@ -45,19 +103,6 @@ void opcua_task(void *pvParameter)
     UA_ServerNetworkLayer nl = UA_ServerNetworkLayerTCP(connectionConfig, 4840, NULL);
     config->networkLayers = &nl;
     config->networkLayersSize = 1;
-
-    //Don't know why but DiscoveryURL config causes hard fault
-    //Set Discovery URL
-    // UA_String esp32url = UA_String_fromChars("opc.tcp://192.168.1.100:4840/");
-    // config->networkLayers[0].discoveryUrl = UA_STRING("opc.tcp://espressif:4840");
-    // config->applicationDescription.discoveryUrls = &esp32url;
-    // config->applicationDescription.discoveryUrlsSize = 2;
-
-    config->applicationDescription.applicationUri = UA_STRING("urn:SIMATIC.S7-1500.OPC-UA.Application:Mete");
-    config->applicationDescription.applicationName = UA_LOCALIZEDTEXT("en-US", "ESP32Server");
-    config->applicationDescription.applicationType = UA_APPLICATIONTYPE_SERVER;
-    //config->applicationDescription.gatewayServerUri = UA_STRING("192.168.0.1");
-    UA_ServerConfig_setCustomHostname(config, UA_STRING("espressif"));
 
     /* Add Information Model Objects Here */
     addLEDMethod(server);
@@ -70,62 +115,48 @@ void opcua_task(void *pvParameter)
     ESP_LOGI(TAG, "Data Memory Heap Left : %d", xPortGetFreeHeapSize());
     ESP_LOGI(TAG, "Free Memory: %d", esp_get_free_heap_size());
     UA_Server_run_startup(server);
-    UA_Boolean waitInternal = false;
     while (running)
     {
-        UA_UInt16 timeout = UA_Server_run_iterate(server, waitInternal);
-        //Not good but needed - Delay
-        vTaskDelay(100 / portTICK_PERIOD_MS);
-        struct timeval tv;
-        tv.tv_sec = 0;
-        tv.tv_usec = timeout * 1000;
-        select(0, NULL, NULL, NULL, &tv);
+        UA_Server_run_iterate(server, false);
+        ESP_ERROR_CHECK(esp_task_wdt_reset());
+        taskYIELD();
     }
-
-    ESP_LOGI(TAG, "Now going to stop the server.");
-    UA_Server_delete(server);
-    nl.clear(&nl);
-    ESP_LOGI("OPC_TASK", "opcua_task going to return");
-    vTaskDelete(NULL);
+    UA_Server_run_shutdown(server);
+    ESP_ERROR_CHECK(esp_task_wdt_delete(NULL));
 }
 
 
-static esp_err_t event_handler(void *ctx, system_event_t *event)
+static void event_handler(void* arg, esp_event_base_t event_base,
+                                int32_t event_id, void* event_data)
 {
-    ESP_LOGI(TAG, "Event id: %d", event->event_id);
-    switch (event->event_id)
-    {
-    case SYSTEM_EVENT_STA_START:
-        ESP_LOGI(TAG, "SYSTEM_EVENT_STA_START");
-        ESP_ERROR_CHECK(esp_wifi_connect());
-        break;
-    case SYSTEM_EVENT_STA_GOT_IP:
-        ESP_LOGI(TAG, "SYSTEM_EVENT_STA_GOT_IP");
-        vTaskDelay(500 / portTICK_PERIOD_MS);
-        // Pin the OPC UA Server Task to Core #1
-        xTaskCreatePinnedToCore(&opcua_task, "opcua_task", 1024 * 8, NULL, 1, NULL, 1);
+    if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
+        esp_wifi_connect();
+    } else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED) {
+        if (s_retry_num < EXAMPLE_ESP_MAXIMUM_RETRY) {
+            esp_wifi_connect();
+            s_retry_num++;
+            ESP_LOGI(TAG, "retry to connect to the AP");
+        } else {
+            xEventGroupSetBits(s_wifi_event_group, WIFI_FAIL_BIT);
+        }
+        ESP_LOGI(TAG,"connect to the AP fail");
+    } else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP) {
+        ip_event_got_ip_t* event = (ip_event_got_ip_t*) event_data;
+        ESP_LOGI(TAG, "got ip:" IPSTR, IP2STR(&event->ip_info.ip));
+        s_retry_num = 0;
+        xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
+        xTaskCreatePinnedToCore(&opcua_task, "opcua_task", 24336, NULL, 1, NULL, 1);
         ESP_LOGI(TAG, "After OPC UA Task : %d", esp_get_free_heap_size());
-        break;
-    case SYSTEM_EVENT_STA_DISCONNECTED:
-        ESP_LOGI(TAG, "SYSTEM_EVENT_STA_DISCONNECTED");
-        ESP_ERROR_CHECK(esp_wifi_connect());
-        break;
-    default:
-        break;
     }
-    return ESP_OK;
 }
 
 static void wifi_scan(void)
 {
-    // tcpip_adapter_init();
-    // ESP_ERROR_CHECK(esp_event_loop_init(event_handler, NULL));
-    // wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
-    // ESP_ERROR_CHECK(esp_wifi_init(&cfg));
+    s_wifi_event_group = xEventGroupCreate();
+    ESP_ERROR_CHECK(esp_netif_init());
+    ESP_ERROR_CHECK(esp_event_loop_create_default());
 
-    esp_netif_init();
-    ESP_ERROR_CHECK(esp_event_loop_init(event_handler, NULL));
-    // ESP_ERROR_CHECK(esp_event_loop_create_default());
+    // ESP_ERROR_CHECK(esp_event_loop_init(event_handler, NULL));
     esp_netif_t *sta_netif = esp_netif_create_default_wifi_sta();
 
     assert(sta_netif);
@@ -133,17 +164,45 @@ static void wifi_scan(void)
     wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
     ESP_ERROR_CHECK(esp_wifi_init(&cfg));
 
-    
+    ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &event_handler, NULL));
+    ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &event_handler, NULL));
+
     wifi_config_t wifi_config = {
         .sta = {
-            .ssid = DEFAULT_SSID,
-            .password = DEFAULT_PWD},
+            .ssid = EXAMPLE_ESP_WIFI_SSID,
+            .password = EXAMPLE_ESP_WIFI_PASS},
     };
 
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
     ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config));
     ESP_ERROR_CHECK(esp_wifi_start());
-    tcpip_adapter_set_hostname(TCPIP_ADAPTER_IF_STA, "espressif");
+
+    EventBits_t bits = xEventGroupWaitBits(s_wifi_event_group,
+                                           WIFI_CONNECTED_BIT | WIFI_FAIL_BIT,
+                                           pdFALSE,
+                                           pdFALSE,
+                                           portMAX_DELAY);
+    if (bits & WIFI_CONNECTED_BIT)
+    {
+        ESP_LOGI(TAG, "connected to ap SSID:%s password:%s",
+                 EXAMPLE_ESP_WIFI_SSID, EXAMPLE_ESP_WIFI_PASS);
+    }
+    else if (bits & WIFI_FAIL_BIT)
+    {
+        ESP_LOGI(TAG, "Failed to connect to SSID:%s, password:%s",
+                 EXAMPLE_ESP_WIFI_SSID, EXAMPLE_ESP_WIFI_PASS);
+    }
+    else
+    {
+        ESP_LOGE(TAG, "UNEXPECTED EVENT");
+    }
+
+    ESP_ERROR_CHECK(tcpip_adapter_set_hostname(TCPIP_ADAPTER_IF_STA, "ESP32_OPCUA_Server"));
+    ESP_ERROR_CHECK(tcpip_adapter_dhcpc_start(TCPIP_ADAPTER_IF_STA));
+
+    ESP_ERROR_CHECK(esp_event_handler_unregister(IP_EVENT, IP_EVENT_STA_GOT_IP, &event_handler));
+    ESP_ERROR_CHECK(esp_event_handler_unregister(WIFI_EVENT, ESP_EVENT_ANY_ID, &event_handler));
+    vEventGroupDelete(s_wifi_event_group);
 }
 
 void app_main()
@@ -159,8 +218,10 @@ void app_main()
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES)
     {
         ESP_ERROR_CHECK(nvs_flash_erase());
-        ret = nvs_flash_init();
+        ESP_ERROR_CHECK(nvs_flash_init());
     }
-    ESP_ERROR_CHECK(ret);
     wifi_scan();
+    ESP_ERROR_CHECK(esp_task_wdt_init(10, true));
+    ESP_ERROR_CHECK(esp_task_wdt_delete(xTaskGetIdleTaskHandleForCPU(0)));
+    ESP_ERROR_CHECK(esp_task_wdt_delete(xTaskGetIdleTaskHandleForCPU(1)));
 }

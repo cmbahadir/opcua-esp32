@@ -113,6 +113,13 @@ CONFIG_PARTITION_TABLE_MD5=y
 # end of Partition Table
 
 #
+# Connection Configuration
+#
+CONFIG_WIFI_SSID="CT_Siemens"
+CONFIG_WIFI_PASSWORD="Siemens160ct+"
+# end of Connection Configuration
+
+#
 # Compiler options
 #
 CONFIG_COMPILER_OPTIMIZATION_DEFAULT=y
