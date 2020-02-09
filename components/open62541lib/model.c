@@ -11,8 +11,8 @@ static void
 configureGPIO(void) {
     gpio_set_direction(RELAY_0_GPIO, GPIO_MODE_INPUT_OUTPUT);
     gpio_set_direction(RELAY_1_GPIO, GPIO_MODE_INPUT_OUTPUT);
-    gpio_set_direction(RELAY_2_GPIO, GPIO_MODE_INPUT_OUTPUT);
-    gpio_set_direction(RELAY_3_GPIO, GPIO_MODE_INPUT_OUTPUT);
+    // gpio_set_direction(RELAY_2_GPIO, GPIO_MODE_INPUT_OUTPUT);
+    // gpio_set_direction(RELAY_3_GPIO, GPIO_MODE_INPUT_OUTPUT);
 }
 
 /* LED Method */
