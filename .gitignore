@@ -7,3 +7,5 @@ sdkconfig.old
 
 #vscode user settings
 /.vscode
+sdkconfig
+sdkconfig.old
