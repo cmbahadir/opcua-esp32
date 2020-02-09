@@ -2,6 +2,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "driver/gpio.h"
+#include "sys/param.h"
 #include "sdkconfig.h"
 
 #include "freertos/FreeRTOS.h"
@@ -20,6 +21,7 @@
 #include "DHT22.h"
 #include "model.h"
 #include <esp_task_wdt.h>
+#include <esp_sntp.h>
 
 #define EXAMPLE_ESP_WIFI_SSID      CONFIG_WIFI_SSID
 #define EXAMPLE_ESP_WIFI_PASS      CONFIG_WIFI_PASSWORD
@@ -35,6 +37,42 @@ UA_ServerConfig *config;
 static UA_Boolean running = true;
 static EventGroupHandle_t s_wifi_event_group;
 static int s_retry_num = 0;
+
+void time_sync_notification_cb(struct timeval *tv)
+{
+    ESP_LOGI(TAG, "Notification of a time synchronization event");
+}
+
+static void initialize_sntp(void)
+{
+    ESP_LOGI(TAG, "Initializing SNTP");
+    sntp_setoperatingmode(SNTP_OPMODE_POLL);
+    sntp_setservername(0, "pool.ntp.org");
+    sntp_set_time_sync_notification_cb(time_sync_notification_cb);
+    sntp_init();
+}
+
+static bool obtain_time(void)
+{
+    initialize_sntp();
+
+    ESP_ERROR_CHECK(esp_task_wdt_add(NULL));
+    // wait for time to be set
+    time_t now = 0;
+    struct tm timeinfo;
+    memset(&timeinfo, 0, sizeof(struct tm));
+    int retry = 0;
+    const int retry_count = 10;
+    while (sntp_get_sync_status() == SNTP_SYNC_STATUS_RESET && ++retry <= retry_count) {
+        ESP_LOGI(TAG, "Waiting for system time to be set... (%d/%d)", retry, retry_count);
+        vTaskDelay(5000 / portTICK_PERIOD_MS);
+        ESP_ERROR_CHECK(esp_task_wdt_reset());
+    }
+    time(&now);
+    localtime_r(&now, &timeinfo);
+    ESP_ERROR_CHECK(esp_task_wdt_delete(NULL));
+    return timeinfo.tm_year > (2016 - 1900);
+}
 
 static UA_StatusCode
 UA_ServerConfig_setUriName(UA_ServerConfig *uaServerConfig, const char *uri, const char *name) {
@@ -63,14 +101,19 @@ UA_ServerConfig_setUriName(UA_ServerConfig *uaServerConfig, const char *uri, con
 
 void opcua_task(void *pvParameter)
 {
+    UA_Int32 sendBufferSize = 16000;
+    UA_Int32 recvBufferSize = 16000;
+
     ESP_ERROR_CHECK(esp_task_wdt_add(NULL));
 
     ESP_LOGI(TAG, "Fire up OPC UA Server.");
     UA_Server *server = UA_Server_new();
     UA_ServerConfig *config = UA_Server_getConfig(server);
-    UA_ServerConfig_setDefault(UA_Server_getConfig(server));
+    // UA_ServerConfig_setDefault(config);
+    UA_ServerConfig_setMinimalCustomBuffer(config, 4840, 0, sendBufferSize, recvBufferSize);
 
     const char* appUri = "open62541.esp32.server";
+
     #ifdef ENABLE_MDNS
     config->discovery.mdnsEnable = true;
     config->discovery.mdns.mdnsServerName = UA_String_fromChars(appUri);
@@ -91,29 +134,17 @@ void opcua_task(void *pvParameter)
         ESP_LOGI(TAG, "Could not get default IP Address!");
     }
     #endif
-
     UA_ServerConfig_setUriName(config, appUri, "OPC UA Server - ESP32");
-
-    //Set the connection config
-    UA_ConnectionConfig connectionConfig;
-    connectionConfig.recvBufferSize = 32768; //16384
-    connectionConfig.sendBufferSize = 32768; //16384
-    connectionConfig.maxMessageSize = 32768; //16384
-
-    UA_ServerNetworkLayer nl = UA_ServerNetworkLayerTCP(connectionConfig, 4840, NULL);
-    config->networkLayers = &nl;
-    config->networkLayersSize = 1;
 
     /* Add Information Model Objects Here */
     addLEDMethod(server);
     addCurrentTemperatureDataSourceVariable(server);
     addRelay0ControlNode(server);
     addRelay1ControlNode(server);
-    addRelay2ControlNode(server);
-    addRelay3ControlNode(server);
+    // addRelay2ControlNode(server);
+    // addRelay3ControlNode(server);
 
-    ESP_LOGI(TAG, "Data Memory Heap Left : %d", xPortGetFreeHeapSize());
-    ESP_LOGI(TAG, "Free Memory: %d", esp_get_free_heap_size());
+    ESP_LOGI(TAG, "Heap Left : %d", xPortGetFreeHeapSize());
     UA_Server_run_startup(server);
     while (running)
     {
@@ -145,8 +176,26 @@ static void event_handler(void* arg, esp_event_base_t event_base,
         ESP_LOGI(TAG, "got ip:" IPSTR, IP2STR(&event->ip_info.ip));
         s_retry_num = 0;
         xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
+
+        time_t now;
+        struct tm timeinfo;
+        time(&now);
+        localtime_r(&now, &timeinfo);
+        // Is time set? If not, tm_year will be (1970 - 1900).
+        if (timeinfo.tm_year < (2016 - 1900)) {
+            ESP_LOGI(TAG, "Time is not set yet. Connecting to WiFi and getting time over NTP.");
+            if (!obtain_time()) {
+                ESP_LOGE(TAG, "Could not get time from NTP. Using default timestamp.");
+            }
+            // update 'now' variable with current time
+            time(&now);
+        }
+        localtime_r(&now, &timeinfo);
+        ESP_LOGI(TAG, "Current time: %d-%02d-%02d %02d:%02d:%02d", timeinfo.tm_year + 1900, timeinfo.tm_mon+1, timeinfo.tm_mday, timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
+
+
         xTaskCreatePinnedToCore(&opcua_task, "opcua_task", 24336, NULL, 1, NULL, 1);
-        ESP_LOGI(TAG, "After OPC UA Task : %d", esp_get_free_heap_size());
+        ESP_LOGI(TAG, "Heap size after OPC UA Task : %d", esp_get_free_heap_size());
     }
 }
 
