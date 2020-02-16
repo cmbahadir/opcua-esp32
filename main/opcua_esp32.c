@@ -81,7 +81,7 @@ void opcua_task(void *pvParameter)
     UA_ServerConfig_setMinimalCustomBuffer(config, 4840, 0, sendBufferSize, recvBufferSize);
 
     const char* appUri = "open62541.esp32.server";
-
+    UA_String hostName = UA_STRING("opcua-esp32");
     #ifdef ENABLE_MDNS
     config->discovery.mdnsEnable = true;
     config->discovery.mdns.mdnsServerName = UA_String_fromChars(appUri);
@@ -103,6 +103,7 @@ void opcua_task(void *pvParameter)
     }
     #endif
     UA_ServerConfig_setUriName(config, appUri, "OPC_UA_Server_ESP32");
+    UA_ServerConfig_setCustomHostname(config, hostName);
 
     /* Add Information Model Objects Here */
     addLEDMethod(server);

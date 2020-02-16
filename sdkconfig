@@ -118,7 +118,7 @@ CONFIG_PARTITION_TABLE_MD5=y
 # Connection Configuration
 #
 CONFIG_WIFI_SSID="TurkTelekom_T5838"
-CONFIG_WIFI_PASSWORD="HASHED"
+CONFIG_WIFI_PASSWORD="Hashed"
 # end of Connection Configuration
 
 #
