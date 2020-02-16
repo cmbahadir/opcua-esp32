@@ -39,7 +39,7 @@
  * ---------------
  * Changing the feature options has no effect on a pre-compiled library. */
 
-#define UA_LOGLEVEL 600
+#define UA_LOGLEVEL 100
 #ifndef UA_ENABLE_AMALGAMATION
 #define UA_ENABLE_AMALGAMATION
 #endif
