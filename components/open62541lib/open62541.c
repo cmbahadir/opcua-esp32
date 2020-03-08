@@ -58178,6 +58178,7 @@ UA_PubSubTransportLayerUDPMP() {
 
 #include <freertos/task.h>
 
+#define UA_ARCHITECTURE_FREERTOSLWIP_POSIX_CLOCK
 #ifdef UA_ARCHITECTURE_FREERTOSLWIP_POSIX_CLOCK
 
 UA_DateTime UA_DateTime_now(void) {
