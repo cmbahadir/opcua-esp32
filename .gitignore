@@ -1,11 +1,5 @@
 #Ignore build files
 /build
-
-#Ignore sdkconfig if its not changed
-sdkconfig
-sdkconfig.old
-
-#vscode user settings
 /.vscode
 sdkconfig
 sdkconfig.old
