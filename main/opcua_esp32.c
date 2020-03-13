@@ -16,6 +16,7 @@
 #include "esp_event.h"
 #include "nvs_flash.h"
 
+#include "ethernet_connect.h"
 #include "open62541.h"
 #include "DHT22.h"
 #include "model.h"
@@ -38,9 +39,7 @@ static void initialize_sntp(void);
 
 UA_ServerConfig *config;
 static UA_Boolean running = true;
-static EventGroupHandle_t s_wifi_event_group;
 static UA_Boolean isServerCreated = false;
-static int s_retry_num = 0;
 RTC_DATA_ATTR static int boot_count = 0;
 static struct tm timeinfo;
 static time_t now = 0;
@@ -118,8 +117,6 @@ static void opcua_task(void *arg)
     addCurrentTemperatureDataSourceVariable(server);
     addRelay0ControlNode(server);
     addRelay1ControlNode(server);
-    // addRelay2ControlNode(server);
-    // addRelay3ControlNode(server);
 
     ESP_LOGI(TAG, "Heap Left : %d", xPortGetFreeHeapSize());
     UA_StatusCode retval = UA_Server_run_startup(server);
@@ -169,38 +166,7 @@ static bool obtain_time(void)
     return timeinfo.tm_year > (2016 - 1900);
 }
 
-//Event Handler for WIFI events - it triggered when ESP_EVENT_ANY_ID event occurs.
-static void wifi_event_handler(void *arg, esp_event_base_t event_base,
-                               int32_t event_id, void *event_data)
-{
-    if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START)
-    {
-        esp_wifi_connect();
-    }
-    else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED)
-    {
-        if (s_retry_num < EXAMPLE_ESP_MAXIMUM_RETRY)
-        {
-            esp_wifi_connect();
-            s_retry_num++;
-            ESP_LOGI(WIFI_TAG, "retry to connect to the AP");
-        }
-        else
-        {
-            xEventGroupSetBits(s_wifi_event_group, WIFI_FAIL_BIT);
-        }
-        ESP_LOGI(WIFI_TAG, "connect to the AP fail");
-    }
-    else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP)
-    {
-        ip_event_got_ip_t *event = (ip_event_got_ip_t *)event_data;
-        ESP_LOGI(WIFI_TAG, "got ip:" IPSTR, IP2STR(&event->ip_info.ip));
-        s_retry_num = 0;
-        xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
-    }
-}
 
-//Event handler for OPC Server - it is triggered when IP_EVENT_STA_GOT_IP occurs
 static void opc_event_handler(void *arg, esp_event_base_t event_base,
                               int32_t event_id, void *event_data)
 {
@@ -224,73 +190,46 @@ static void opc_event_handler(void *arg, esp_event_base_t event_base,
     }
 }
 
-static void wifi_scan(void)
+static void disconnect_handler(void *arg, esp_event_base_t event_base,
+                              int32_t event_id, void *event_data)
 {
-    ESP_ERROR_CHECK(esp_event_loop_create_default());
-    s_wifi_event_group = xEventGroupCreate();
+
+}
+
+static void connection_scan(void)
+{
     ESP_ERROR_CHECK(esp_netif_init());
-    esp_netif_t *sta_netif = esp_netif_create_default_wifi_sta();
-    assert(sta_netif);
-
-    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
-    ESP_ERROR_CHECK(esp_wifi_init(&cfg));
-
+    ESP_ERROR_CHECK(esp_event_loop_create_default());
     ESP_ERROR_CHECK(esp_task_wdt_init(10, true));
     ESP_ERROR_CHECK(esp_task_wdt_delete(xTaskGetIdleTaskHandleForCPU(0)));
     ESP_ERROR_CHECK(esp_task_wdt_delete(xTaskGetIdleTaskHandleForCPU(1)));
 
+#ifdef CONFIG_EXAMPLE_CONNECT_WIFI
     ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &opc_event_handler, NULL));
-    ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &wifi_event_handler, NULL));
-
-    wifi_config_t wifi_config = {
-        .sta = {
-            .ssid = EXAMPLE_ESP_WIFI_SSID,
-            .password = EXAMPLE_ESP_WIFI_PASS},
-    };
-
-    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
-    ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config));
-    ESP_ERROR_CHECK(esp_wifi_start());
-
-    EventBits_t bits = xEventGroupWaitBits(s_wifi_event_group,
-                                           WIFI_CONNECTED_BIT | WIFI_FAIL_BIT,
-                                           pdFALSE,
-                                           pdFALSE,
-                                           portMAX_DELAY);
-    if (bits & WIFI_CONNECTED_BIT)
-    {
-        ESP_LOGI(WIFI_TAG, "connected to ap SSID:%s",
-                 EXAMPLE_ESP_WIFI_SSID);
-    }
-    else if (bits & WIFI_FAIL_BIT)
-    {
-        ESP_LOGI(TAG, "Failed to connect to SSID:%s",
-                 EXAMPLE_ESP_WIFI_SSID);
-    }
-    else
-    {
-        ESP_LOGE(TAG, "UNEXPECTED EVENT");
-    }
-
-    esp_netif_destroy(sta_netif);
-    vEventGroupDelete(s_wifi_event_group);
+    ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENT, WIFI_EVENT_STA_DISCONNECTED, &disconnect_handler, NULL));
+#endif
+#ifdef CONFIG_EXAMPLE_CONNECT_ETHERNET
+    ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_ETH_GOT_IP, &opc_event_handler, NULL));
+    ESP_ERROR_CHECK(esp_event_handler_register(ETH_EVENT, ETHERNET_EVENT_DISCONNECTED, &disconnect_handler, NULL));
+#endif
+    ESP_ERROR_CHECK(example_connect());
 }
 
-void app_main()
+void app_main(void)
 {
     ++boot_count;
-    //Encryption improvement w.r.t:
-    //Espressif security advisory concerning fault injection and secure boot (CVE-2019-15894)
+    //Workaround for CVE-2019-15894
     spi_flash_init();
     if (esp_flash_encryption_enabled())
     {
         esp_flash_write_protect_crypt_cnt();
     }
+
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES)
     {
         ESP_ERROR_CHECK(nvs_flash_erase());
         ESP_ERROR_CHECK(nvs_flash_init());
     }
-    wifi_scan();
+    connection_scan();
 }

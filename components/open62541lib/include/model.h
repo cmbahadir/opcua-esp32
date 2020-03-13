@@ -64,39 +64,3 @@ setRelay1State(UA_Server *server,
 
 void
 addRelay1ControlNode(UA_Server *server);
-
-
-// /* Relay 2 */
-// UA_StatusCode
-// readRelay2State(UA_Server *server,
-//                 const UA_NodeId *sessionId, void *sessionContext,
-//                 const UA_NodeId *nodeId, void *nodeContext,
-//                 UA_Boolean sourceTimeStamp, const UA_NumericRange *range,
-//                 UA_DataValue *dataValue);
-
-// UA_StatusCode
-// setRelay2State(UA_Server *server,
-//                   const UA_NodeId *sessionId, void *sessionContext,
-//                   const UA_NodeId *nodeId, void *nodeContext,
-//                  const UA_NumericRange *range, const UA_DataValue *data);
-
-// void
-// addRelay2ControlNode(UA_Server *server);
-
-
-// /* Relay 3 */
-// UA_StatusCode
-// readRelay3State(UA_Server *server,
-//                 const UA_NodeId *sessionId, void *sessionContext,
-//                 const UA_NodeId *nodeId, void *nodeContext,
-//                 UA_Boolean sourceTimeStamp, const UA_NumericRange *range,
-//                 UA_DataValue *dataValue);
-
-// UA_StatusCode
-// setRelay3State(UA_Server *server,
-//                   const UA_NodeId *sessionId, void *sessionContext,
-//                   const UA_NodeId *nodeId, void *nodeContext,
-//                  const UA_NumericRange *range, const UA_DataValue *data);
-
-// void
-// addRelay3ControlNode(UA_Server *server);
