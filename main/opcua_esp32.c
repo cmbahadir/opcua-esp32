@@ -21,18 +21,18 @@
 #include "DHT22.h"
 #include "model.h"
 
-#define EXAMPLE_ESP_WIFI_SSID      CONFIG_WIFI_SSID
-#define EXAMPLE_ESP_WIFI_PASS      CONFIG_WIFI_PASSWORD
-#define EXAMPLE_ESP_MAXIMUM_RETRY  10
+#define EXAMPLE_ESP_WIFI_SSID CONFIG_WIFI_SSID
+#define EXAMPLE_ESP_WIFI_PASS CONFIG_WIFI_PASSWORD
+#define EXAMPLE_ESP_MAXIMUM_RETRY 10
 
 #define TAG "OPCUA_ESP32"
 #define WIFI_TAG "WIFI"
-#define SNTP_TAG "STNP"
+#define SNTP_TAG "SNTP"
 #define MEMORY_TAG "MEMORY"
-#define ENABLE_MDNS
+#define ENABLE_MDNS 1
 
 #define WIFI_CONNECTED_BIT BIT0
-#define WIFI_FAIL_BIT      BIT1
+#define WIFI_FAIL_BIT BIT1
 
 static bool obtain_time(void);
 static void initialize_sntp(void);
@@ -41,9 +41,12 @@ UA_ServerConfig *config;
 static UA_Boolean running = true;
 static UA_Boolean isServerCreated = false;
 RTC_DATA_ATTR static int boot_count = 0;
+static struct tm timeinfo;
+static time_t now = 0;
 
 static UA_StatusCode
-UA_ServerConfig_setUriName(UA_ServerConfig *uaServerConfig, const char *uri, const char *name) {
+UA_ServerConfig_setUriName(UA_ServerConfig *uaServerConfig, const char *uri, const char *name)
+{
     // delete pre-initialized values
     UA_String_deleteMembers(&uaServerConfig->applicationDescription.applicationUri);
     UA_LocalizedText_deleteMembers(&uaServerConfig->applicationDescription.applicationName);
@@ -52,10 +55,11 @@ UA_ServerConfig_setUriName(UA_ServerConfig *uaServerConfig, const char *uri, con
     uaServerConfig->applicationDescription.applicationName.locale = UA_STRING_NULL;
     uaServerConfig->applicationDescription.applicationName.text = UA_String_fromChars(name);
 
-    for (size_t i = 0; i < uaServerConfig->endpointsSize; i++) {
+    for (size_t i = 0; i < uaServerConfig->endpointsSize; i++)
+    {
         UA_String_deleteMembers(&uaServerConfig->endpoints[i].server.applicationUri);
         UA_LocalizedText_deleteMembers(
-                &uaServerConfig->endpoints[i].server.applicationName);
+            &uaServerConfig->endpoints[i].server.applicationName);
 
         UA_String_copy(&uaServerConfig->applicationDescription.applicationUri,
                        &uaServerConfig->endpoints[i].server.applicationUri);
@@ -67,10 +71,11 @@ UA_ServerConfig_setUriName(UA_ServerConfig *uaServerConfig, const char *uri, con
     return UA_STATUSCODE_GOOD;
 }
 
-void opcua_task(void *pvParameter)
+static void opcua_task(void *arg)
 {
-    UA_Int32 sendBufferSize = 16000;
-    UA_Int32 recvBufferSize = 16000;
+
+    UA_Int32 sendBufferSize = 32768;
+    UA_Int32 recvBufferSize = 32768;
 
     ESP_ERROR_CHECK(esp_task_wdt_add(NULL));
 
@@ -79,13 +84,13 @@ void opcua_task(void *pvParameter)
     UA_ServerConfig *config = UA_Server_getConfig(server);
     UA_ServerConfig_setMinimalCustomBuffer(config, 4840, 0, sendBufferSize, recvBufferSize);
 
-    const char* appUri = "open62541.esp32.server";
+    const char *appUri = "open62541.esp32.server";
     UA_String hostName = UA_STRING("opcua-esp32");
-    #ifdef ENABLE_MDNS
+#ifdef ENABLE_MDNS
     config->discovery.mdnsEnable = true;
     config->discovery.mdns.mdnsServerName = UA_String_fromChars(appUri);
     config->discovery.mdns.serverCapabilitiesSize = 2;
-    UA_String *caps = (UA_String *) UA_Array_new(2, &UA_TYPES[UA_TYPES_STRING]);
+    UA_String *caps = (UA_String *)UA_Array_new(2, &UA_TYPES[UA_TYPES_STRING]);
     caps[0] = UA_String_fromChars("LDS");
     caps[1] = UA_String_fromChars("NA");
     config->discovery.mdns.serverCapabilities = caps;
@@ -93,14 +98,17 @@ void opcua_task(void *pvParameter)
     // We need to set the default IP address for mDNS since internally it's not able to detect it.
     tcpip_adapter_ip_info_t default_ip;
     esp_err_t ret = tcpip_adapter_get_ip_info(TCPIP_ADAPTER_IF_STA, &default_ip);
-    if ((ESP_OK == ret) && (default_ip.ip.addr != INADDR_ANY)) {
+    if ((ESP_OK == ret) && (default_ip.ip.addr != INADDR_ANY))
+    {
         config->discovery.ipAddressListSize = 1;
-        config->discovery.ipAddressList = (uint32_t *)UA_malloc(sizeof(uint32_t)*config->discovery.ipAddressListSize);
+        config->discovery.ipAddressList = (uint32_t *)UA_malloc(sizeof(uint32_t) * config->discovery.ipAddressListSize);
         memcpy(config->discovery.ipAddressList, &default_ip.ip.addr, sizeof(uint32_t));
-    } else {
+    }
+    else
+    {
         ESP_LOGI(TAG, "Could not get default IP Address!");
     }
-    #endif
+#endif
     UA_ServerConfig_setUriName(config, appUri, "OPC_UA_Server_ESP32");
     UA_ServerConfig_setCustomHostname(config, hostName);
 
@@ -111,14 +119,17 @@ void opcua_task(void *pvParameter)
     addRelay1ControlNode(server);
 
     ESP_LOGI(TAG, "Heap Left : %d", xPortGetFreeHeapSize());
-    UA_Server_run_startup(server);
-    while (running)
+    UA_StatusCode retval = UA_Server_run_startup(server);
+    if (retval == UA_STATUSCODE_GOOD)
     {
-        UA_Server_run_iterate(server, false);
-        ESP_ERROR_CHECK(esp_task_wdt_reset());
-        taskYIELD();
+        while (running)
+        {
+            UA_Server_run_iterate(server, false);
+            ESP_ERROR_CHECK(esp_task_wdt_reset());
+            taskYIELD();
+        }
+        UA_Server_run_shutdown(server);
     }
-    UA_Server_run_shutdown(server);
     ESP_ERROR_CHECK(esp_task_wdt_delete(NULL));
 }
 
@@ -140,12 +151,11 @@ static bool obtain_time(void)
 {
     initialize_sntp();
     ESP_ERROR_CHECK(esp_task_wdt_add(NULL));
-    time_t now = 0;
-    struct tm timeinfo;
     memset(&timeinfo, 0, sizeof(struct tm));
     int retry = 0;
     const int retry_count = 10;
-    while (sntp_get_sync_status() == SNTP_SYNC_STATUS_RESET && ++retry <= retry_count) {
+    while (sntp_get_sync_status() == SNTP_SYNC_STATUS_RESET && ++retry <= retry_count)
+    {
         ESP_LOGI(SNTP_TAG, "Waiting for system time to be set... (%d/%d)", retry, retry_count);
         vTaskDelay(2000 / portTICK_PERIOD_MS);
         ESP_ERROR_CHECK(esp_task_wdt_reset());
@@ -160,10 +170,6 @@ static bool obtain_time(void)
 static void opc_event_handler(void *arg, esp_event_base_t event_base,
                               int32_t event_id, void *event_data)
 {
-    time_t now;
-    struct tm timeinfo;
-    time(&now);
-    localtime_r(&now, &timeinfo);
     if (timeinfo.tm_year < (2016 - 1900))
     {
         ESP_LOGI(SNTP_TAG, "Time is not set yet. Connecting to WiFi and getting time over NTP.");
@@ -175,9 +181,10 @@ static void opc_event_handler(void *arg, esp_event_base_t event_base,
     }
     localtime_r(&now, &timeinfo);
     ESP_LOGI(SNTP_TAG, "Current time: %d-%02d-%02d %02d:%02d:%02d", timeinfo.tm_year + 1900, timeinfo.tm_mon + 1, timeinfo.tm_mday, timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
+
     if (!isServerCreated)
     {
-        xTaskCreatePinnedToCore(&opcua_task, "opcua_task", 24336, NULL, 10, NULL, 0);
+        xTaskCreatePinnedToCore(opcua_task, "opcua_task", 24336, NULL, 10, NULL, 0);
         ESP_LOGI(MEMORY_TAG, "Heap size after OPC UA Task : %d", esp_get_free_heap_size());
         isServerCreated = true;
     }
