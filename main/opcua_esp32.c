@@ -26,13 +26,9 @@
 #define EXAMPLE_ESP_MAXIMUM_RETRY 10
 
 #define TAG "OPCUA_ESP32"
-#define WIFI_TAG "WIFI"
 #define SNTP_TAG "SNTP"
 #define MEMORY_TAG "MEMORY"
 #define ENABLE_MDNS 1
-
-#define WIFI_CONNECTED_BIT BIT0
-#define WIFI_FAIL_BIT BIT1
 
 static bool obtain_time(void);
 static void initialize_sntp(void);
@@ -172,7 +168,7 @@ static void opc_event_handler(void *arg, esp_event_base_t event_base,
 {
     if (timeinfo.tm_year < (2016 - 1900))
     {
-        ESP_LOGI(SNTP_TAG, "Time is not set yet. Connecting to WiFi and getting time over NTP.");
+        ESP_LOGI(SNTP_TAG, "Time is not set yet. Settting up network connection and getting time over NTP.");
         if (!obtain_time())
         {
             ESP_LOGE(SNTP_TAG, "Could not get time from NTP. Using default timestamp.");
@@ -184,7 +180,7 @@ static void opc_event_handler(void *arg, esp_event_base_t event_base,
 
     if (!isServerCreated)
     {
-        xTaskCreatePinnedToCore(opcua_task, "opcua_task", 24336, NULL, 10, NULL, 0);
+        xTaskCreatePinnedToCore(opcua_task, "opcua_task", 24336, NULL, 10, NULL, 1);
         ESP_LOGI(MEMORY_TAG, "Heap size after OPC UA Task : %d", esp_get_free_heap_size());
         isServerCreated = true;
     }
