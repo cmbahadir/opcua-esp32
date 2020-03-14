@@ -4,20 +4,9 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/home/cmb/esp/esp-idf/components",
-                "/home/cmb/esp/esp-idf/examples/open62541/components",
-                "/home/cmb/esp/esp-idf/components/driver/include",
-                "/home/cmb/esp/esp-idf/components/esp32/include",
-                "/home/cmb/esp/esp-idf/components/tcpip_adapter/include",
-                "/home/cmb/esp/esp-idf/components/fatfs/test_fatfs_host/stubs/log/include",
-                "/home/cmb/esp/esp-idf/components/nvs_flash/include",
-                "/home/cmb/esp/esp-idf/components/newlib/include",
-                "/home/cmb/esp/esp-idf/components/soc/esp32/include",
-                "/home/cmb/esp/esp-idf/components/heap/include",
-                "/home/cmb/esp/esp-idf/components/soc/include",
-                "/home/cmb/esp/esp-idf/components/vfs/include",
-                "/home/cmb/esp/esp-idf/components/newlib/platform_include",
-                "/home/cmb/workspace/open62541/include"
+                "D:\\Task_Force\\ESP32\\esp-idf\\components",
+                "D:\\Task_Force\\ESP32\\esp-idf\\examples\\opcua-esp32\\components\\**",
+                "D:\\Task_Force\\ESP32\\esp-idf\\components\\**"
             ],
             "defines": [],
             "compilerPath": "/home/cmb/esp/xtensa-esp32-elf/bin/xtensa-esp32-elf-gcc",

@@ -4,7 +4,8 @@
         "simple.h": "c",
         "array": "c",
         "mynodeset.h": "c",
-        "model.h": "c"
+        "model.h": "c",
+        "gpio.h": "c"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }
