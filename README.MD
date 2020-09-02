@@ -16,6 +16,8 @@ It is tested by UAExpert and also Matrikon Mobile IOS OPC UA Client. So if you f
 - Open62541 (Optional) : https://github.com/open62541/open62541
 
 ## Getting Started
+A more detailed information can be found here: https://selftronics.com/2020/06/23/cheapest-embedded-opc-ua-server/
+
 It is required to have locally configured ESP-IDF (https://github.com/espressif/esp-idf).
 
     git clone --recursive https://github.com/espressif/esp-idf.git <your-esp-idf-root-path>
