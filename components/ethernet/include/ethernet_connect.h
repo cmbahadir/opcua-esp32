@@ -16,17 +16,19 @@ extern "C" {
 
 #define CONFIG_ESP32_SPIRAM_SUPPORT 1
 #define CONFIG_MBEDTLS_EXTERNAL_MEM_ALLOC 1
-#define CONFIG_EXAMPLE_CONNECT_WIFI 1
+#define CONFIG_EXAMPLE_CONNECT_ETHERNET 1
 #define CONFIG_EXAMPLE_USE_INTERNAL_ETHERNET 1
 #define CONFIG_EXAMPLE_ETH_PHY_LAN8720 1
 #define CONFIG_EXAMPLE_ETH_MDC_GPIO 23
 #define CONFIG_EXAMPLE_ETH_MDIO_GPIO 18
 #define CONFIG_EXAMPLE_ETH_PHY_ADDR 0
 
+#define CONFIG_USE_STATIC_IP 1
+
 #ifdef CONFIG_USE_STATIC_IP
-#define CONFIG_ETHERNET_HELPER_STATIC_IP4_ADDRESS "192.168.74.65"
-#define CONFIG_ETHERNET_HELPER_STATIC_IP4_GATEWAY "192.168.74.1"
-#define CONFIG_ETHERNET_HELPER_STATIC_IP4_NETMASK "255.255.255.0"
+#define CONFIG_ETHERNET_STATIC_IP4_ADDRESS "192.168.74.253"
+#define CONFIG_ETHERNET_STATIC_IP4_GATEWAY "192.168.74.1"
+#define CONFIG_ETHERNET_STATIC_IP4_NETMASK "255.255.255.0"
 #endif //CONFIG_USE_STATIC_IP
 
 #ifdef CONFIG_EXAMPLE_CONNECT_ETHERNET
@@ -34,34 +36,9 @@ extern "C" {
 #define EXAMPLE_INTERFACE TCPIP_ADAPTER_IF_ETH
 #endif
 
-#ifdef CONFIG_EXAMPLE_CONNECT_WIFI
-// #define EXAMPLE_INTERFACE get_example_netif()
-#define EXAMPLE_INTERFACE TCPIP_ADAPTER_IF_STA
-#endif
 
-// #define CONFIG_EXAMPLE_CONNECT_IPV6 
-
-/**
- * @brief Configure Wi-Fi or Ethernet, connect, wait for IP
- *
- * This all-in-one helper function is used in protocols examples to
- * reduce the amount of boilerplate in the example.
- *
- * It is not intended to be used in real world applications.
- * See examples under examples/wifi/getting_started/ and examples/ethernet/
- * for more complete Wi-Fi or Ethernet initialization code.
- *
- * Read "Establishing Wi-Fi or Ethernet Connection" section in
- * examples/protocols/README.md for more information about this function.
- *
- * @return ESP_OK on successful connection
- */
-esp_err_t example_connect(void);
-
-/**
- * Counterpart to example_connect, de-initializes Wi-Fi or Ethernet
- */
-esp_err_t example_disconnect(void);
+esp_err_t ethernet_connect(void);
+esp_err_t ethernet_disconnect(void);
 esp_netif_t *get_example_netif(void);
 
 #ifdef __cplusplus

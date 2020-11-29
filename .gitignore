@@ -3,3 +3,8 @@
 /.vscode
 sdkconfig
 sdkconfig.old
+.vscode
+*.pyc
+ServerConfigurator/esp_prov/bin
+ServerConfigurator/esp_prov/lib
+ServerConfigurator/esp_prov/pyvenv.cfg
