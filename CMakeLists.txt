@@ -4,5 +4,5 @@ cmake_minimum_required(VERSION 3.5)
 
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
-set(EXTRA_COMPONENTS_DIRS "components/DHT22" "components/open62541lib")
+set(EXTRA_COMPONENTS_DIRS "components/DHT22" "components/open62541lib" "components/proto-c")
 project(opcua_esp32)

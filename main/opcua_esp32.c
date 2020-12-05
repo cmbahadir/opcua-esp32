@@ -20,6 +20,7 @@
 #include "open62541.h"
 #include "DHT22.h"
 #include "model.h"
+#include "custom_config.pb-c.h"
 
 #include <wifi_provisioning/scheme_softap.h>
 #include <wifi_provisioning/manager.h>
@@ -32,18 +33,38 @@
 #define SNTP_TAG "SNTP"
 #define MEMORY_TAG "MEMORY"
 #define ENABLE_MDNS 1
+// Custom specific provisioning password
+#define POP "abcd1234"
 
 static bool obtain_time(void);
 static void initialize_sntp(void);
 
 UA_ServerConfig *config;
 
-/*provisioning*/
-#ifdef CONFIG_EXAMPLE_CONNECT_WIFI
-bool provisioned = false;
-const int WIFI_CONNECTED_EVENT = BIT0;
+//provisioning
+bool isprovisioned = false;
+const int WIFI_PROVISIONED_EVENT = BIT0;
 static EventGroupHandle_t wifi_event_group;
-#endif //CONFIG_EXAMPLE_CONNECT_WIFI
+
+//custom_config
+typedef struct
+{
+    char info[128];
+    int version;
+} custom_config_t;
+
+typedef esp_err_t (*custom_prov_config_handler_t)(const custom_config_t *config);
+custom_prov_config_handler_t custom_prov_handler;
+esp_err_t custom_prov_config_data_handler(uint32_t session_id, const uint8_t *inbuf, ssize_t inlen,
+                                          uint8_t **outbuf, ssize_t *outlen, void *priv_data);
+struct
+{
+    int connection;
+    int port;
+    char *ip_address;
+    char *netmask;
+    char *gateway;
+} serverConfig;
 
 static UA_Boolean sntp_initialized = false;
 static UA_Boolean running = true;
@@ -51,10 +72,19 @@ static UA_Boolean isServerCreated = false;
 static struct tm timeinfo;
 static time_t now = 0;
 
+void initServerConfig(void)
+{
+    serverConfig.connection = 1; //0: Ethernet - 1: Wi-Fi
+    serverConfig.port = 4840;
+    serverConfig.ip_address = NULL;
+    serverConfig.netmask = NULL;
+    serverConfig.gateway = NULL;
+}
+
 static UA_StatusCode
 UA_ServerConfig_setUriName(UA_ServerConfig *uaServerConfig, const char *uri, const char *name)
 {
-    // delete pre-initialized values
+    // Delete pre-initialized values
     UA_String_deleteMembers(&uaServerConfig->applicationDescription.applicationUri);
     UA_LocalizedText_deleteMembers(&uaServerConfig->applicationDescription.applicationName);
 
@@ -89,7 +119,7 @@ static void opcua_task(void *arg)
     ESP_LOGI(TAG, "Fire up OPC UA Server.");
     UA_Server *server = UA_Server_new();
     UA_ServerConfig *config = UA_Server_getConfig(server);
-    UA_ServerConfig_setMinimalCustomBuffer(config, 4840, 0, sendBufferSize, recvBufferSize);
+    UA_ServerConfig_setMinimalCustomBuffer(config, serverConfig.port, 0, sendBufferSize, recvBufferSize);
 
     const char *appUri = "open62541.esp32.server";
     UA_String hostName = UA_STRING("opcua-esp32");
@@ -102,7 +132,7 @@ static void opcua_task(void *arg)
     caps[1] = UA_String_fromChars("NA");
     config->discovery.mdns.serverCapabilities = caps;
 
-    // We need to set the default IP address for mDNS since internally it's not able to detect it.
+    // Set the default IP address for mDNS since internally it's not able to detect it.
     tcpip_adapter_ip_info_t default_ip;
     esp_err_t ret = tcpip_adapter_get_ip_info(TCPIP_ADAPTER_IF_STA, &default_ip);
     if ((ESP_OK == ret) && (default_ip.ip.addr != INADDR_ANY))
@@ -119,7 +149,7 @@ static void opcua_task(void *arg)
     UA_ServerConfig_setUriName(config, appUri, "OPC_UA_Server_ESP32");
     UA_ServerConfig_setCustomHostname(config, hostName);
 
-    /* Add Information Model Objects Here */
+    // Add Information Model Objects Here
     addLEDMethod(server);
     addCurrentTemperatureDataSourceVariable(server);
     addRelay0ControlNode(server);
@@ -152,7 +182,7 @@ static void initialize_sntp(void)
     sntp_setservername(0, "pool.ntp.org");
     sntp_set_time_sync_notification_cb(time_sync_notification_cb);
     sntp_init();
-	sntp_initialized = true;
+    sntp_initialized = true;
 }
 
 static bool obtain_time(void)
@@ -177,37 +207,35 @@ static bool obtain_time(void)
 static void opc_event_handler(void *arg, esp_event_base_t event_base,
                               int32_t event_id, void *event_data)
 {
-	if (sntp_initialized != true)
-	{
-		if (timeinfo.tm_year < (2016 - 1900))
-		{
-			ESP_LOGI(SNTP_TAG, "Time is not set yet. Settting up network connection and getting time over NTP.");
-			if (!obtain_time())
-			{
-				ESP_LOGE(SNTP_TAG, "Could not get time from NTP. Using default timestamp.");
-			}
-			time(&now);
-		}
-		localtime_r(&now, &timeinfo);
-		ESP_LOGI(SNTP_TAG, "Current time: %d-%02d-%02d %02d:%02d:%02d", timeinfo.tm_year + 1900, timeinfo.tm_mon + 1, timeinfo.tm_mday, timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
-	}
-	
+    if (sntp_initialized != true)
+    {
+        if (timeinfo.tm_year < (2016 - 1900))
+        {
+            ESP_LOGI(SNTP_TAG, "Time is not set yet. Settting up network connection and getting time over NTP.");
+            if (!obtain_time())
+            {
+                ESP_LOGE(SNTP_TAG, "Could not get time from NTP. Using default timestamp.");
+            }
+            time(&now);
+        }
+        localtime_r(&now, &timeinfo);
+        ESP_LOGI(SNTP_TAG, "Current time: %d-%02d-%02d %02d:%02d:%02d", timeinfo.tm_year + 1900, timeinfo.tm_mon + 1, timeinfo.tm_mday, timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
+    }
 
-	if (!isServerCreated)
-	{
-		xTaskCreatePinnedToCore(opcua_task, "opcua_task", 24336, NULL, 10, NULL, 1);
-		ESP_LOGI(MEMORY_TAG, "Heap size after OPC UA Task : %d", esp_get_free_heap_size());
-		isServerCreated = true;
-	}
+    if (!isServerCreated)
+    {
+        xTaskCreatePinnedToCore(opcua_task, "opcua_task", 24336, NULL, 10, NULL, 1);
+        ESP_LOGI(MEMORY_TAG, "Heap size after OPC UA Task : %d", esp_get_free_heap_size());
+        isServerCreated = true;
+    }
 }
 
 // static void disconnect_handler(void *arg, esp_event_base_t event_base,
-                               // int32_t event_id, void *event_data)
+// int32_t event_id, void *event_data)
 // {
 // }
 
-//Provisioning
-#ifdef CONFIG_EXAMPLE_CONNECT_WIFI
+// Provisioning
 static void get_device_service_name(char *service_name, size_t max)
 {
     uint8_t eth_mac[6];
@@ -217,26 +245,94 @@ static void get_device_service_name(char *service_name, size_t max)
              ssid_prefix, eth_mac[3], eth_mac[4], eth_mac[5]);
 }
 
-esp_err_t custom_prov_data_handler(uint32_t session_id, const uint8_t *inbuf, ssize_t inlen,
-                                   uint8_t **outbuf, ssize_t *outlen, void *priv_data)
+static esp_err_t custom_config_handler(const custom_config_t *config)
 {
-    if (inbuf)
+    char *p;
+    uint8_t i;
+    char *req = (char *)config->info;
+    for (i = 1, p = strtok(req, ","); p != NULL; p = strtok(NULL, ","), i++)
     {
-        ESP_LOGI(TAG, "Received data: %.*s", inlen, (char *)inbuf);
+        switch (i)
+        {
+        case 1:
+            serverConfig.connection = atoi(p);
+            break;
+        case 2:
+            if (atoi(p) <= 0 && atoi(p) >= 65536)
+                break; // Use default port 4840 if the set value is beyond the limits.
+            serverConfig.port = atoi(p);
+            break;
+        case 3:
+            serverConfig.ip_address = strdup(p);
+            break;
+        case 4:
+            serverConfig.netmask = strdup(p);
+            break;
+        case 5:
+            serverConfig.gateway = strdup(p);
+            break;
+        default:
+            break;
+        }
     }
-    char response[] = "SUCCESS";
-    *outbuf = (uint8_t *)strdup(response);
+    // Break event loop if connection type is set as "Ethernet"
+    if (serverConfig.connection == 0)
+    {
+        xEventGroupSetBits(wifi_event_group, WIFI_PROVISIONED_EVENT);
+        isprovisioned = true;
+    }
+    return ESP_OK;
+}
+
+custom_prov_config_handler_t custom_prov_handler = custom_config_handler;
+
+esp_err_t custom_prov_config_data_handler(uint32_t session_id, const uint8_t *inbuf, ssize_t inlen,
+                                          uint8_t **outbuf, ssize_t *outlen, void *priv_data)
+{
+    CustomConfigRequest *req;
+    CustomConfigResponse resp;
+    custom_prov_config_handler_t app_handler_custom_config = (custom_prov_config_handler_t)priv_data;
+
+    req = custom_config_request__unpack(NULL, inlen, inbuf);
+    if (!req)
+    {
+        ESP_LOGE("custom_config", "Unable to unpack config data");
+        return ESP_ERR_INVALID_ARG;
+    }
+
+    custom_config_response__init(&resp);
+    resp.status = CUSTOM_CONFIG_STATUS__ConfigFail;
+
+    if (app_handler_custom_config)
+    {
+        custom_config_t config;
+        strlcpy(config.info, req->info, sizeof(config.info));
+        config.version = req->version;
+        esp_err_t err = app_handler_custom_config(&config);
+        resp.status = (err == ESP_OK) ? CUSTOM_CONFIG_STATUS__ConfigSuccess : CUSTOM_CONFIG_STATUS__ConfigFail;
+    }
+    custom_config_request__free_unpacked(req, NULL);
+
+    resp.dummy = 47; // Set a non zero value of dummy
+
+    *outlen = custom_config_response__get_packed_size(&resp);
+    if (*outlen <= 0)
+    {
+        ESP_LOGE(TAG, "Invalid encoding for response");
+        return ESP_FAIL;
+    }
+
+    *outbuf = (uint8_t *)malloc(*outlen);
     if (*outbuf == NULL)
     {
         ESP_LOGE(TAG, "System out of memory");
         return ESP_ERR_NO_MEM;
     }
-    *outlen = strlen(response) + 1; /* +1 for NULL terminating byte */
 
+    custom_config_response__pack(&resp, *outbuf);
     return ESP_OK;
 }
 
-/* Event handler for catching system events */
 static void provisioning_event_handler(void *arg, esp_event_base_t event_base,
                                        int event_id, void *event_data)
 {
@@ -266,9 +362,11 @@ static void provisioning_event_handler(void *arg, esp_event_base_t event_base,
         }
         case WIFI_PROV_CRED_SUCCESS:
             ESP_LOGI(TAG, "Provisioning successful");
+            xEventGroupSetBits(wifi_event_group, WIFI_PROVISIONED_EVENT);
+            isprovisioned = true;
             break;
         case WIFI_PROV_END:
-            /* De-initialize manager once provisioning is finished */
+            // De-initialize manager once provisioning is finished
             wifi_prov_mgr_deinit();
             break;
         default:
@@ -283,8 +381,6 @@ static void provisioning_event_handler(void *arg, esp_event_base_t event_base,
     {
         ip_event_got_ip_t *event = (ip_event_got_ip_t *)event_data;
         ESP_LOGI(TAG, "Connected with IP Address:" IPSTR, IP2STR(&event->ip_info.ip));
-        /* Signal main application to continue execution */
-        xEventGroupSetBits(wifi_event_group, WIFI_CONNECTED_EVENT);
     }
     else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED)
     {
@@ -293,55 +389,47 @@ static void provisioning_event_handler(void *arg, esp_event_base_t event_base,
     }
 }
 
-
 static void provision(void)
 {
-    wifi_event_group = xEventGroupCreate();
-    ESP_ERROR_CHECK(esp_event_handler_register(WIFI_PROV_EVENT, ESP_EVENT_ANY_ID, &provisioning_event_handler, NULL));
-    ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENT, WIFI_EVENT_STA_DISCONNECTED, &provisioning_event_handler, NULL));
-    ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &provisioning_event_handler, NULL));
+    char service_name[12];
+    const char *pop = POP;
+    const char *service_key = NULL;
 
-    /* Configuration for the provisioning manager */
+    wifi_event_group = xEventGroupCreate();
+
+    ESP_ERROR_CHECK(esp_event_handler_register(WIFI_PROV_EVENT, ESP_EVENT_ANY_ID, &provisioning_event_handler, NULL));
+
     wifi_prov_mgr_config_t config = {
         .scheme = wifi_prov_scheme_softap,
         .scheme_event_handler = WIFI_PROV_EVENT_HANDLER_NONE};
-
-    /* Initialize provisioning manager with the
-     * configuration parameters set above */
     ESP_ERROR_CHECK(wifi_prov_mgr_init(config));
-
-    /* If device is not yet provisioned start provisioning service */
     ESP_LOGI(TAG, "Starting provisioning");
-    char service_name[12];
+    
     get_device_service_name(service_name, sizeof(service_name));
     wifi_prov_security_t security = WIFI_PROV_SECURITY_1;
-    const char *pop = "abcd1234";
-    const char *service_key = NULL;
-    wifi_prov_mgr_endpoint_create("custom-data");
-    /* Start provisioning service */
+    wifi_prov_mgr_endpoint_create("custom-config");
+
     ESP_ERROR_CHECK(wifi_prov_mgr_start_provisioning(security, pop, service_name, service_key));
-    wifi_prov_mgr_endpoint_register("custom-data", custom_prov_data_handler, NULL);
-    xEventGroupWaitBits(wifi_event_group, WIFI_CONNECTED_EVENT, false, true, portMAX_DELAY);
-    ESP_ERROR_CHECK(wifi_prov_mgr_is_provisioned(&provisioned));
+    wifi_prov_mgr_endpoint_register("custom-config", custom_prov_config_data_handler, (void *)custom_prov_handler);
+    xEventGroupWaitBits(wifi_event_group, WIFI_PROVISIONED_EVENT, false, true, portMAX_DELAY);
 }
-#endif //CONFIG_EXAMPLE_CONNECT_WIFI
 
 void app_main(void)
 {
-    //Workaround for CVE-2019-15894
+    // Workaround for CVE-2019-15894
     spi_flash_init();
     if (esp_flash_encryption_enabled())
     {
         esp_flash_write_protect_crypt_cnt();
     }
 
-    /* Initialize NVS partition */
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND)
     {
         ESP_ERROR_CHECK(nvs_flash_erase());
         ESP_ERROR_CHECK(nvs_flash_init());
     }
+    initServerConfig();
 
     ESP_ERROR_CHECK(esp_netif_init());
     ESP_ERROR_CHECK(esp_event_loop_create_default());
@@ -349,26 +437,35 @@ void app_main(void)
     ESP_ERROR_CHECK(esp_task_wdt_delete(xTaskGetIdleTaskHandleForCPU(0)));
     ESP_ERROR_CHECK(esp_task_wdt_delete(xTaskGetIdleTaskHandleForCPU(1)));
 
-    /* Initialize Wi-Fi including netif with default config */
+    // Initialize Wi-Fi including netif with default config
     esp_netif_create_default_wifi_sta();
     esp_netif_create_default_wifi_ap();
     wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
     ESP_ERROR_CHECK(esp_wifi_init(&cfg));
 
-#ifdef CONFIG_EXAMPLE_CONNECT_WIFI  
-    if (provisioned == false)
+    esp_netif_ip_info_t ipInfo = { .ip.addr = 0, .gw.addr = 0, .netmask.addr = 0};
+    if (isprovisioned == false)
     {
         ESP_ERROR_CHECK(esp_event_handler_register(WIFI_PROV_EVENT, WIFI_PROV_END, &opc_event_handler, NULL));
         provision();
     }
-    else
+
+    if (serverConfig.connection == 0)
     {
+        wifi_prov_mgr_deinit();
+        ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_ETH_GOT_IP, &opc_event_handler, NULL));
+        if (serverConfig.ip_address != NULL && serverConfig.gateway != NULL && serverConfig.netmask != NULL)
+        {
+            ipInfo.ip.addr = esp_ip4addr_aton(serverConfig.ip_address);
+            ipInfo.gw.addr = esp_ip4addr_aton(serverConfig.gateway);
+            ipInfo.netmask.addr = esp_ip4addr_aton(serverConfig.netmask);
+        }
+        ESP_ERROR_CHECK(ethernet_connect(ipInfo));
+    }
+    else 
+    {
+        ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENT, WIFI_EVENT_STA_DISCONNECTED, &provisioning_event_handler, NULL));
+        // ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &provisioning_event_handler, NULL));
         ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &opc_event_handler, NULL));
     }
-#endif
-
-#ifdef CONFIG_EXAMPLE_CONNECT_ETHERNET
-    ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_ETH_GOT_IP, &opc_event_handler, NULL));
-    ESP_ERROR_CHECK(ethernet_connect());
-#endif
 }

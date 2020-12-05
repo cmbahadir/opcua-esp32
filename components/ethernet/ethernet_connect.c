@@ -10,11 +10,7 @@
 #include "esp_event.h"
 #include "esp_wifi.h"
 #include "esp_wifi_default.h"
-
-#if CONFIG_EXAMPLE_CONNECT_ETHERNET
 #include "esp_eth.h"
-#endif
-
 #include "esp_log.h"
 #include "driver/gpio.h"
 #include "freertos/FreeRTOS.h"
@@ -35,7 +31,7 @@ static const char *s_connection_name;
 static esp_netif_t *s_example_esp_netif = NULL;
 
 static const char *TAG = "ETH";
-static void ethernet_start(void);
+static void ethernet_start(esp_netif_ip_info_t ipInfo);
 static void ethernet_stop(void);
 
 static void on_got_ip(void *arg, esp_event_base_t event_base,
@@ -47,14 +43,14 @@ static void on_got_ip(void *arg, esp_event_base_t event_base,
     xEventGroupSetBits(s_connect_event_group, GOT_IPV4_BIT);
 }
 
-esp_err_t ethernet_connect(void)
+esp_err_t ethernet_connect(esp_netif_ip_info_t ipInfo)
 {
     if (s_connect_event_group != NULL)
     {
         return ESP_ERR_INVALID_STATE;
     }
     s_connect_event_group = xEventGroupCreate();
-    ethernet_start();
+    ethernet_start(ipInfo);
     ESP_ERROR_CHECK(esp_register_shutdown_handler(&ethernet_stop));
     ESP_LOGI(TAG, "Waiting for IP");
     xEventGroupWaitBits(s_connect_event_group, CONNECTED_BITS, true, true, portMAX_DELAY);
@@ -81,21 +77,17 @@ static esp_eth_mac_t *s_mac = NULL;
 static esp_eth_phy_t *s_phy = NULL;
 static void *s_eth_glue = NULL;
 
-static void ethernet_start(void)
+static void ethernet_start(esp_netif_ip_info_t ipInfo)
 {
     esp_netif_config_t cfg = ESP_NETIF_DEFAULT_ETH();
     esp_netif_t *eth_netif = esp_netif_new(&cfg);
     assert(eth_netif);
     s_example_esp_netif = eth_netif;
 	
-	#ifdef CONFIG_USE_STATIC_IP
-    ESP_ERROR_CHECK(esp_netif_dhcpc_stop(get_example_netif()));
-    esp_netif_ip_info_t ipInfo;
-    ipInfo.ip.addr = esp_ip4addr_aton(CONFIG_ETHERNET_STATIC_IP4_ADDRESS);
-    ipInfo.gw.addr = esp_ip4addr_aton(CONFIG_ETHERNET_STATIC_IP4_GATEWAY);
-    ipInfo.netmask.addr = esp_ip4addr_aton(CONFIG_ETHERNET_STATIC_IP4_NETMASK);
-    ESP_ERROR_CHECK(esp_netif_set_ip_info(get_example_netif(), &ipInfo));
-	#endif
+    if(ipInfo.ip.addr != 0 && ipInfo.netmask.addr != 0 && ipInfo.gw.addr != 0){
+        ESP_ERROR_CHECK(esp_netif_dhcpc_stop(get_example_netif()));
+        ESP_ERROR_CHECK(esp_netif_set_ip_info(get_example_netif(), &ipInfo));
+    }
 
     // Set default handlers to process TCP/IP stuffs
     ESP_ERROR_CHECK(esp_eth_set_default_handlers(eth_netif));
