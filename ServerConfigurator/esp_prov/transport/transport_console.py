@@ -16,7 +16,7 @@
 from __future__ import print_function
 from builtins import input
 
-import utils
+import esp_prov.utils
 
 from .transport import Transport
 

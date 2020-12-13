@@ -19,7 +19,7 @@ from future.utils import iteritems
 
 import platform
 
-import utils
+import esp_prov.utils
 
 fallback = True
 

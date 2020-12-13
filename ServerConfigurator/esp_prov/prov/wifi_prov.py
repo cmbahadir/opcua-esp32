@@ -18,8 +18,8 @@
 from __future__ import print_function
 from future.utils import tobytes
 
-import utils
-import proto
+import esp_prov.utils as utils
+import esp_prov.proto as proto
 
 
 def print_verbose(security_ctx, data):

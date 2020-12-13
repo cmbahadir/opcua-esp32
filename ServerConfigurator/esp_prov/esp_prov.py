@@ -25,9 +25,9 @@ import sys
 import json
 from getpass import getpass
 
-import security
-import transport
-import prov
+import esp_prov.security as security
+import esp_prov.transport as transport
+import esp_prov.prov as prov
 
 # Set this to true to allow exceptions to be thrown
 config_throw_except = False

@@ -4,9 +4,17 @@ block_cipher = None
 
 
 a = Analysis(['ServerConfigurator.py'],
-             pathex=['/home/cmb/virtualenvs/esp/lib/python3.6/site-packages/', '/home/cmb/Workspace/esp/esp-idf/examples/opcua-esp32/ServerConfigurator'],
+             pathex=['/home/cmb/Workspace/esp/esp-idf/examples/opcua-esp32/ServerConfigurator'],
              binaries=[],
-             datas=[],
+             datas=[ 
+                    ('/home/cmb/Workspace/esp/esp-idf/examples/opcua-esp32/ServerConfigurator/esp_prov/protocom/wifi_constants_pb2.py', 'scripts'),
+                    ('/home/cmb/Workspace/esp/esp-idf/examples/opcua-esp32/ServerConfigurator/esp_prov/protocom/wifi_config_pb2.py', 'scripts'),
+                    ('/home/cmb/Workspace/esp/esp-idf/examples/opcua-esp32/ServerConfigurator/esp_prov/protocom/wifi_scan_pb2.py', 'scripts'),
+                    ('/home/cmb/Workspace/esp/esp-idf/examples/opcua-esp32/ServerConfigurator/esp_prov/protocom/constants_pb2.py', 'scripts'),
+                    ('/home/cmb/Workspace/esp/esp-idf/examples/opcua-esp32/ServerConfigurator/esp_prov/protocom/sec0_pb2.py', 'scripts'),
+                    ('/home/cmb/Workspace/esp/esp-idf/examples/opcua-esp32/ServerConfigurator/esp_prov/protocom/sec1_pb2.py', 'scripts'),
+                    ('/home/cmb/Workspace/esp/esp-idf/examples/opcua-esp32/ServerConfigurator/esp_prov/protocom/session_pb2.py', 'scripts'),
+                    ('/home/cmb/Workspace/esp/esp-idf/examples/opcua-esp32/ServerConfigurator/esp_prov/protocom/custom_config_pb2.py','scripts') ],
              hiddenimports=[],
              hookspath=[],
              runtime_hooks=[],

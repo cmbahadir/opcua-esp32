@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'GUI.ui'
+# Form implementation generated from reading ui file 'UI_ServerConfigurator.ui'
 #
 # Created by: PyQt5 UI code generator 5.13.2
 #
@@ -10,7 +10,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_ServerConfigurator(object):
+class UI_ServerConfigurator(object):
     def setupUi(self, ServerConfigurator):
         ServerConfigurator.setObjectName("ServerConfigurator")
         ServerConfigurator.resize(334, 361)

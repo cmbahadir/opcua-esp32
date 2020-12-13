@@ -19,8 +19,8 @@
 from __future__ import print_function
 from future.utils import tobytes
 
-import utils
-import proto
+import esp_prov.utils as utils
+import esp_prov.proto as proto
 from .security import Security
 
 from cryptography.hazmat.backends import default_backend
@@ -28,7 +28,7 @@ from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric.x25519 import X25519PrivateKey, X25519PublicKey
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
-import session_pb2
+import esp_prov.protocom.session_pb2 as session_pb2
 
 
 # Enum for state of protocomm_security1 FSM

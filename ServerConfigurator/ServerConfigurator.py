@@ -1,8 +1,8 @@
 #! /usr/bin/env python3
 import sys
 
-from gui import Ui_ServerConfigurator
-from esp_prov import ProvisioningAPI
+from gui.UI_ServerConfigurator import UI_ServerConfigurator
+from esp_prov.esp_prov import ProvisioningAPI
 
 from PyQt5.QtCore import QRegExp
 from PyQt5.QtGui import QFont, QRegExpValidator, QIntValidator, QIcon
@@ -13,7 +13,7 @@ class Window(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
         self.setWindowIcon(QIcon('logo/logo.png'))
-        self.ui = Ui_ServerConfigurator()
+        self.ui = UI_ServerConfigurator()
         self.prov_api = ProvisioningAPI()
         self.ui.setupUi(self)
         self.font = QFont("Arial", 10, QFont.Serif)

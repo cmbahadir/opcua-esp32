@@ -19,7 +19,7 @@
 from __future__ import print_function
 from future.utils import tobytes
 
-import proto
+import esp_prov.proto as proto
 from .security import Security
 
 
