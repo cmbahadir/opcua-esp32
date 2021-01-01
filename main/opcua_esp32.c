@@ -22,8 +22,6 @@
 #include "DHT22.h"
 #include "model.h"
 
-// #define EXAMPLE_ESP_WIFI_SSID CONFIG_WIFI_SSID
-// #define EXAMPLE_ESP_WIFI_PASS CONFIG_WIFI_PASSWORD
 #define EXAMPLE_ESP_MAXIMUM_RETRY 10
 
 #define TAG "OPCUA_ESP32"
