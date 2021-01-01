@@ -15,14 +15,15 @@
 #include "esp_log.h"
 #include "esp_event.h"
 #include "nvs_flash.h"
+#include "sdkconfig.h"
 
 #include "ethernet_connect.h"
 #include "open62541.h"
 #include "DHT22.h"
 #include "model.h"
 
-#define EXAMPLE_ESP_WIFI_SSID CONFIG_WIFI_SSID
-#define EXAMPLE_ESP_WIFI_PASS CONFIG_WIFI_PASSWORD
+// #define EXAMPLE_ESP_WIFI_SSID CONFIG_WIFI_SSID
+// #define EXAMPLE_ESP_WIFI_PASS CONFIG_WIFI_PASSWORD
 #define EXAMPLE_ESP_MAXIMUM_RETRY 10
 
 #define TAG "OPCUA_ESP32"

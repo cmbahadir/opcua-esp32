@@ -89,6 +89,17 @@ static void start(void)
     assert(eth_netif);
     s_example_esp_netif = eth_netif;
 
+    #ifdef CONFIG_USE_STATIC_IP
+    esp_netif_ip_info_t ipInfo;
+    ipInfo.ip.addr = esp_ip4addr_aton(CONFIG_ETHERNET_HELPER_STATIC_IP4_ADDRESS);
+    ipInfo.gw.addr = esp_ip4addr_aton(CONFIG_ETHERNET_HELPER_STATIC_GATEWAY);
+    ipInfo.netmask.addr = esp_ip4addr_aton(CONFIG_ETHERNET_HELPER_STATIC_NETMASK);
+    if(ipInfo.ip.addr != 0 && ipInfo.netmask.addr != 0 && ipInfo.gw.addr != 0){
+        ESP_ERROR_CHECK(esp_netif_dhcpc_stop(get_example_netif()));
+        ESP_ERROR_CHECK(esp_netif_set_ip_info(get_example_netif(), &ipInfo));
+    }
+    #endif
+
     // Set default handlers to process TCP/IP stuffs
     ESP_ERROR_CHECK(esp_eth_set_default_handlers(eth_netif));
     ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_ETH_GOT_IP, &on_got_ip, NULL));

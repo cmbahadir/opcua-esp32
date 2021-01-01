@@ -1,16 +1,59 @@
 menu "Connection Configuration"
 
-config WIFI_SSID
-	string "WiFi SSID"
-	default "OPCUATaskForce"
-	help
-		Network Name
+    choice EXAMPLE_CONNECTION_TYPE
+        prompt "Connection Type"
+        default EXAMPLE_CONNECT_WIFI
+        help
+            Choose Wi-Fi or ethernet connection.
 
-config WIFI_PASSWORD
-	string "WiFi Password"
-	default "OPCUApubsub"
-	help
-		WiFi Password (WPA or WPA2)
+        config EXAMPLE_CONNECT_WIFI
+            bool "Wi-Fi"
+            help
+                Select internal Ethernet MAC controller.
+
+        config EXAMPLE_CONNECT_ETHERNET
+            bool "Ethernet"
+            help
+                Select external SPI-Ethernet module (DM9051).
+
+    endchoice # EXAMPLE_CONNETION_TYPE
+
+
+	config WIFI_SSID
+		string "WiFi SSID"
+		default "OPCUATaskForce"
+		help
+			Network Name
+
+	config WIFI_PASSWORD
+		string "WiFi Password"
+		default "OPCUApubsub"
+		help
+			WiFi Password (WPA or WPA2)
+
+	config USE_STATIC_IP
+		bool "Static IP"
+		default ""
+		help
+			Set to use static ip for ethernet connection.
+
+	config ETHERNET_HELPER_STATIC_IP4_ADDRESS
+		string "Ip Address"
+		default "192.168.1.110"
+		help
+			Static IP address.
+
+	config ETHERNET_HELPER_STATIC_GATEWAY
+		string "Gateway"
+		default "192.169.1.1"
+		help
+			Static gateway address.
+
+	config ETHERNET_HELPER_STATIC_NETMASK
+		string "Netmask"
+		default "255.255.255.0"
+		help
+			Netmask
 
 endmenu
 
