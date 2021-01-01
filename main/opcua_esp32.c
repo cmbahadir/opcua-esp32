@@ -34,6 +34,7 @@ static bool obtain_time(void);
 static void initialize_sntp(void);
 
 UA_ServerConfig *config;
+static UA_Boolean sntp_initialized = false;
 static UA_Boolean running = true;
 static UA_Boolean isServerCreated = false;
 RTC_DATA_ATTR static int boot_count = 0;
@@ -141,6 +142,7 @@ static void initialize_sntp(void)
     sntp_setservername(0, "pool.ntp.org");
     sntp_set_time_sync_notification_cb(time_sync_notification_cb);
     sntp_init();
+    sntp_initialized = true;
 }
 
 static bool obtain_time(void)
@@ -166,17 +168,20 @@ static bool obtain_time(void)
 static void opc_event_handler(void *arg, esp_event_base_t event_base,
                               int32_t event_id, void *event_data)
 {
-    if (timeinfo.tm_year < (2016 - 1900))
+    if (sntp_initialized != true)
     {
-        ESP_LOGI(SNTP_TAG, "Time is not set yet. Settting up network connection and getting time over NTP.");
-        if (!obtain_time())
+        if (timeinfo.tm_year < (2016 - 1900))
         {
-            ESP_LOGE(SNTP_TAG, "Could not get time from NTP. Using default timestamp.");
+            ESP_LOGI(SNTP_TAG, "Time is not set yet. Settting up network connection and getting time over NTP.");
+            if (!obtain_time())
+            {
+                ESP_LOGE(SNTP_TAG, "Could not get time from NTP. Using default timestamp.");
+            }
+            time(&now);
         }
-        time(&now);
+        localtime_r(&now, &timeinfo);
+        ESP_LOGI(SNTP_TAG, "Current time: %d-%02d-%02d %02d:%02d:%02d", timeinfo.tm_year + 1900, timeinfo.tm_mon + 1, timeinfo.tm_mday, timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
     }
-    localtime_r(&now, &timeinfo);
-    ESP_LOGI(SNTP_TAG, "Current time: %d-%02d-%02d %02d:%02d:%02d", timeinfo.tm_year + 1900, timeinfo.tm_mon + 1, timeinfo.tm_mday, timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
 
     if (!isServerCreated)
     {
