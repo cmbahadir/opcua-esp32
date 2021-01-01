@@ -3,3 +3,5 @@
 /.vscode
 sdkconfig
 sdkconfig.old
+.vscode
+.settings
