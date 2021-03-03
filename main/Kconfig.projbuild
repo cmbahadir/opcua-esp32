@@ -57,3 +57,17 @@ menu "Connection Configuration"
 
 endmenu
 
+menu "Debug Configuration"
+
+	config UA_LOGLEVEL
+		int "Open62541 Server Log Level"
+		range 100 600
+		default 600
+		help
+			100 = TRACE
+			200 = DEBUG
+			300 = INFO
+			400 = WARNING
+			500 = ERROR
+	        600 = FATAL
+endmenu

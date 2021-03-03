@@ -44,8 +44,8 @@ static UA_StatusCode
 UA_ServerConfig_setUriName(UA_ServerConfig *uaServerConfig, const char *uri, const char *name)
 {
     // delete pre-initialized values
-    UA_String_deleteMembers(&uaServerConfig->applicationDescription.applicationUri);
-    UA_LocalizedText_deleteMembers(&uaServerConfig->applicationDescription.applicationName);
+    UA_String_clear(&uaServerConfig->applicationDescription.applicationUri);
+    UA_LocalizedText_clear(&uaServerConfig->applicationDescription.applicationName);
 
     uaServerConfig->applicationDescription.applicationUri = UA_String_fromChars(uri);
     uaServerConfig->applicationDescription.applicationName.locale = UA_STRING_NULL;
@@ -53,8 +53,8 @@ UA_ServerConfig_setUriName(UA_ServerConfig *uaServerConfig, const char *uri, con
 
     for (size_t i = 0; i < uaServerConfig->endpointsSize; i++)
     {
-        UA_String_deleteMembers(&uaServerConfig->endpoints[i].server.applicationUri);
-        UA_LocalizedText_deleteMembers(
+        UA_String_clear(&uaServerConfig->endpoints[i].server.applicationUri);
+        UA_LocalizedText_clear(
             &uaServerConfig->endpoints[i].server.applicationName);
 
         UA_String_copy(&uaServerConfig->applicationDescription.applicationUri,
@@ -69,9 +69,9 @@ UA_ServerConfig_setUriName(UA_ServerConfig *uaServerConfig, const char *uri, con
 
 static void opcua_task(void *arg)
 {
-
-    UA_Int32 sendBufferSize = 32768;
-    UA_Int32 recvBufferSize = 32768;
+    //BufferSize's got to be decreased due to latest refactorings in open62541 v1.2rc.
+    UA_Int32 sendBufferSize = 16384;
+    UA_Int32 recvBufferSize = 16384;
 
     ESP_ERROR_CHECK(esp_task_wdt_add(NULL));
 
@@ -83,22 +83,28 @@ static void opcua_task(void *arg)
     const char *appUri = "open62541.esp32.server";
     UA_String hostName = UA_STRING("opcua-esp32");
 #ifdef ENABLE_MDNS
-    config->discovery.mdnsEnable = true;
-    config->discovery.mdns.mdnsServerName = UA_String_fromChars(appUri);
-    config->discovery.mdns.serverCapabilitiesSize = 2;
+    config->mdnsEnabled = true;
+    config->mdnsConfig.mdnsServerName = UA_String_fromChars(appUri);
+    config->mdnsConfig.serverCapabilitiesSize = 2;
     UA_String *caps = (UA_String *)UA_Array_new(2, &UA_TYPES[UA_TYPES_STRING]);
     caps[0] = UA_String_fromChars("LDS");
     caps[1] = UA_String_fromChars("NA");
-    config->discovery.mdns.serverCapabilities = caps;
-
+    config->mdnsConfig.serverCapabilities = caps;
     // We need to set the default IP address for mDNS since internally it's not able to detect it.
     tcpip_adapter_ip_info_t default_ip;
-    esp_err_t ret = tcpip_adapter_get_ip_info(TCPIP_ADAPTER_IF_STA, &default_ip);
+    
+    #ifdef CONFIG_EXAMPLE_CONNECT_ETHERNET
+    tcpip_adapter_if_t tcpip_if = TCPIP_ADAPTER_IF_ETH;
+    #else
+    tcpip_adapter_if_t tcpip_if = TCPIP_ADAPTER_IF_STA;
+    #endif
+
+    esp_err_t ret = tcpip_adapter_get_ip_info(tcpip_if, &default_ip);
     if ((ESP_OK == ret) && (default_ip.ip.addr != INADDR_ANY))
     {
-        config->discovery.ipAddressListSize = 1;
-        config->discovery.ipAddressList = (uint32_t *)UA_malloc(sizeof(uint32_t) * config->discovery.ipAddressListSize);
-        memcpy(config->discovery.ipAddressList, &default_ip.ip.addr, sizeof(uint32_t));
+        config->mdnsIpAddressListSize = 1;
+        config->mdnsIpAddressList = (uint32_t *)UA_malloc(sizeof(uint32_t) * config->mdnsIpAddressListSize);
+        memcpy(config->mdnsIpAddressList, &default_ip.ip.addr, sizeof(uint32_t));
     }
     else
     {
@@ -109,7 +115,7 @@ static void opcua_task(void *arg)
     UA_ServerConfig_setCustomHostname(config, hostName);
 
     /* Add Information Model Objects Here */
-    addLEDMethod(server);
+    // addLEDMethod(server);
     addCurrentTemperatureDataSourceVariable(server);
     addRelay0ControlNode(server);
     addRelay1ControlNode(server);
@@ -184,7 +190,7 @@ static void opc_event_handler(void *arg, esp_event_base_t event_base,
 
     if (!isServerCreated)
     {
-        xTaskCreatePinnedToCore(opcua_task, "opcua_task", 24336, NULL, 10, NULL, 1);
+        xTaskCreatePinnedToCore(opcua_task, "opcua_task", 24336, NULL, 10, NULL, 0);
         ESP_LOGI(MEMORY_TAG, "Heap size after OPC UA Task : %d", esp_get_free_heap_size());
         isServerCreated = true;
     }

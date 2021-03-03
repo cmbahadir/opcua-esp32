@@ -137,6 +137,12 @@ CONFIG_ETHERNET_HELPER_STATIC_NETMASK="255.255.255.0"
 # end of Connection Configuration
 
 #
+# Debug Configuration
+#
+CONFIG_UA_LOGLEVEL=600
+# end of Debug Configuration
+
+#
 # Compiler options
 #
 CONFIG_COMPILER_OPTIMIZATION_DEFAULT=y
