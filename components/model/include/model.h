@@ -7,6 +7,7 @@
 #define RELAY_1_GPIO 33
 // #define RELAY_2_GPIO 26
 // #define RELAY_3_GPIO 27
+#pragma once 
 
 // /* Led Method */
 // UA_StatusCode
@@ -30,6 +31,23 @@ readCurrentTemperature(UA_Server *server,
 
 void
 addCurrentTemperatureDataSourceVariable(UA_Server *server);
+
+/* Servo 0 */
+UA_StatusCode
+readServo0State(UA_Server *server,
+                const UA_NodeId *sessionId, void *sessionContext,
+                const UA_NodeId *nodeId, void *nodeContext,
+                UA_Boolean sourceTimeStamp, const UA_NumericRange *range,
+                UA_DataValue *dataValue);
+
+UA_StatusCode
+setServo0State(UA_Server *server,
+                  const UA_NodeId *sessionId, void *sessionContext,
+                  const UA_NodeId *nodeId, void *nodeContext,
+                 const UA_NumericRange *range, const UA_DataValue *data);
+
+void
+addServo0ControlNode(UA_Server *server);
 
 /* Relay 0 */
 UA_StatusCode

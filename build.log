@@ -1,0 +1,22 @@
+[1/11] Performing build step for 'bootloader'
+ninja: no work to do.
+[2/9] Building C object esp-idf/model/CMakeFiles/__idf_model.dir/servo.c.obj
+FAILED: esp-idf/model/CMakeFiles/__idf_model.dir/servo.c.obj 
+/root/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-gcc  -Iconfig -I../components/model/include -I../components/open62541lib/include -I../../../components/newlib/platform_include -I../../../components/freertos/include -I../../../components/freertos/port/xtensa/include -I../../../components/esp_hw_support/include -I../../../components/esp_hw_support/port/esp32/. -I../../../components/heap/include -I../../../components/log/include -I../../../components/lwip/include/apps -I../../../components/lwip/include/apps/sntp -I../../../components/lwip/lwip/src/include -I../../../components/lwip/port/esp32/include -I../../../components/lwip/port/esp32/include/arch -I../../../components/soc/include -I../../../components/soc/esp32/. -I../../../components/soc/esp32/include -I../../../components/hal/esp32/include -I../../../components/hal/include -I../../../components/esp_rom/include -I../../../components/esp_rom/esp32 -I../../../components/esp_common/include -I../../../components/esp_system/include -I../../../components/esp32/include -I../../../components/driver/include -I../../../components/driver/esp32/include -I../../../components/esp_ringbuf/include -I../../../components/efuse/include -I../../../components/efuse/esp32/include -I../../../components/xtensa/include -I../../../components/xtensa/esp32/include -I../../../components/espcoredump/include -I../../../components/esp_timer/include -I../../../components/esp_ipc/include -I../../../components/esp_pm/include -I../../../components/vfs/include -I../../../components/esp_wifi/include -I../../../components/esp_wifi/esp32/include -I../../../components/esp_event/include -I../../../components/esp_netif/include -I../../../components/esp_eth/include -I../../../components/tcpip_adapter/include -I../../../components/app_trace/include -mlongcalls -Wno-frame-address   -ffunction-sections -fdata-sections -Wall -Werror=all -Wno-error=unused-function -Wno-error=unused-variable -Wno-error=deprecated-declarations -Wextra -Wno-unused-parameter -Wno-sign-compare -ggdb -Og -fstrict-volatile-bitfields -Wno-error=unused-but-set-variable -std=gnu99 -Wno-old-style-declaration -D_GNU_SOURCE -DIDF_VER=\"v4.4-dev-4-g73db14240\" -DESP_PLATFORM -MD -MT esp-idf/model/CMakeFiles/__idf_model.dir/servo.c.obj -MF esp-idf/model/CMakeFiles/__idf_model.dir/servo.c.obj.d -o esp-idf/model/CMakeFiles/__idf_model.dir/servo.c.obj   -c ../components/model/servo.c
+../components/model/servo.c:26:6: error: conflicting types for 'mcpwm_example_servo_control'
+ void mcpwm_example_servo_control(void)
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from ../components/model/servo.c:7:
+../components/model/include/servo.h:13:6: note: previous declaration of 'mcpwm_example_servo_control' was here
+ void mcpwm_example_servo_control(void *arg);
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+../components/model/servo.c: In function 'mcpwm_example_servo_control':
+../components/model/servo.c:43:9: error: implicit declaration of function 'vTaskDelay' [-Werror=implicit-function-declaration]
+         vTaskDelay(10); //Add delay, since it takes time for servo to rotate, generally 100ms/60degree rotation at 5V
+         ^~~~~~~~~~
+cc1: some warnings being treated as errors
+[3/9] Building C object esp-idf/model/CMakeFiles/__idf_model.dir/model.c.obj
+ninja: build stopped: subcommand failed.
+Executing action: all (aliases: build)
+Running ninja in directory /home/cmb/Workspace/esp/esp-idf/examples/opcua-esp32/build
+Executing "ninja all"...
