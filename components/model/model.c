@@ -9,96 +9,21 @@ configureGPIO();
 
 /* GPIO Configuration */
 static void
-configureGPIO(void) {
+configureGPIO(void)
+{
     gpio_set_direction(RELAY_0_GPIO, GPIO_MODE_INPUT_OUTPUT);
     gpio_set_direction(RELAY_1_GPIO, GPIO_MODE_INPUT_OUTPUT);
 }
-
-// /* LED Method */
-
-// UA_StatusCode
-// ledProcessCallBack(UA_Server *server,
-//                    const UA_NodeId *sessionId, void *sessionHandle,
-//                    const UA_NodeId *methodId, void *methodContext,
-//                    const UA_NodeId *objectId, void *objectContext,
-//                    size_t inputSize, const UA_Variant *input,
-//                    size_t outputSize, UA_Variant *output)
-// {
-//     UA_Int32 i = 0;
-//     UA_Int32 *inputVal = (UA_Int32 *)input->data;
-//     UA_String tmp = UA_STRING_ALLOC("Data Received");
-//     if (*inputVal > 0)
-//     {
-//         tmp.data = (UA_Byte *)UA_realloc(tmp.data, tmp.length);
-//         while (i < *inputVal + 1)
-//         {
-//             gpio_pad_select_gpio(BLINK_GPIO);
-//             gpio_set_direction(BLINK_GPIO, GPIO_MODE_OUTPUT);
-//             gpio_set_level(BLINK_GPIO, 1);
-//             vTaskDelay(500 / portTICK_PERIOD_MS);
-//             gpio_set_level(BLINK_GPIO, 0);
-//             vTaskDelay(500 / portTICK_PERIOD_MS);
-//             i++;
-//         }
-//     }
-//     UA_String_clear(&tmp);
-//     return UA_STATUSCODE_GOOD;
-// }
-
-// void
-// addLEDMethod(UA_Server *server)
-// {
-
-//     UA_NodeId createdNodeId;
-//     UA_ObjectAttributes object_attr = UA_ObjectAttributes_default;
-
-//     object_attr.description = UA_LOCALIZEDTEXT("en-US", "A pump!");
-//     object_attr.displayName = UA_LOCALIZEDTEXT("en-US", "Pump1");
-
-//     UA_Server_addObjectNode(server, UA_NODEID_NUMERIC(1, 0),
-//                             UA_NODEID_NUMERIC(0, UA_NS0ID_OBJECTSFOLDER),
-//                             UA_NODEID_NUMERIC(0, UA_NS0ID_ORGANIZES),
-//                             UA_QUALIFIEDNAME(1, "Pump1"),
-//                             UA_NODEID_NUMERIC(2, 1002),
-//                             object_attr, NULL, &createdNodeId);
-
-//     UA_Argument inputArgument;
-//     UA_Argument_init(&inputArgument);
-//     inputArgument.description = UA_LOCALIZEDTEXT("en-US", "Number of times to blink LED!");
-//     inputArgument.name = UA_STRING("Blink Count");
-//     inputArgument.dataType = UA_TYPES[UA_TYPES_INT32].typeId;
-//     inputArgument.valueRank = -1; /* scalar */
-
-//     /* And output argument for a void method is not logical, check here !!! */
-//     UA_Argument outputArgument;
-//     UA_Argument_init(&outputArgument);
-//     outputArgument.description = UA_LOCALIZEDTEXT("en-US", "LED Blinked");
-//     outputArgument.name = UA_STRING("Led Blink Method Output");
-//     outputArgument.dataType = UA_TYPES[UA_TYPES_STRING].typeId;
-//     outputArgument.valueRank = UA_VALUERANK_ONE_DIMENSION;
-
-//     UA_MethodAttributes helloAttr = UA_MethodAttributes_default;
-//     helloAttr.description = UA_LOCALIZEDTEXT("en-US", "Enter the number of times you want LED to blin!");
-//     helloAttr.displayName = UA_LOCALIZEDTEXT("en-US", "Blink");
-//     helloAttr.executable = true;
-//     helloAttr.userExecutable = true;
-//     UA_Server_addMethodNode(server, UA_NODEID_NUMERIC(1, 62541),
-//                             UA_NODEID_NUMERIC(0, UA_NS0ID_OBJECTSFOLDER),
-//                             UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
-//                             UA_QUALIFIEDNAME(1, "Blink"),
-//                             helloAttr, &ledProcessCallBack,
-//                             1, &inputArgument, 1, &outputArgument, NULL, &createdNodeId);
-// }
-
 
 /* Temperature */
 
 UA_StatusCode
 readCurrentTemperature(UA_Server *server,
-                const UA_NodeId *sessionId, void *sessionContext,
-                const UA_NodeId *nodeId, void *nodeContext,
-                UA_Boolean sourceTimeStamp, const UA_NumericRange *range,
-                UA_DataValue *dataValue) {
+                       const UA_NodeId *sessionId, void *sessionContext,
+                       const UA_NodeId *nodeId, void *nodeContext,
+                       UA_Boolean sourceTimeStamp, const UA_NumericRange *range,
+                       UA_DataValue *dataValue)
+{
     UA_Float temperature = ReadTemperature(DHT22_GPIO);
     UA_Variant_setScalarCopy(&dataValue->value, &temperature,
                              &UA_TYPES[UA_TYPES_FLOAT]);
@@ -106,9 +31,8 @@ readCurrentTemperature(UA_Server *server,
     return UA_STATUSCODE_GOOD;
 }
 
-
-void
-addCurrentTemperatureDataSourceVariable(UA_Server *server) {
+void addCurrentTemperatureDataSourceVariable(UA_Server *server)
+{
     UA_VariableAttributes attr = UA_VariableAttributes_default;
     attr.displayName = UA_LOCALIZEDTEXT("en-US", "Temperature");
     attr.dataType = UA_TYPES[UA_TYPES_FLOAT].typeId;
@@ -135,30 +59,36 @@ readServo0State(UA_Server *server,
                 const UA_NodeId *sessionId, void *sessionContext,
                 const UA_NodeId *nodeId, void *nodeContext,
                 UA_Boolean sourceTimeStamp, const UA_NumericRange *range,
-                UA_DataValue *dataValue) {
+                UA_DataValue *dataValue)
+{
     UA_Double relay0_State = 0;
     UA_Variant_setScalarCopy(&dataValue->value, &relay0_State,
-                              &UA_TYPES[UA_TYPES_INT32]);
+                             &UA_TYPES[UA_TYPES_INT32]);
     dataValue->hasValue = true;
     return UA_STATUSCODE_GOOD;
 }
 
 UA_StatusCode
 setServo0State(UA_Server *server,
-                  const UA_NodeId *sessionId, void *sessionContext,
-                  const UA_NodeId *nodeId, void *nodeContext,
-                 const UA_NumericRange *range, const UA_DataValue *data) {
+               const UA_NodeId *sessionId, void *sessionContext,
+               const UA_NodeId *nodeId, void *nodeContext,
+               const UA_NumericRange *range, const UA_DataValue *data)
+{
     UA_Variant value;
     UA_Int32 *max_angle = (UA_Int32 *)data->value.data;
-    UA_StatusCode retval = UA_Variant_setScalarCopy(&value, max_angle, 
-                                &UA_TYPES[UA_TYPES_INT32]);
-    mcpwm_example_servo_control(*max_angle);
-    // UA_StatusCode retval = UA_Server_writeValue(server, *nodeId, value);
+    UA_StatusCode retval = UA_Variant_setScalarCopy(&value, max_angle,
+                                                    &UA_TYPES[UA_TYPES_INT32]);
+    default_servo_t *servo_input = (default_servo_t*)pvPortMalloc(sizeof(default_servo_t));
+    servo_input->angle = *max_angle;
+    servo_input->servo_pin = GPIO_NUM_18;
+    create_servo_task(servo_input);
+    // This has to be called somewhere, but where.
+    // vPortFree(servo_input);
     return retval;
 }
 
-void
-addServo0ControlNode(UA_Server *server) {
+void addServo0ControlNode(UA_Server *server)
+{
     UA_VariableAttributes attr = UA_VariableAttributes_default;
     attr.displayName = UA_LOCALIZEDTEXT("en-US", "Servo0");
     attr.dataType = UA_TYPES[UA_TYPES_INT32].typeId;
@@ -188,7 +118,8 @@ readRelay0State(UA_Server *server,
                 const UA_NodeId *sessionId, void *sessionContext,
                 const UA_NodeId *nodeId, void *nodeContext,
                 UA_Boolean sourceTimeStamp, const UA_NumericRange *range,
-                UA_DataValue *dataValue) {
+                UA_DataValue *dataValue)
+{
     UA_Boolean relay0_State = gpio_get_level(RELAY_0_GPIO);
     UA_Variant_setScalarCopy(&dataValue->value, &relay0_State,
                              &UA_TYPES[UA_TYPES_BOOLEAN]);
@@ -198,19 +129,20 @@ readRelay0State(UA_Server *server,
 
 UA_StatusCode
 setRelay0State(UA_Server *server,
-                  const UA_NodeId *sessionId, void *sessionContext,
-                  const UA_NodeId *nodeId, void *nodeContext,
-                 const UA_NumericRange *range, const UA_DataValue *data) {
+               const UA_NodeId *sessionId, void *sessionContext,
+               const UA_NodeId *nodeId, void *nodeContext,
+               const UA_NumericRange *range, const UA_DataValue *data)
+{
     UA_Boolean currentState = gpio_get_level(RELAY_0_GPIO);
-    int level = currentState == true ? 0:1;
+    int level = currentState == true ? 0 : 1;
     gpio_set_level(RELAY_0_GPIO, level);
     UA_Boolean relay0_state_after_write = gpio_get_level(RELAY_0_GPIO);
     UA_StatusCode status = relay0_state_after_write == level ? UA_STATUSCODE_GOOD : UA_STATUSCODE_BADINTERNALERROR;
     return status;
 }
 
-void
-addRelay0ControlNode(UA_Server *server) {
+void addRelay0ControlNode(UA_Server *server)
+{
     UA_VariableAttributes attr = UA_VariableAttributes_default;
     attr.displayName = UA_LOCALIZEDTEXT("en-US", "Relay0");
     attr.dataType = UA_TYPES[UA_TYPES_BOOLEAN].typeId;
@@ -240,7 +172,8 @@ readRelay1State(UA_Server *server,
                 const UA_NodeId *sessionId, void *sessionContext,
                 const UA_NodeId *nodeId, void *nodeContext,
                 UA_Boolean sourceTimeStamp, const UA_NumericRange *range,
-                UA_DataValue *dataValue) {
+                UA_DataValue *dataValue)
+{
     UA_Boolean relay1_State = gpio_get_level(RELAY_1_GPIO);
     UA_Variant_setScalarCopy(&dataValue->value, &relay1_State,
                              &UA_TYPES[UA_TYPES_BOOLEAN]);
@@ -250,19 +183,20 @@ readRelay1State(UA_Server *server,
 
 UA_StatusCode
 setRelay1State(UA_Server *server,
-                  const UA_NodeId *sessionId, void *sessionContext,
-                  const UA_NodeId *nodeId, void *nodeContext,
-                 const UA_NumericRange *range, const UA_DataValue *data) {
+               const UA_NodeId *sessionId, void *sessionContext,
+               const UA_NodeId *nodeId, void *nodeContext,
+               const UA_NumericRange *range, const UA_DataValue *data)
+{
     UA_Boolean currentState = gpio_get_level(RELAY_1_GPIO);
-    int level = currentState == true ? 0:1;
+    int level = currentState == true ? 0 : 1;
     gpio_set_level(RELAY_1_GPIO, level);
     UA_Boolean relay1_state_after_write = gpio_get_level(RELAY_1_GPIO);
     UA_StatusCode status = relay1_state_after_write == level ? UA_STATUSCODE_GOOD : UA_STATUSCODE_BADINTERNALERROR;
     return status;
 }
 
-void
-addRelay1ControlNode(UA_Server *server) {
+void addRelay1ControlNode(UA_Server *server)
+{
     UA_VariableAttributes attr = UA_VariableAttributes_default;
     attr.displayName = UA_LOCALIZEDTEXT("en-US", "Relay1");
     attr.dataType = UA_TYPES[UA_TYPES_BOOLEAN].typeId;

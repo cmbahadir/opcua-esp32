@@ -1,25 +1,23 @@
 #include "open62541.h"
 
+#pragma once
+
 /* GPIO Numbers */
 // #define BLINK_GPIO 2
 #define DHT22_GPIO 4
+//RELAYS
 #define RELAY_0_GPIO 32
 #define RELAY_1_GPIO 33
-// #define RELAY_2_GPIO 26
-// #define RELAY_3_GPIO 27
-#pragma once 
 
-// /* Led Method */
-// UA_StatusCode
-// ledProcessCallBack(UA_Server *server,
-//                    const UA_NodeId *sessionId, void *sessionHandle,
-//                    const UA_NodeId *methodId, void *methodContext,
-//                    const UA_NodeId *objectId, void *objectContext,
-//                    size_t inputSize, const UA_Variant *input,
-//                    size_t outputSize, UA_Variant *output);
-
-// void
-// addLEDMethod(UA_Server *server);
+//SERVOS
+#define SERVO_0_PWM GPIO_NUM_18
+#define SERVO_1_PWM GPIO_NUM_19
+#define SERVO_2_PWM GPIO_NUM_20
+#define SERVO_3_PWM GPIO_NUM_21
+#define SERVO_4_PWM GPIO_NUM_22
+#define SERVO_5_PWM GPIO_NUM_23
+#define SERVO_6_PWM GPIO_NUM_24
+#define SERVO_7_PWM GPIO_NUM_25
 
 /* Temperature */
 UA_StatusCode

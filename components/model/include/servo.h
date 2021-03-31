@@ -12,4 +12,9 @@
 #define SERVO_MAX_DEGREE 90       //Maximum angle in degree upto which servo can rotate
 #define GPIO_SERVO_PWM 18
 
-void mcpwm_example_servo_control(uint32_t max_angle);
+typedef struct {
+    int32_t angle;
+    int servo_pin;
+} default_servo_t;
+
+void create_servo_task(void*);
