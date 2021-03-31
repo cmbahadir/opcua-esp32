@@ -61,7 +61,7 @@ void create_servo_task(void *servo_config)
     xStatus = xTaskCreatePinnedToCore(
         servoTask,              /* Function to implement the task */
         "Servo Task",           /* Name of the task */
-        2000,                   /* Stack size in words */
+        1000,                   /* Stack size in words */
         (void *)servo_config,   /* Task input parameter */
         0,                      /* Priority of the task */
         NULL,                   /* Task handle. */
