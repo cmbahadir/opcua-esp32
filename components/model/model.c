@@ -61,9 +61,9 @@ readServo0State(UA_Server *server,
                 UA_Boolean sourceTimeStamp, const UA_NumericRange *range,
                 UA_DataValue *dataValue)
 {
-    UA_Double relay0_State = 0;
-    UA_Variant_setScalarCopy(&dataValue->value, &relay0_State,
-                             &UA_TYPES[UA_TYPES_INT32]);
+    UA_Double servo0_State = 0;
+    UA_Variant_setScalarCopy(&dataValue->value, &servo0_State,
+                             &UA_TYPES[UA_TYPES_DOUBLE]);
     dataValue->hasValue = true;
     return UA_STATUSCODE_GOOD;
 }
@@ -75,12 +75,12 @@ setServo0State(UA_Server *server,
                const UA_NumericRange *range, const UA_DataValue *data)
 {
     UA_Variant value;
-    UA_Int32 *max_angle = (UA_Int32 *)data->value.data;
+    UA_Double *max_angle = (UA_Double *)data->value.data;
     UA_StatusCode retval = UA_Variant_setScalarCopy(&value, max_angle,
-                                                    &UA_TYPES[UA_TYPES_INT32]);
+                                                    &UA_TYPES[UA_TYPES_DOUBLE]);
     default_servo_t *servo_input = (default_servo_t*)pvPortMalloc(sizeof(default_servo_t));
-    servo_input->angle = *max_angle;
-    servo_input->servo_pin = GPIO_NUM_18;
+    servo_input->angle = (int32_t) *max_angle;
+    servo_input->servo_pin = GPIO_NUM_14;
     create_servo_task(servo_input);
     // This has to be called somewhere, but where.
     // vPortFree(servo_input);
@@ -91,11 +91,11 @@ void addServo0ControlNode(UA_Server *server)
 {
     UA_VariableAttributes attr = UA_VariableAttributes_default;
     attr.displayName = UA_LOCALIZEDTEXT("en-US", "Servo0");
-    attr.dataType = UA_TYPES[UA_TYPES_INT32].typeId;
+    attr.dataType = UA_TYPES[UA_TYPES_DOUBLE].typeId;
     attr.accessLevel = UA_ACCESSLEVELMASK_READ | UA_ACCESSLEVELMASK_WRITE;
 
-    UA_NodeId currentNodeId = UA_NODEID_STRING(1, "Control servo motor number 0.");
-    UA_QualifiedName currentName = UA_QUALIFIEDNAME(1, "ontrol servo motor number 0..");
+    UA_NodeId currentNodeId = UA_NODEID_STRING(1, "Servo_0");
+    UA_QualifiedName currentName = UA_QUALIFIEDNAME(1, "Servo_0");
     UA_NodeId parentNodeId = UA_NODEID_NUMERIC(0, UA_NS0ID_OBJECTSFOLDER);
     UA_NodeId parentReferenceNodeId = UA_NODEID_NUMERIC(0, UA_NS0ID_ORGANIZES);
     UA_NodeId variableTypeNodeId = UA_NODEID_NUMERIC(0, UA_NS0ID_BASEDATAVARIABLETYPE);
