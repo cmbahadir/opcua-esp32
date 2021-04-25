@@ -1,13 +1,12 @@
 # OPC UA Server on ESP32
 
-It is aimed to run OPC UA server on ESP32 board (xtensa toolchain). The information model is handled under models.c/h file. It contains a temperature sensor(DHT22) read port 4, a callback method to call ESP32-WROOM on board LED and 2 relays, which can be controlled as OPCUA objects.
+An OPC UA running server on ESP32 board with a minimal information model to control on board relays of ESP32-EVB development board. Also with a temperature node reading over GPIO 4 from a DHT-22 sensor.
 
-    On Board LED : GPIO 2
     DHT22 Sensor : GPIO 4
     RELAY 0      : GPIO 32
     RELAY 1      : GPIO 33
 
-It is tested by UAExpert and also Matrikon Mobile IOS OPC UA Client. So if you face any problems with other clients please let me know.
+It is tested with UAExpert and Matrikon Mobile IOS OPC UA Client. If you see any problems with other clients please let me know.
 
 ### Prerequisites
 
@@ -15,9 +14,9 @@ It is tested by UAExpert and also Matrikon Mobile IOS OPC UA Client. So if you f
 - ESP-IDF : https://docs.espressif.com/projects/esp-idf/en/latest/get-started/
 
 ## Getting Started
-A more detailed information can be found here: [Selftronics](https://selftronics.com/2020/06/23/cheapest-embedded-opc-ua-server/)
+Blog post with more information: [Selftronics](https://selftronics.com/2020/06/23/cheapest-embedded-opc-ua-server/)
 
-It is required to have locally configured [ESP-IDF](https://github.com/espressif/esp-idf).
+It is required to have [ESP-IDF](https://github.com/espressif/esp-idf) and configured in local.
 
     git clone --recursive https://github.com/espressif/esp-idf.git <your-esp-idf-root-path>
     cd <your-esp-idf-root-path>
@@ -28,7 +27,7 @@ It is required to have locally configured [ESP-IDF](https://github.com/espressif
     cd opcua-esp32
     idf.py build
     
-Open62541.c and open62541.h are amalgamated OPC UA C stack files. If you want to dive into OPC UA part, it is advised to check Open62541 project.
+Open62541.c and open62541.h are amalgamated OPC UA C stack files. If you want to dive into OPC UA part, please check Open62541 project.
 
 If you want to build open62541.c/.h/.lib from source, be sure to apply the changes in [here](https://github.com/cmbahadir/opcua-esp32/blob/master/components/open62541lib/README.md) to make it compatible with FreeRTOS and xtensa-toolchain.
 
@@ -37,7 +36,7 @@ If you want to build open62541.c/.h/.lib from source, be sure to apply the chang
 - More about OPC UA stack: [Open62541](https://github.com/open62541/open62541)
 
 ### Configuration
-Type of connection, Wi-Fi SSID, Wi-fi password and static ip configuration can be set through esp-idf's menuconfig tool. Beware that static ip is only supported for ethernet connection for now. To set these configurations navigate to "Connection configuration" in the configuration menu. To launch the configuration menu run the command.
+Type of connection, Wi-Fi SSID, Wi-fi password and static ip configuration can be set through esp-idf's menuconfig tool. Beware that static ip is only supported for ethernet connection for now. Connection configuration can be done from under "Connection configuration" on menuconfig. To launch the configuration menu run the command.
 
     idf.py menuconfig
     
