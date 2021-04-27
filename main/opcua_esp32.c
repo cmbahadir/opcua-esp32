@@ -19,7 +19,6 @@
 
 #include "ethernet_connect.h"
 #include "open62541.h"
-#include "DHT22.h"
 #include "model.h"
 
 #define EXAMPLE_ESP_MAXIMUM_RETRY 10
@@ -115,12 +114,8 @@ static void opcua_task(void *arg)
     UA_ServerConfig_setCustomHostname(config, hostName);
 
     /* Add Information Model Objects Here */
-    // addLEDMethod(server);
-    addCurrentTemperatureDataSourceVariable(server);
     addServo0ControlNode(server);
-    addRelay0ControlNode(server);
-    addRelay1ControlNode(server);
-
+    
     ESP_LOGI(TAG, "Heap Left : %d", xPortGetFreeHeapSize());
     UA_StatusCode retval = UA_Server_run_startup(server);
     if (retval == UA_STATUSCODE_GOOD)
@@ -191,7 +186,7 @@ static void opc_event_handler(void *arg, esp_event_base_t event_base,
 
     if (!isServerCreated)
     {
-        xTaskCreatePinnedToCore(opcua_task, "opcua_task", 24336, NULL, 10, NULL, 0);
+        xTaskCreatePinnedToCore(opcua_task, "opcua_task", 24336, NULL, 1, NULL, 0);
         ESP_LOGI(MEMORY_TAG, "Heap size after OPC UA Task : %d", esp_get_free_heap_size());
         isServerCreated = true;
     }

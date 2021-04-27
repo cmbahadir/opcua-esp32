@@ -17,4 +17,8 @@ typedef struct {
     int servo_pin;
 } default_servo_t;
 
+extern int16_t current_angle;
+extern bool done_rotating;
+int16_t get_current_angle(void);
+
 void create_servo_task(void*);
