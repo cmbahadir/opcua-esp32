@@ -91,12 +91,12 @@ static void opcua_task(void *arg)
     config->mdnsConfig.serverCapabilities = caps;
     // We need to set the default IP address for mDNS since internally it's not able to detect it.
     tcpip_adapter_ip_info_t default_ip;
-    
-    #ifdef CONFIG_EXAMPLE_CONNECT_ETHERNET
+
+#ifdef CONFIG_EXAMPLE_CONNECT_ETHERNET
     tcpip_adapter_if_t tcpip_if = TCPIP_ADAPTER_IF_ETH;
-    #else
+#else
     tcpip_adapter_if_t tcpip_if = TCPIP_ADAPTER_IF_STA;
-    #endif
+#endif
 
     esp_err_t ret = tcpip_adapter_get_ip_info(tcpip_if, &default_ip);
     if ((ESP_OK == ret) && (default_ip.ip.addr != INADDR_ANY))
@@ -115,7 +115,7 @@ static void opcua_task(void *arg)
 
     /* Add Information Model Objects Here */
     addServo0ControlNode(server);
-    
+
     ESP_LOGI(TAG, "Heap Left : %d", xPortGetFreeHeapSize());
     UA_StatusCode retval = UA_Server_run_startup(server);
     if (retval == UA_STATUSCODE_GOOD)
@@ -138,7 +138,6 @@ void time_sync_notification_cb(struct timeval *tv)
 
 static void initialize_sntp(void)
 {
-    ESP_LOGI(SNTP_TAG, "Initializing SNTP");
     sntp_setoperatingmode(SNTP_OPMODE_POLL);
     sntp_setservername(0, "pool.ntp.org");
     sntp_set_time_sync_notification_cb(time_sync_notification_cb);
@@ -164,7 +163,6 @@ static bool obtain_time(void)
     ESP_ERROR_CHECK(esp_task_wdt_delete(NULL));
     return timeinfo.tm_year > (2016 - 1900);
 }
-
 
 static void opc_event_handler(void *arg, esp_event_base_t event_base,
                               int32_t event_id, void *event_data)
@@ -193,9 +191,8 @@ static void opc_event_handler(void *arg, esp_event_base_t event_base,
 }
 
 static void disconnect_handler(void *arg, esp_event_base_t event_base,
-                              int32_t event_id, void *event_data)
+                               int32_t event_id, void *event_data)
 {
-
 }
 
 static void connection_scan(void)

@@ -34,14 +34,13 @@ static esp_ip4_addr_t s_ip_addr;
 static const char *s_connection_name;
 static esp_netif_t *s_example_esp_netif = NULL;
 
-static const char *TAG = "online_connection";
+static const char *TAG = "Network";
 static void start(void);
 static void stop(void);
 
 static void on_got_ip(void *arg, esp_event_base_t event_base,
                       int32_t event_id, void *event_data)
 {
-    ESP_LOGI(TAG, "Got IP event!");
     ip_event_got_ip_t *event = (ip_event_got_ip_t *)event_data;
     memcpy(&s_ip_addr, &event->ip_info.ip, sizeof(s_ip_addr));
     xEventGroupSetBits(s_connect_event_group, GOT_IPV4_BIT);
@@ -56,7 +55,6 @@ esp_err_t example_connect(void)
     s_connect_event_group = xEventGroupCreate();
     start();
     ESP_ERROR_CHECK(esp_register_shutdown_handler(&stop));
-    ESP_LOGI(TAG, "Waiting for IP");
     xEventGroupWaitBits(s_connect_event_group, CONNECTED_BITS, true, true, portMAX_DELAY);
     ESP_LOGI(TAG, "Connected to %s", s_connection_name);
     ESP_LOGI(TAG, "IPv4 address: " IPSTR, IP2STR(&s_ip_addr));
@@ -71,7 +69,6 @@ esp_err_t example_disconnect(void)
     vEventGroupDelete(s_connect_event_group);
     s_connect_event_group = NULL;
     stop();
-    ESP_LOGI(TAG, "Disconnected from %s", s_connection_name);
     s_connection_name = NULL;
     return ESP_OK;
 }

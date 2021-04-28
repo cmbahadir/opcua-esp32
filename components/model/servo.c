@@ -50,11 +50,10 @@ static void mcpwm_example_servo_control(int32_t angle_input, int servo_pin)
     {
         while (angle_input < current_angle)
         {
-            angle = servo_per_degree_init(current_angle - angle_input);
-            ESP_LOGI("SERVO", "Current angle: %d && Angle Input : %d", current_angle, angle_input);
+            angle = servo_per_degree_init(current_angle);
             mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, angle);
             current_angle--;
-            vTaskDelay(5); 
+            vTaskDelay(5);
         }
     }
     else
@@ -64,7 +63,7 @@ static void mcpwm_example_servo_control(int32_t angle_input, int servo_pin)
             angle = servo_per_degree_init(current_angle);
             mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, angle);
             current_angle++;
-            vTaskDelay(5); 
+            vTaskDelay(5);
         }
     }
 }
@@ -94,11 +93,6 @@ void create_servo_task(void *servo_config)
 
     if (xStatus == pdPASS)
     {
-        ESP_LOGI("SERVO", "Task triggered...");
         iteration++;
-    }
-    else
-    {
-        ESP_LOGI("SERVO", "Stack full for Servo Task...");
     }
 }
