@@ -69,8 +69,8 @@ UA_ServerConfig_setUriName(UA_ServerConfig *uaServerConfig, const char *uri, con
 static void opcua_task(void *arg)
 {
     //BufferSize's got to be decreased due to latest refactorings in open62541 v1.2rc.
-    UA_Int32 sendBufferSize = 10000;
-    UA_Int32 recvBufferSize = 10000;
+    UA_Int32 sendBufferSize = 8192;
+    UA_Int32 recvBufferSize = 8192;
 
     ESP_ERROR_CHECK(esp_task_wdt_add(NULL));
 
