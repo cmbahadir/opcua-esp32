@@ -8,7 +8,8 @@
 #pragma once
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 #include "esp_err.h"
@@ -18,44 +19,28 @@ extern "C" {
 #define CONFIG_MBEDTLS_EXTERNAL_MEM_ALLOC 1
 
 #ifdef CONFIG_EXAMPLE_CONNECT_ETHERNET
-// #define EXAMPLE_INTERFACE get_example_netif()
 #define CONFIG_EXAMPLE_USE_INTERNAL_ETHERNET 1
 #define CONFIG_EXAMPLE_ETH_PHY_LAN8720 1
 #define CONFIG_EXAMPLE_ETH_MDC_GPIO 23
 #define CONFIG_EXAMPLE_ETH_MDIO_GPIO 18
 #define CONFIG_EXAMPLE_ETH_PHY_ADDR 0
 #define EXAMPLE_INTERFACE TCPIP_ADAPTER_IF_ETH
+#define BASE_IP_EVENT ETH_EVENT
+#define GOT_IP_EVENT IP_EVENT_ETH_GOT_IP
+#define DISCONNECT_EVENT ETHERNET_EVENT_DISCONNECTED
 #endif
 
 #ifdef CONFIG_EXAMPLE_CONNECT_WIFI
-// #define EXAMPLE_INTERFACE get_example_netif()
+#define BASE_IP_EVENT WIFI_EVENT
+#define GOT_IP_EVENT IP_EVENT_STA_GOT_IP
+#define DISCONNECT_EVENT WIFI_EVENT_STA_DISCONNECTED
 #define EXAMPLE_INTERFACE TCPIP_ADAPTER_IF_STA
 #endif
 
-// #define CONFIG_EXAMPLE_CONNECT_IPV6 
-
-/**
- * @brief Configure Wi-Fi or Ethernet, connect, wait for IP
- *
- * This all-in-one helper function is used in protocols examples to
- * reduce the amount of boilerplate in the example.
- *
- * It is not intended to be used in real world applications.
- * See examples under examples/wifi/getting_started/ and examples/ethernet/
- * for more complete Wi-Fi or Ethernet initialization code.
- *
- * Read "Establishing Wi-Fi or Ethernet Connection" section in
- * examples/protocols/README.md for more information about this function.
- *
- * @return ESP_OK on successful connection
- */
-esp_err_t example_connect(void);
-
-/**
- * Counterpart to example_connect, de-initializes Wi-Fi or Ethernet
- */
-esp_err_t example_disconnect(void);
-esp_netif_t *get_example_netif(void);
+  esp_err_t example_connect(void);
+  esp_err_t example_disconnect(void);
+  esp_netif_t *get_example_netif(void);
+  esp_err_t set_dns_server(esp_netif_t *netif, uint32_t addr, esp_netif_dns_type_t type);
 
 #ifdef __cplusplus
 }
