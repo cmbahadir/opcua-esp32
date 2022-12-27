@@ -36,7 +36,7 @@ If you want to build open62541.c/.h/.lib from source, be sure to apply the chang
 - OPC UA stack: [Open62541](https://github.com/open62541/open62541)
 
 ### Configuration
-Type of connection, Wi-Fi SSID, password and static ip configuration can be set through esp-idf's menuconfig tool. Beware that static ip is only supported for ethernet-cable connection. Connection can be configured from under "Connection configuration" on configuration menu run by executing the command:
+Type of connection, Wi-Fi SSID, password and static ip configuration can be set through esp-idf's menuconfig tool. It is required to set a DNS address when using static IP address. Connection can be configured from under "Connection configuration" on configuration menu run by executing the command:
 
     idf.py menuconfig
     
