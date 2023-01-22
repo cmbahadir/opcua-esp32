@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 cd $HOME
-git clone --recursive https://github.com/espressif/esp-idf.git
+git clone -b v5.0 --recursive https://github.com/espressif/esp-idf.git
 cd esp-idf
 bash install.sh
 source export.sh
