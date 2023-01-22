@@ -54,6 +54,12 @@ menu "Connection Configuration"
 		default "255.255.255.0"
 		help
 			Netmask
+	
+	config DNS_ADDRESS
+		string "DNS"
+		default "8.8.8.8"
+		help
+			DNS
 
 endmenu
 
