@@ -1,24 +1,4 @@
-#include <stdio.h>
-#include <sys/param.h>
-#include <unistd.h>
-#include <lwip/sockets.h>
-#include <esp_flash_encrypt.h>
-#include "esp_netif.h"
-#include <esp_task_wdt.h>
-#include <esp_sntp.h>
-#include "freertos/task.h"
-#include "driver/gpio.h"
-#include "freertos/FreeRTOS.h"
-#include "freertos/event_groups.h"
-#include "esp_wifi.h"
-#include "esp_log.h"
-#include "esp_event.h"
-#include "nvs_flash.h"
-
-#include "ethernet_connect.h"
-#include "open62541.h"
-#include "DHT22.h"
-#include "model.h"
+#include "opcua_esp32.h"
 
 #define EXAMPLE_ESP_MAXIMUM_RETRY 10
 
@@ -67,7 +47,7 @@ UA_ServerConfig_setUriName(UA_ServerConfig *uaServerConfig, const char *uri, con
 
 static void opcua_task(void *arg)
 {
-    //BufferSize's got to be decreased due to latest refactorings in open62541 v1.2rc.
+    // BufferSize's got to be decreased due to latest refactorings in open62541 v1.2rc.
     UA_Int32 sendBufferSize = 16384;
     UA_Int32 recvBufferSize = 16384;
 
@@ -80,40 +60,40 @@ static void opcua_task(void *arg)
 
     const char *appUri = "open62541.esp32.server";
     UA_String hostName = UA_STRING("opcua-esp32");
-#ifdef ENABLE_MDNS
-    config->mdnsEnabled = true;
-    config->mdnsConfig.mdnsServerName = UA_String_fromChars(appUri);
-    config->mdnsConfig.serverCapabilitiesSize = 2;
-    UA_String *caps = (UA_String *)UA_Array_new(2, &UA_TYPES[UA_TYPES_STRING]);
-    caps[0] = UA_String_fromChars("LDS");
-    caps[1] = UA_String_fromChars("NA");
-    config->mdnsConfig.serverCapabilities = caps;
-    // We need to set the default IP address for mDNS since internally it's not able to detect it.
-    tcpip_adapter_ip_info_t default_ip;
-    
-    #ifdef CONFIG_EXAMPLE_CONNECT_ETHERNET
-    tcpip_adapter_if_t tcpip_if = TCPIP_ADAPTER_IF_ETH;
-    #else
-    tcpip_adapter_if_t tcpip_if = TCPIP_ADAPTER_IF_STA;
-    #endif
+    // #ifdef ENABLE_MDNS
+    //     config->mdnsEnabled = true;
+    //     config->mdnsConfig.mdnsServerName = UA_String_fromChars(appUri);
+    //     config->mdnsConfig.serverCapabilitiesSize = 2;
+    //     UA_String *caps = (UA_String *)UA_Array_new(2, &UA_TYPES[UA_TYPES_STRING]);
+    //     caps[0] = UA_String_fromChars("LDS");
+    //     caps[1] = UA_String_fromChars("NA");
+    //     config->mdnsConfig.serverCapabilities = caps;
 
-    esp_err_t ret = tcpip_adapter_get_ip_info(tcpip_if, &default_ip);
-    if ((ESP_OK == ret) && (default_ip.ip.addr != INADDR_ANY))
-    {
-        config->mdnsIpAddressListSize = 1;
-        config->mdnsIpAddressList = (uint32_t *)UA_malloc(sizeof(uint32_t) * config->mdnsIpAddressListSize);
-        memcpy(config->mdnsIpAddressList, &default_ip.ip.addr, sizeof(uint32_t));
-    }
-    else
-    {
-        ESP_LOGI(TAG, "Could not get default IP Address!");
-    }
-#endif
+    //     // We need to set the default IP address for mDNS since internally it's not able to detect it.
+    //     tcpip_adapter_ip_info_t default_ip;
+
+    //     #ifdef CONFIG_EXAMPLE_CONNECT_ETHERNET
+    //     tcpip_adapter_if_t tcpip_if = TCPIP_ADAPTER_IF_ETH;
+    //     #else
+    //     tcpip_adapter_if_t tcpip_if = TCPIP_ADAPTER_IF_STA;
+    //     #endif
+
+    //     esp_err_t ret = tcpip_adapter_get_ip_info(tcpip_if, &default_ip);
+    //     if ((ESP_OK == ret) && (default_ip.ip.addr != INADDR_ANY))
+    //     {
+    //         config->mdnsIpAddressListSize = 1;
+    //         config->mdnsIpAddressList = (uint32_t *)UA_malloc(sizeof(uint32_t) * config->mdnsIpAddressListSize);
+    //         memcpy(config->mdnsIpAddressList, &default_ip.ip.addr, sizeof(uint32_t));
+    //     }
+    //     else
+    //     {
+    //         ESP_LOGI(TAG, "Could not get default IP Address!");
+    //     }
+    // #endif
     UA_ServerConfig_setUriName(config, appUri, "OPC_UA_Server_ESP32");
     UA_ServerConfig_setCustomHostname(config, hostName);
 
     /* Add Information Model Objects Here */
-    // addLEDMethod(server);
     addCurrentTemperatureDataSourceVariable(server);
     addRelay0ControlNode(server);
     addRelay1ControlNode(server);
@@ -125,6 +105,7 @@ static void opcua_task(void *arg)
         while (running)
         {
             UA_Server_run_iterate(server, false);
+             vTaskDelay(100 / portTICK_PERIOD_MS);
             ESP_ERROR_CHECK(esp_task_wdt_reset());
             taskYIELD();
         }
@@ -168,7 +149,6 @@ static bool obtain_time(void)
     return timeinfo.tm_year > (2016 - 1900);
 }
 
-
 static void opc_event_handler(void *arg, esp_event_base_t event_base,
                               int32_t event_id, void *event_data)
 {
@@ -189,25 +169,21 @@ static void opc_event_handler(void *arg, esp_event_base_t event_base,
 
     if (!isServerCreated)
     {
-        xTaskCreatePinnedToCore(opcua_task, "opcua_task", 24336, NULL, 10, NULL, 0);
+        xTaskCreatePinnedToCore(opcua_task, "opcua_task", 24336, NULL, 10, NULL, 1);
         ESP_LOGI(MEMORY_TAG, "Heap size after OPC UA Task : %d", esp_get_free_heap_size());
         isServerCreated = true;
     }
 }
 
 static void disconnect_handler(void *arg, esp_event_base_t event_base,
-                              int32_t event_id, void *event_data)
+                               int32_t event_id, void *event_data)
 {
-
 }
 
 static void connection_scan(void)
 {
     ESP_ERROR_CHECK(esp_netif_init());
     ESP_ERROR_CHECK(esp_event_loop_create_default());
-    ESP_ERROR_CHECK(esp_task_wdt_init(10, true));
-    ESP_ERROR_CHECK(esp_task_wdt_delete(xTaskGetIdleTaskHandleForCPU(0)));
-    ESP_ERROR_CHECK(esp_task_wdt_delete(xTaskGetIdleTaskHandleForCPU(1)));
     ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, GOT_IP_EVENT, &opc_event_handler, NULL));
     ESP_ERROR_CHECK(esp_event_handler_register(BASE_IP_EVENT, DISCONNECT_EVENT, &disconnect_handler, NULL));
     ESP_ERROR_CHECK(example_connect());
@@ -216,8 +192,8 @@ static void connection_scan(void)
 void app_main(void)
 {
     ++boot_count;
-    //Workaround for CVE-2019-15894
-    spi_flash_init();
+    // Workaround for CVE-2019-15894
+    nvs_flash_init();
     if (esp_flash_encryption_enabled())
     {
         esp_flash_write_protect_crypt_cnt();
