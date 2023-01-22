@@ -124,6 +124,7 @@ static void initialize_sntp(void)
     ESP_LOGI(SNTP_TAG, "Initializing SNTP");
     sntp_setoperatingmode(SNTP_OPMODE_POLL);
     sntp_setservername(0, "pool.ntp.org");
+    sntp_setservername(1, "time.google.com");
     sntp_set_time_sync_notification_cb(time_sync_notification_cb);
     sntp_init();
     sntp_initialized = true;

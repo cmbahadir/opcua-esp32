@@ -52,30 +52,10 @@ extern "C" {
 #define EXAMPLE_INTERFACE TCPIP_ADAPTER_IF_STA
 #endif
 
-// #define CONFIG_EXAMPLE_CONNECT_IPV6 
-
-/**
- * @brief Configure Wi-Fi or Ethernet, connect, wait for IP
- *
- * This all-in-one helper function is used in protocols examples to
- * reduce the amount of boilerplate in the example.
- *
- * It is not intended to be used in real world applications.
- * See examples under examples/wifi/getting_started/ and examples/ethernet/
- * for more complete Wi-Fi or Ethernet initialization code.
- *
- * Read "Establishing Wi-Fi or Ethernet Connection" section in
- * examples/protocols/README.md for more information about this function.
- *
- * @return ESP_OK on successful connection
- */
 esp_err_t example_connect(void);
-
-/**
- * Counterpart to example_connect, de-initializes Wi-Fi or Ethernet
- */
 esp_err_t example_disconnect(void);
 esp_netif_t *get_example_netif(void);
+esp_err_t set_dns_server(esp_netif_t *netif, uint32_t addr, esp_netif_dns_type_t type);
 
 #ifdef __cplusplus
 }
