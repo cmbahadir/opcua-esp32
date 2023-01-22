@@ -8,20 +8,10 @@
 #include <string.h>
 #include "sdkconfig.h"
 #include "esp_event.h"
-#include "esp_wifi.h"
-#include "esp_wifi_default.h"
 
 #if CONFIG_EXAMPLE_CONNECT_ETHERNET
 #include "esp_eth.h"
 #endif
-
-#include "esp_log.h"
-#include "driver/gpio.h"
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "freertos/event_groups.h"
-#include "lwip/err.h"
-#include "lwip/sys.h"
 
 #include "ethernet_connect.h"
 
@@ -65,8 +55,7 @@ esp_err_t example_connect(void)
 
 esp_err_t example_disconnect(void)
 {
-    if (s_connect_event_group == NULL)
-    {
+    if (s_connect_event_group == NULL) {
         return ESP_ERR_INVALID_STATE;
     }
     vEventGroupDelete(s_connect_event_group);
@@ -90,39 +79,38 @@ static void start(void)
     assert(eth_netif);
     s_example_esp_netif = eth_netif;
 
-#ifdef CONFIG_USE_STATIC_IP
+    #ifdef CONFIG_USE_STATIC_IP
     esp_netif_ip_info_t ipInfo;
     ipInfo.ip.addr = esp_ip4addr_aton(CONFIG_ETHERNET_HELPER_STATIC_IP4_ADDRESS);
     ipInfo.gw.addr = esp_ip4addr_aton(CONFIG_ETHERNET_HELPER_STATIC_GATEWAY);
     ipInfo.netmask.addr = esp_ip4addr_aton(CONFIG_ETHERNET_HELPER_STATIC_NETMASK);
-    if (ipInfo.ip.addr != 0 && ipInfo.netmask.addr != 0 && ipInfo.gw.addr != 0)
-    {
+    if(ipInfo.ip.addr != 0 && ipInfo.netmask.addr != 0 && ipInfo.gw.addr != 0){
         ESP_ERROR_CHECK(esp_netif_dhcpc_stop(get_example_netif()));
         ESP_ERROR_CHECK(esp_netif_set_ip_info(get_example_netif(), &ipInfo));
     }
-    ESP_ERROR_CHECK(set_dns_server(eth_netif, ipaddr_addr(CONFIG_DNS_ADDRESS), ESP_NETIF_DNS_MAIN));
-#endif
+    #endif
 
     // Set default handlers to process TCP/IP stuffs
-    ESP_ERROR_CHECK(esp_eth_set_default_handlers(eth_netif));
     ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_ETH_GOT_IP, &on_got_ip, NULL));
 
-    // Configuration using LAN8720
+    //Configuration using LAN8720
     eth_mac_config_t mac_config = ETH_MAC_DEFAULT_CONFIG();
     eth_phy_config_t phy_config = ETH_PHY_DEFAULT_CONFIG();
 
     phy_config.phy_addr = CONFIG_EXAMPLE_ETH_PHY_ADDR;
-    // phy_config.reset_gpio_num = CONFIG_EXAMPLE_ETH_PHY_RST_GPIO;
-    mac_config.smi_mdc_gpio_num = CONFIG_EXAMPLE_ETH_MDC_GPIO;
-    mac_config.smi_mdio_gpio_num = CONFIG_EXAMPLE_ETH_MDIO_GPIO;
-    s_mac = esp_eth_mac_new_esp32(&mac_config);
-    s_phy = esp_eth_phy_new_lan8720(&phy_config);
+
+    eth_esp32_emac_config_t esp32_emac_config = ETH_ESP32_EMAC_DEFAULT_CONFIG();
+    esp32_emac_config.smi_mdc_gpio_num = CONFIG_EXAMPLE_ETH_MDC_GPIO;
+    esp32_emac_config.smi_mdio_gpio_num = CONFIG_EXAMPLE_ETH_MDIO_GPIO;
+    s_mac = esp_eth_mac_new_esp32(&esp32_emac_config, &mac_config);
+    s_phy = esp_eth_phy_new_lan87xx(&phy_config);
 
     esp_eth_config_t config = ETH_DEFAULT_CONFIG(s_mac, s_phy);
     ESP_ERROR_CHECK(esp_eth_driver_install(&config, &eth_handle));
     ESP_ERROR_CHECK(esp_netif_attach(eth_netif, esp_eth_new_netif_glue(eth_handle)));
     ESP_ERROR_CHECK(esp_eth_start(eth_handle));
     s_connection_name = "ETH";
+
 }
 
 static void stop(void)
@@ -130,7 +118,6 @@ static void stop(void)
     ESP_ERROR_CHECK(esp_event_handler_unregister(IP_EVENT, IP_EVENT_ETH_GOT_IP, &on_got_ip));
     ESP_ERROR_CHECK(esp_eth_stop(eth_handle));
     ESP_ERROR_CHECK(esp_eth_del_netif_glue(s_eth_glue));
-    ESP_ERROR_CHECK(esp_eth_clear_default_handlers(s_example_esp_netif));
     ESP_ERROR_CHECK(esp_eth_driver_uninstall(eth_handle));
     ESP_ERROR_CHECK(s_phy->del(s_phy));
     ESP_ERROR_CHECK(s_mac->del(s_mac));
@@ -146,8 +133,7 @@ static void on_wifi_disconnect(void *arg, esp_event_base_t event_base,
 {
     ESP_LOGI(TAG, "Wi-Fi disconnected, trying to reconnect...");
     esp_err_t err = esp_wifi_connect();
-    if (err == ESP_ERR_WIFI_NOT_STARTED)
-    {
+    if (err == ESP_ERR_WIFI_NOT_STARTED) {
         return;
     }
     ESP_ERROR_CHECK(err);
@@ -157,7 +143,9 @@ static void start(void)
 {
     wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
     ESP_ERROR_CHECK(esp_wifi_init(&cfg));
+
     esp_netif_config_t netif_config = ESP_NETIF_DEFAULT_WIFI_STA();
+
     esp_netif_t *netif = esp_netif_new(&netif_config);
 
     assert(netif);
@@ -166,19 +154,6 @@ static void start(void)
     esp_wifi_set_default_wifi_sta_handlers();
 
     s_example_esp_netif = netif;
-
-#ifdef CONFIG_USE_STATIC_IP
-    esp_netif_ip_info_t ipInfo;
-    ipInfo.ip.addr = esp_ip4addr_aton(CONFIG_ETHERNET_HELPER_STATIC_IP4_ADDRESS);
-    ipInfo.gw.addr = esp_ip4addr_aton(CONFIG_ETHERNET_HELPER_STATIC_GATEWAY);
-    ipInfo.netmask.addr = esp_ip4addr_aton(CONFIG_ETHERNET_HELPER_STATIC_NETMASK);
-    if (ipInfo.ip.addr != 0 && ipInfo.netmask.addr != 0 && ipInfo.gw.addr != 0)
-    {
-        ESP_ERROR_CHECK(esp_netif_dhcpc_stop(get_example_netif()));
-        ESP_ERROR_CHECK(esp_netif_set_ip_info(get_example_netif(), &ipInfo));
-    }
-    ESP_ERROR_CHECK(set_dns_server(netif, ipaddr_addr(CONFIG_DNS_ADDRESS), ESP_NETIF_DNS_MAIN));
-#endif // CONFIG_USE_STATIC_IP
 
     ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENT, WIFI_EVENT_STA_DISCONNECTED, &on_wifi_disconnect, NULL));
     ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &on_got_ip, NULL));
@@ -211,8 +186,7 @@ static void stop(void)
     ESP_ERROR_CHECK(esp_event_handler_unregister(WIFI_EVENT, WIFI_EVENT_STA_CONNECTED, &on_wifi_connect));
 #endif
     esp_err_t err = esp_wifi_stop();
-    if (err == ESP_ERR_WIFI_NOT_INIT)
-    {
+    if (err == ESP_ERR_WIFI_NOT_INIT) {
         return;
     }
     ESP_ERROR_CHECK(err);
@@ -221,20 +195,9 @@ static void stop(void)
     esp_netif_destroy(s_example_esp_netif);
     s_example_esp_netif = NULL;
 }
-#endif // CONFIG_EXAMPLE_CONNECT_WIFI
+#endif //CONFIG_EXAMPLE_CONNECT_WIFI
 
 esp_netif_t *get_example_netif(void)
 {
     return s_example_esp_netif;
-}
-
-esp_err_t set_dns_server(esp_netif_t *netif, uint32_t addr, esp_netif_dns_type_t type)
-{
-    if (addr && (addr != IPADDR_NONE)) {
-        esp_netif_dns_info_t dns;
-        dns.ip.u_addr.ip4.addr = addr;
-        dns.ip.type = IPADDR_TYPE_V4;
-        ESP_ERROR_CHECK(esp_netif_set_dns_info(netif, type, &dns));
-    }
-    return ESP_OK;
 }
