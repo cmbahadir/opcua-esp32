@@ -8,20 +8,10 @@
 #include <string.h>
 #include "sdkconfig.h"
 #include "esp_event.h"
-#include "esp_wifi.h"
-#include "esp_wifi_default.h"
 
 #if CONFIG_EXAMPLE_CONNECT_ETHERNET
 #include "esp_eth.h"
 #endif
-
-#include "esp_log.h"
-#include "driver/gpio.h"
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "freertos/event_groups.h"
-#include "lwip/err.h"
-#include "lwip/sys.h"
 
 #include "ethernet_connect.h"
 
@@ -101,7 +91,6 @@ static void start(void)
     #endif
 
     // Set default handlers to process TCP/IP stuffs
-    ESP_ERROR_CHECK(esp_eth_set_default_handlers(eth_netif));
     ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_ETH_GOT_IP, &on_got_ip, NULL));
 
     //Configuration using LAN8720
@@ -109,17 +98,19 @@ static void start(void)
     eth_phy_config_t phy_config = ETH_PHY_DEFAULT_CONFIG();
 
     phy_config.phy_addr = CONFIG_EXAMPLE_ETH_PHY_ADDR;
-    // phy_config.reset_gpio_num = CONFIG_EXAMPLE_ETH_PHY_RST_GPIO;
-    mac_config.smi_mdc_gpio_num = CONFIG_EXAMPLE_ETH_MDC_GPIO;
-    mac_config.smi_mdio_gpio_num = CONFIG_EXAMPLE_ETH_MDIO_GPIO;
-    s_mac = esp_eth_mac_new_esp32(&mac_config);
-    s_phy = esp_eth_phy_new_lan8720(&phy_config);
-    
+
+    eth_esp32_emac_config_t esp32_emac_config = ETH_ESP32_EMAC_DEFAULT_CONFIG();
+    esp32_emac_config.smi_mdc_gpio_num = CONFIG_EXAMPLE_ETH_MDC_GPIO;
+    esp32_emac_config.smi_mdio_gpio_num = CONFIG_EXAMPLE_ETH_MDIO_GPIO;
+    s_mac = esp_eth_mac_new_esp32(&esp32_emac_config, &mac_config);
+    s_phy = esp_eth_phy_new_lan87xx(&phy_config);
+
     esp_eth_config_t config = ETH_DEFAULT_CONFIG(s_mac, s_phy);
     ESP_ERROR_CHECK(esp_eth_driver_install(&config, &eth_handle));
     ESP_ERROR_CHECK(esp_netif_attach(eth_netif, esp_eth_new_netif_glue(eth_handle)));
     ESP_ERROR_CHECK(esp_eth_start(eth_handle));
     s_connection_name = "ETH";
+
 }
 
 static void stop(void)
@@ -127,7 +118,6 @@ static void stop(void)
     ESP_ERROR_CHECK(esp_event_handler_unregister(IP_EVENT, IP_EVENT_ETH_GOT_IP, &on_got_ip));
     ESP_ERROR_CHECK(esp_eth_stop(eth_handle));
     ESP_ERROR_CHECK(esp_eth_del_netif_glue(s_eth_glue));
-    ESP_ERROR_CHECK(esp_eth_clear_default_handlers(s_example_esp_netif));
     ESP_ERROR_CHECK(esp_eth_driver_uninstall(eth_handle));
     ESP_ERROR_CHECK(s_phy->del(s_phy));
     ESP_ERROR_CHECK(s_mac->del(s_mac));

@@ -12,13 +12,26 @@ extern "C" {
 #endif
 
 #include "esp_err.h"
+#include "esp_log.h"
+#include "driver/gpio.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "freertos/event_groups.h"
+#include "lwip/err.h"
+#include "lwip/sys.h"
+#include "lwip/ip_addr.h"
+#include <lwip/sockets.h>
+#include "freertos/task.h"
+#include "driver/gpio.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/event_groups.h"
 #include "esp_netif.h"
 
 #define CONFIG_ESP32_SPIRAM_SUPPORT 1
 #define CONFIG_MBEDTLS_EXTERNAL_MEM_ALLOC 1
 
 #ifdef CONFIG_EXAMPLE_CONNECT_ETHERNET
-// #define EXAMPLE_INTERFACE get_example_netif()
+#include "esp_eth.h"
 #define CONFIG_EXAMPLE_USE_INTERNAL_ETHERNET 1
 #define CONFIG_EXAMPLE_ETH_PHY_LAN8720 1
 #define CONFIG_EXAMPLE_ETH_MDC_GPIO 23
@@ -28,7 +41,11 @@ extern "C" {
 #endif
 
 #ifdef CONFIG_EXAMPLE_CONNECT_WIFI
-// #define EXAMPLE_INTERFACE get_example_netif()
+#include "esp_wifi.h"
+#include "esp_wifi_default.h"
+#define BASE_IP_EVENT WIFI_EVENT
+#define GOT_IP_EVENT IP_EVENT_STA_GOT_IP
+#define DISCONNECT_EVENT WIFI_EVENT_STA_DISCONNECTED
 #define EXAMPLE_INTERFACE TCPIP_ADAPTER_IF_STA
 #endif
 
