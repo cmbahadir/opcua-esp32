@@ -132,7 +132,8 @@ static void stop(void)
 static void on_wifi_disconnect(void *arg, esp_event_base_t event_base,
                                int32_t event_id, void *event_data)
 {
-    ESP_LOGI(TAG, "Wi-Fi disconnected, trying to reconnect...");
+    wifi_event_sta_disconnected_t *disconn = (wifi_event_sta_disconnected_t *)event_data;
+    ESP_LOGI(TAG, "Wi-Fi disconnected, reason: %d, trying to reconnect...", disconn->reason);
     esp_err_t err = esp_wifi_connect();
     if (err == ESP_ERR_WIFI_NOT_STARTED)
     {
