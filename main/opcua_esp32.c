@@ -59,7 +59,6 @@ static void opcua_task(void *arg)
     UA_ServerConfig_setMinimalCustomBuffer(config, 4840, 0, sendBufferSize, recvBufferSize);
 
     const char *appUri = "open62541.esp32.server";
-    UA_String hostName = UA_STRING("opcua-esp32");
     // #ifdef ENABLE_MDNS
     //     config->mdnsEnabled = true;
     //     config->mdnsConfig.mdnsServerName = UA_String_fromChars(appUri);
@@ -91,23 +90,36 @@ static void opcua_task(void *arg)
     //     }
     // #endif
     UA_ServerConfig_setUriName(config, appUri, "OPC_UA_Server_ESP32");
-    UA_ServerConfig_setCustomHostname(config, hostName);
-
-    /* Add Information Model Objects Here */
-    addCurrentTemperatureDataSourceVariable(server);
-    addRelay0ControlNode(server);
-    addRelay1ControlNode(server);
+    /* UA_ServerConfig_setCustomHostname was removed in open62541 v1.4+. It
+     * was purely cosmetic (an advertised discovery hostname); the actual
+     * bind address now comes from config->serverUrls, which
+     * setMinimalCustomBuffer already set to a wildcard "opc.tcp://:4840"
+     * that binds on all interfaces. Overriding it with a non-resolvable
+     * hostname here previously broke the TCP listener entirely ("no server
+     * socket"), so we leave it untouched. */
 
     ESP_LOGI(TAG, "Heap Left : %d", xPortGetFreeHeapSize());
     UA_StatusCode retval = UA_Server_run_startup(server);
     if (retval == UA_STATUSCODE_GOOD)
     {
+        /* Add Information Model Objects Here */
+        addCurrentTemperatureDataSourceVariable(server);
+        addRelay0ControlNode(server);
+        addRelay1ControlNode(server);
+
+        uint32_t iterCount = 0;
         while (running)
         {
             UA_Server_run_iterate(server, false);
              vTaskDelay(100 / portTICK_PERIOD_MS);
             ESP_ERROR_CHECK(esp_task_wdt_reset());
             taskYIELD();
+
+            /* Periodic heap diagnostic (~every 10s) to catch leaks */
+            if (++iterCount % 100 == 0)
+            {
+                ESP_LOGI(MEMORY_TAG, "Free heap: %lu", (unsigned long)esp_get_free_heap_size());
+            }
         }
         UA_Server_run_shutdown(server);
     }
@@ -169,7 +181,13 @@ static void opc_event_handler(void *arg, esp_event_base_t event_base,
 
     if (!isServerCreated)
     {
-        xTaskCreatePinnedToCore(opcua_task, "opcua_task", 24336, NULL, 10, NULL, 1);
+        /* open62541 v1.5.x's EventLoop architecture has deeper call chains
+         * than v1.2's during namespace-zero bootstrap; the old 24336-byte
+         * stack overflowed (Guru Meditation "Double exception") partway
+         * through node creation. FreeRTOS task stacks are heap-allocated on
+         * ESP32, so this size is a direct tradeoff against heap available
+         * for the OPC UA nodestore - keep it as small as reliably works. */
+        xTaskCreatePinnedToCore(opcua_task, "opcua_task", 40960, NULL, 10, NULL, 1);
         ESP_LOGI(MEMORY_TAG, "Heap size after OPC UA Task : %d", esp_get_free_heap_size());
         isServerCreated = true;
     }

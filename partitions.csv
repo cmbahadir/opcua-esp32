@@ -1,0 +1,8 @@
+# Name,   Type, SubType, Offset,  Size, Flags
+# Custom table for 2MB flash: enlarges the factory app partition well
+# beyond the stock 1MB single-app layout to fit open62541 v1.5.x, while
+# leaving a small unallocated safety margin instead of exactly filling
+# the flash chip.
+nvs,      data, nvs,     0x9000,  0x6000,
+phy_init, data, phy,     0xf000,  0x1000,
+factory,  app,  factory, 0x10000, 0x1E8000,
