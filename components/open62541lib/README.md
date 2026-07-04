@@ -1,48 +1,86 @@
-# CMake Build Options Of Open62541:
+# CMake Build Options Of Open62541 (v1.5.5)
 
- - Architectures included in amalgamation: freertosLWIP
- - The selected architecture is: freertosLWIP
- - Could NOT find LATEX (missing:  LATEX_COMPILER) 
- - Configuring done
- - Generating done
- - Build files have been written to: /home/cmb/workspace/opcua/open62541/build
- - Cache values
+ - Architecture: `freertos-lwip` (renamed from `freertosLWIP` used in older versions)
+ - Requires a real FreeRTOS-Kernel checkout with the `portable/ThirdParty/GCC/Posix`
+   port (used only for the host-side amalgamation build, not the ESP32 target) -
+   `git clone https://github.com/FreeRTOS/FreeRTOS-Kernel.git`, then pass
+   `-DFREERTOS_KERNEL_PATH=<path>` and
+   `-DFREERTOS_PORT_PATH=<path>/portable/ThirdParty/GCC/Posix`.
+ - The upstream `CMakeLists.txt`'s `install(EXPORT open62541Targets ...)` /
+   `export(TARGETS open62541 ...)` calls fail to configure with this
+   architecture (`freertos_config`/`freertos_kernel` aren't part of any
+   export set). Since we only need the `open62541-amalgamation` target, not
+   `make install`, guard those two blocks locally in your throwaway
+   open62541 checkout with `if(NOT UA_ARCHITECTURE_FREERTOS) ... endif()`
+   before running cmake. This is not something to upstream - just a local
+   workaround for generating the amalgamation.
 
-- BUILD_SHARED_LIBS:BOOL=ON
-- CMAKE_BUILD_TYPE:STRING=Debug
-- CMAKE_INSTALL_PREFIX:PATH=/usr/local
-- LIB_INSTALL_DIR:PATH=lib
-- UA_ARCHITECTURE:STRING=freertosLWIP
-- UA_ARCH_ADD_FLAGS:STRING=
-- UA_ARCH_EXTRA_INCLUDES:STRING=
-- UA_ARCH_FREERTOS_USE_OWN_MEMORY_FUNCTIONS:BOOL=OFF
-- UA_ARCH_LINKER_FLAGS:STRING=
-- UA_ARCH_REMOVE_FLAGS:STRING=
-- UA_BUILD_EXAMPLES:BOOL=OFF
-- UA_BUILD_UNIT_TESTS:BOOL=OFF
-- UA_ENABLE_AMALGAMATION:BOOL=ON
-- UA_ENABLE_COVERAGE:BOOL=OFF
-- UA_ENABLE_DISCOVERY:BOOL=ON
-- UA_ENABLE_DISCOVERY_MULTICAST:BOOL=OFF
-- UA_ENABLE_ENCRYPTION:BOOL=OFF
-- UA_ENABLE_HISTORIZING:BOOL=ON
-- UA_ENABLE_METHODCALLS:BOOL=ON
-- UA_ENABLE_NODEMANAGEMENT:BOOL=ON
-- UA_ENABLE_QUERY:BOOL=OFF
-- UA_ENABLE_SUBSCRIPTIONS:BOOL=ON
-- UA_ENABLE_SUBSCRIPTIONS_EVENTS:BOOL=OFF
-- UA_LOGLEVEL:STRING=100
-- UA_NAMESPACE_ZERO:STRING=REDUCED
-- UA_ENABLE_PUBSUB:BOOL=ON
-- UA_ENABLE_PUBSUB_INFORMATIONMODEL:BOOL=ON
+Cache values used:
 
-# Open62541.c
- - Change task.h as freertos/task.h
- - int UA_access(const char *pathname, int mode) { return 0; } eklendi (open62541.c) (Optional)
- - Add freertos and lwip as component under components/.
- - Add #define UA_ARCHITECTURE_FREERTOSLWIP, this may be a bug (https://github.com/open62541/open62541/issues/2209)
+```
+cmake -DUA_ARCHITECTURE=freertos-lwip \
+      -DUA_ENABLE_AMALGAMATION=ON \
+      -DUA_BUILD_EXAMPLES=OFF -DUA_BUILD_UNIT_TESTS=OFF \
+      -DUA_ENABLE_DISCOVERY=ON -DUA_ENABLE_DISCOVERY_MULTICAST=OFF \
+      -DUA_ENABLE_ENCRYPTION=OFF -DUA_ENABLE_HISTORIZING=OFF \
+      -DUA_NAMESPACE_ZERO=MINIMAL \
+      -DUA_ENABLE_SUBSCRIPTIONS=ON -DUA_ENABLE_SUBSCRIPTIONS_EVENTS=OFF \
+      -DUA_ENABLE_METHODCALLS=ON -DUA_ENABLE_NODEMANAGEMENT=ON \
+      -DUA_ENABLE_QUERY=OFF -DUA_ENABLE_PUBSUB=OFF -DUA_ENABLE_PUBSUB_INFORMATIONMODEL=OFF \
+      -DUA_ENABLE_DIAGNOSTICS=OFF -DUA_ENABLE_DA=OFF \
+      -DUA_LOGLEVEL=300 \
+      -DUA_MULTITHREADING=0 \
+      -DFREERTOS_KERNEL_PATH=<path-to-FreeRTOS-Kernel> \
+      -DFREERTOS_PORT_PATH=<path-to-FreeRTOS-Kernel>/portable/ThirdParty/GCC/Posix \
+      ..
+make open62541-amalgamation
+```
 
-# Open62541.h
- - Comment out //#define UA_access (Optional)
- - Use calloc rather than pcPortCalloc so comment out  //# define UA_calloc pvPortCalloc ->  # define UA_calloc calloc (Optional)
- - Comment out //#define UA_IPV6 LWIP_IPV6 - probably esp-idf lwip does not support IPV6
+## Why `UA_NAMESPACE_ZERO=MINIMAL` and not `REDUCED`
+
+The old (v1.2) amalgamation used `REDUCED`. In v1.5.5 the generated `REDUCED`
+namespace-zero nodeset has grown substantially (more default types/objects
+per later versions of the OPC UA spec) and reliably exhausts this board's
+available heap during bootstrap (~276KB total DRAM at boot under ESP-IDF
+v6.0.2, of which only ~100-130KB remains free by the time the OPC UA task
+starts, after WiFi/lwIP/SNTP overhead) — even after disabling
+`UA_ENABLE_DIAGNOSTICS`/`UA_ENABLE_DA` (both default ON, unlike in v1.2) and
+trimming the FreeRTOS task's stack size. `MINIMAL` avoids generating that
+nodeset at all and reliably fits.
+
+**Known limitation:** `MINIMAL` mode does not create the standard Root/Objects
+folders or reference-type hierarchy (unlike `REDUCED`/`FULL`). Our custom
+nodes (Temperature, Relay0, Relay1 in `components/model/model.c`) are still
+created successfully and are fully readable/writable by NodeId
+(`ns=1;s=temperature` etc.), but they are **not** browsable from the Objects
+folder the way they were under v1.2 - a generic client like UAExpert that
+auto-discovers the address space via Browse won't show them in the tree;
+connecting directly by NodeId still works fully. Reconstructing a proper
+browsable hierarchy under `MINIMAL` would require replicating open62541's
+internal reference-type index/bitset bookkeeping (normally set up by the
+generated namespace-zero bootstrap), which isn't exposed via public API and
+wasn't pursued further - flagged here as a follow-up if full Browse support
+is needed.
+
+## Required amalgamation patch
+
+Of the four patches the old (v1.2) recipe needed, only one still applies to
+the freshly generated v1.5.5 amalgamation - verify by grepping the fresh
+output before reapplying any of them:
+
+```
+sed -i 's|#include <FreeRTOS\.h>|#include "freertos/FreeRTOS.h"|; s|#include <task\.h>|#include "freertos/task.h"|' open62541.c
+```
+
+The other three (`UA_access` stub, `#define UA_ARCHITECTURE_FREERTOSLWIP`,
+`UA_calloc`/`UA_IPV6` comment-outs) are obsolete in v1.5.5 - none of those
+symbols/macros exist in the generated output anymore.
+
+## Application-code changes needed for v1.5.5
+
+- `UA_ServerConfig_setCustomHostname()` was removed. It was purely cosmetic
+  (an advertised discovery hostname); the actual bind address comes from
+  `config->serverUrls`, which `UA_ServerConfig_setMinimalCustomBuffer`
+  already sets to a wildcard `opc.tcp://:<port>` that binds on all
+  interfaces. Do not override `serverUrls` with a non-resolvable hostname -
+  it breaks the TCP listener entirely (`"The server has no server socket"`).
