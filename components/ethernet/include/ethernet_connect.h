@@ -27,9 +27,6 @@ extern "C" {
 #include "freertos/event_groups.h"
 #include "esp_netif.h"
 
-#define CONFIG_ESP32_SPIRAM_SUPPORT 1
-#define CONFIG_MBEDTLS_EXTERNAL_MEM_ALLOC 1
-
 #ifdef CONFIG_EXAMPLE_CONNECT_ETHERNET
 #include "esp_eth.h"
 #define CONFIG_EXAMPLE_USE_INTERNAL_ETHERNET 1
