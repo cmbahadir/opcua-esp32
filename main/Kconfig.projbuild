@@ -113,7 +113,7 @@ menu "Motor Driver Configuration (L298N: rear-wheel drive + front-wheel steering
 
 	config MOTOR_FAILSAFE_TIMEOUT_MS
 		int "Motor failsafe stop timeout in ms (0 disables it)"
-		default 2000
+		default 10000
 		help
 			If no new speed command is written to either motor within
 			this time, both motors are stopped. Protects against a
