@@ -97,6 +97,9 @@ static void opcua_task(void *arg)
     addCurrentTemperatureDataSourceVariable(server);
     addRelay0ControlNode(server);
     addRelay1ControlNode(server);
+    motor_driver_init();
+    addDriveMotorSpeedControlNode(server);
+    addSteeringMotorSpeedControlNode(server);
 
     ESP_LOGI(TAG, "Heap Left : %d", xPortGetFreeHeapSize());
     UA_StatusCode retval = UA_Server_run_startup(server);
@@ -105,6 +108,7 @@ static void opcua_task(void *arg)
         while (running)
         {
             UA_Server_run_iterate(server, false);
+            motor_driver_failsafe_check();
              vTaskDelay(100 / portTICK_PERIOD_MS);
             ESP_ERROR_CHECK(esp_task_wdt_reset());
             taskYIELD();

@@ -1,6 +1,7 @@
 #include "open62541.h"
 #include "model.h"
 #include "DHT22.h"
+#include "motor_driver.h"
 #include "driver/gpio.h"
 
 static void
@@ -228,4 +229,112 @@ addRelay1ControlNode(UA_Server *server) {
                                         parentReferenceNodeId, currentName,
                                         variableTypeNodeId, attr,
                                         relay1, NULL, NULL);
+}
+
+/* Drive Motor Speed (rear wheel, forward/backward) */
+
+UA_StatusCode
+readDriveMotorSpeed(UA_Server *server,
+                const UA_NodeId *sessionId, void *sessionContext,
+                const UA_NodeId *nodeId, void *nodeContext,
+                UA_Boolean sourceTimeStamp, const UA_NumericRange *range,
+                UA_DataValue *dataValue) {
+    UA_Int32 speed = motor_driver_get_drive_speed();
+    UA_Variant_setScalarCopy(&dataValue->value, &speed,
+                             &UA_TYPES[UA_TYPES_INT32]);
+    dataValue->hasValue = true;
+    return UA_STATUSCODE_GOOD;
+}
+
+UA_StatusCode
+setDriveMotorSpeed(UA_Server *server,
+                  const UA_NodeId *sessionId, void *sessionContext,
+                  const UA_NodeId *nodeId, void *nodeContext,
+                 const UA_NumericRange *range, const UA_DataValue *data) {
+    if (data->value.type != &UA_TYPES[UA_TYPES_INT32]) {
+        return UA_STATUSCODE_BADTYPEMISMATCH;
+    }
+    UA_Int32 requested = *(UA_Int32 *)data->value.data;
+    if (requested < -100 || requested > 100) {
+        return UA_STATUSCODE_BADOUTOFRANGE;
+    }
+    esp_err_t err = motor_driver_set_drive_speed((int8_t)requested);
+    return err == ESP_OK ? UA_STATUSCODE_GOOD : UA_STATUSCODE_BADINTERNALERROR;
+}
+
+void
+addDriveMotorSpeedControlNode(UA_Server *server) {
+    UA_VariableAttributes attr = UA_VariableAttributes_default;
+    attr.displayName = UA_LOCALIZEDTEXT("en-US", "DriveMotorSpeed");
+    attr.description = UA_LOCALIZEDTEXT("en-US", "Rear-wheel drive motor speed, -100..100 (negative = backward, positive = forward, 0 = stop)");
+    attr.dataType = UA_TYPES[UA_TYPES_INT32].typeId;
+    attr.accessLevel = UA_ACCESSLEVELMASK_READ | UA_ACCESSLEVELMASK_WRITE;
+
+    UA_NodeId currentNodeId = UA_NODEID_STRING(1, "Drive Motor Speed");
+    UA_QualifiedName currentName = UA_QUALIFIEDNAME(1, "Drive Motor Speed");
+    UA_NodeId parentNodeId = UA_NODEID_NUMERIC(0, UA_NS0ID_OBJECTSFOLDER);
+    UA_NodeId parentReferenceNodeId = UA_NODEID_NUMERIC(0, UA_NS0ID_ORGANIZES);
+    UA_NodeId variableTypeNodeId = UA_NODEID_NUMERIC(0, UA_NS0ID_BASEDATAVARIABLETYPE);
+
+    UA_DataSource driveMotor;
+    driveMotor.read = readDriveMotorSpeed;
+    driveMotor.write = setDriveMotorSpeed;
+    UA_Server_addDataSourceVariableNode(server, currentNodeId, parentNodeId,
+                                        parentReferenceNodeId, currentName,
+                                        variableTypeNodeId, attr,
+                                        driveMotor, NULL, NULL);
+}
+
+/* Steering Motor Speed (front wheel, left/right) */
+
+UA_StatusCode
+readSteeringMotorSpeed(UA_Server *server,
+                const UA_NodeId *sessionId, void *sessionContext,
+                const UA_NodeId *nodeId, void *nodeContext,
+                UA_Boolean sourceTimeStamp, const UA_NumericRange *range,
+                UA_DataValue *dataValue) {
+    UA_Int32 speed = motor_driver_get_steering_speed();
+    UA_Variant_setScalarCopy(&dataValue->value, &speed,
+                             &UA_TYPES[UA_TYPES_INT32]);
+    dataValue->hasValue = true;
+    return UA_STATUSCODE_GOOD;
+}
+
+UA_StatusCode
+setSteeringMotorSpeed(UA_Server *server,
+                  const UA_NodeId *sessionId, void *sessionContext,
+                  const UA_NodeId *nodeId, void *nodeContext,
+                 const UA_NumericRange *range, const UA_DataValue *data) {
+    if (data->value.type != &UA_TYPES[UA_TYPES_INT32]) {
+        return UA_STATUSCODE_BADTYPEMISMATCH;
+    }
+    UA_Int32 requested = *(UA_Int32 *)data->value.data;
+    if (requested < -100 || requested > 100) {
+        return UA_STATUSCODE_BADOUTOFRANGE;
+    }
+    esp_err_t err = motor_driver_set_steering_speed((int8_t)requested);
+    return err == ESP_OK ? UA_STATUSCODE_GOOD : UA_STATUSCODE_BADINTERNALERROR;
+}
+
+void
+addSteeringMotorSpeedControlNode(UA_Server *server) {
+    UA_VariableAttributes attr = UA_VariableAttributes_default;
+    attr.displayName = UA_LOCALIZEDTEXT("en-US", "SteeringMotorSpeed");
+    attr.description = UA_LOCALIZEDTEXT("en-US", "Front-wheel steering motor speed, -100..100 (negative = left, positive = right, 0 = center/stop)");
+    attr.dataType = UA_TYPES[UA_TYPES_INT32].typeId;
+    attr.accessLevel = UA_ACCESSLEVELMASK_READ | UA_ACCESSLEVELMASK_WRITE;
+
+    UA_NodeId currentNodeId = UA_NODEID_STRING(1, "Steering Motor Speed");
+    UA_QualifiedName currentName = UA_QUALIFIEDNAME(1, "Steering Motor Speed");
+    UA_NodeId parentNodeId = UA_NODEID_NUMERIC(0, UA_NS0ID_OBJECTSFOLDER);
+    UA_NodeId parentReferenceNodeId = UA_NODEID_NUMERIC(0, UA_NS0ID_ORGANIZES);
+    UA_NodeId variableTypeNodeId = UA_NODEID_NUMERIC(0, UA_NS0ID_BASEDATAVARIABLETYPE);
+
+    UA_DataSource steeringMotor;
+    steeringMotor.read = readSteeringMotorSpeed;
+    steeringMotor.write = setSteeringMotorSpeed;
+    UA_Server_addDataSourceVariableNode(server, currentNodeId, parentNodeId,
+                                        parentReferenceNodeId, currentName,
+                                        variableTypeNodeId, attr,
+                                        steeringMotor, NULL, NULL);
 }

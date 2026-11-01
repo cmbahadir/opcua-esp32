@@ -63,6 +63,65 @@ menu "Connection Configuration"
 
 endmenu
 
+menu "Motor Driver Configuration (L298N: rear-wheel drive + front-wheel steering)"
+
+	config MOTOR_DRIVE_ENA_GPIO
+		int "Drive Motor PWM (ENA) GPIO"
+		default 25
+		help
+			PWM-capable GPIO driving the L298N ENA pin. Controls the
+			rear-wheel drive motor's speed (forward/backward).
+
+	config MOTOR_DRIVE_IN1_GPIO
+		int "Drive Motor Direction IN1 GPIO"
+		default 26
+		help
+			Drives the L298N IN1 pin (drive motor direction).
+
+	config MOTOR_DRIVE_IN2_GPIO
+		int "Drive Motor Direction IN2 GPIO"
+		default 27
+		help
+			Drives the L298N IN2 pin (drive motor direction).
+
+	config MOTOR_STEERING_ENB_GPIO
+		int "Steering Motor PWM (ENB) GPIO"
+		default 14
+		help
+			PWM-capable GPIO driving the L298N ENB pin. Controls the
+			front-wheel steering motor's speed (left/right).
+
+	config MOTOR_STEERING_IN3_GPIO
+		int "Steering Motor Direction IN3 GPIO"
+		default 18
+		help
+			Drives the L298N IN3 pin (steering motor direction).
+
+	config MOTOR_STEERING_IN4_GPIO
+		int "Steering Motor Direction IN4 GPIO"
+		default 19
+		help
+			Drives the L298N IN4 pin (steering motor direction).
+
+	config MOTOR_PWM_FREQUENCY_HZ
+		int "Motor PWM Frequency (Hz)"
+		default 1000
+		help
+			L298N ENA/ENB inputs accept PWM well above audible range,
+			but 1kHz is a safe default for reliable speed control of
+			typical brushed DC motors.
+
+	config MOTOR_FAILSAFE_TIMEOUT_MS
+		int "Motor failsafe stop timeout in ms (0 disables it)"
+		default 2000
+		help
+			If no new speed command is written to either motor within
+			this time, both motors are stopped. Protects against a
+			runaway car if the OPC UA client disconnects or the WiFi
+			link drops.
+
+endmenu
+
 menu "Debug Configuration"
 
 	config UA_LOGLEVEL
